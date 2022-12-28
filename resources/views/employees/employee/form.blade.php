@@ -64,7 +64,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <x-form.select name="position_id" required label="Jabatan" option="- Pilih Jabatan -" :datas="$positions" value="{{ $employee->position->position_id ?? '' }}" />
-                            <x-form.select name="rank_id" required label="Kelas Jabatan" option="- Pilih Kelas Jabatan -" :datas="$ranks" value="{{ $employee->position->rank_id ?? '' }}" />
+                            <x-form.select name="rank_id" required label="Pangkat" option="- Pilih Kelas Jabatan -" :datas="$ranks" value="{{ $employee->position->rank_id ?? '' }}" />
                             <x-form.input name="sk_number" label="Nomor SK" value="{{ $employee->position->sk_number ?? '' }}" />
                             <x-form.datepicker name="start_date" required label="Tanggal Mulai" value="{{ $employee->position->start_date ?? '' }}" />
                             <x-form.select name="location_id" required label="Lokasi Kerja" option="- Pilih Lokasi Kerja -" :datas="$locations" value="{{ $employee->position->location_id ?? '' }}" />

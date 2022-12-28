@@ -3,22 +3,27 @@
 namespace App\Http\Controllers\Employee;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Employee\EmployeeFamilyRequest;
 use App\Http\Requests\Employee\EmployeeRequest;
 use App\Models\Attendance\AttendanceShift;
 use App\Models\Employee\Employee;
+use App\Models\Employee\EmployeeFamily;
 use App\Models\Employee\EmployeePosition;
 use App\Models\Setting\AppMasterData;
 use Auth;
+use Barryvdh\Debugbar\Facades\Debugbar;
+use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use RealRashid\SweetAlert\Facades\Alert;
+use Session;
+use Storage;
+use View;
 use Yajra\DataTables\DataTables;
 
 ini_set('memory_limit', '4096M');
@@ -28,6 +33,7 @@ class EmployeeController extends Controller
 
     public string $photoPath;
     public string $identityPath;
+    public string $familyPath;
     public array $genderOption;
 
     public function __construct()
@@ -35,17 +41,20 @@ class EmployeeController extends Controller
         $this->middleware('auth');
         $this->photoPath = '/uploads/employee/photo/';
         $this->identityPath = '/uploads/employee/identity/';
+        $this->familyPath = '/uploads/employee/family/';
         $this->genderOption = ['m' => "Laki-Laki", "f" => "Perempuan"];
 
-        \View::share('genderOption', $this->genderOption);
+        View::share('genderOption', $this->genderOption);
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @return Application|Factory|View|JsonResponse
+     * @param Request $request
+     * @return Application|Factory|\Illuminate\Contracts\View\View|JsonResponse
+     * @throws Exception
      */
-    public function index(Request $request)
+    public function index(Request $request): Factory|\Illuminate\Contracts\View\View|JsonResponse|Application
     {
         $masters = [];
         $dataMaster = AppMasterData::whereIn('app_master_category_code', ['ELK', 'EP', 'EG', 'ESPK', 'ESP', 'ETP', 'EMP', 'EMU'])
@@ -98,14 +107,16 @@ class EmployeeController extends Controller
                         'menu_path' => $this->menu_path(),
                         'url_edit' => route(str_replace('/', '.', $this->menu_path()).'.edit', $model->id),
                         'url_destroy' => route(str_replace('/', '.', $this->menu_path()).'.destroy', $model->id),
+                        'url_slot' => route(str_replace('/', '.', $this->menu_path()).'.show', $model->id),
+                        'isModalSlot' => false,
                         'isModal' => false
                     ]);
                 })
                 ->addIndexColumn()
-                ->make(true);
+                ->make();
         }
 
-        \Session::put('user', $user);
+        Session::put('user', $user);
 
         return view('employees.employee.index', [
             'masters' => $masters
@@ -115,11 +126,11 @@ class EmployeeController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return Application|Factory|View
+     * @return Application|Factory
      */
     public function create()
     {
-        $user = \Session::get('user');
+        $user = Session::get('user');
 
         $masters = AppMasterData::whereIn('app_master_category_code', ['ELK', 'EP', 'EG', 'ESPK', 'ESP', 'ETP', 'EMP', 'EMU'])->get();
 
@@ -146,7 +157,7 @@ class EmployeeController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param EmployeeRequest $request
      * @return RedirectResponse
      */
     public function store(EmployeeRequest $request)
@@ -209,7 +220,7 @@ class EmployeeController extends Controller
 
             return redirect()->route('employees.employees.index');
 
-        }catch (\Exception $e) {
+        }catch (Exception $e) {
             DB::rollBack();
 
             Alert::error('Error', $e->getMessage());
@@ -222,22 +233,37 @@ class EmployeeController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Application|Factory
      */
-    public function show($id)
+    public function show(int $id)
     {
-        //
+        $masters = AppMasterData::pluck('name', 'id')->toArray();
+
+        $employee = Employee::find($id);
+        $employee->position->location_id = AppMasterData::find($employee->position->location_id)->name ?? '';
+        $employee->position->position_id = AppMasterData::find($employee->position->position_id)->name ?? '';
+        $employee->position->grade_id = AppMasterData::find($employee->position->grade_id)->name ?? '';
+        $employee->position->unit_id = AppMasterData::find($employee->position->unit_id)->name ?? '';
+
+        $families = EmployeeFamily::where('employee_id', $id)->get();
+
+        return view('employees.employee.show', [
+            'employee' => $employee,
+            'masters' => $masters,
+            'families' => $families,
+            'menu_path' => $this->menu_path(),
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return Application|Factory|View|Response
+     * @return Application|Factory
      */
     public function edit(int $id)
     {
-        $user = \Session::get('user');
+        $user = Session::get('user');
 
         $masters = AppMasterData::whereIn('app_master_category_code', ['ELK', 'EP', 'EG', 'ESPK', 'ESP', 'ETP', 'EMP', 'EMU'])->get();
 
@@ -326,7 +352,7 @@ class EmployeeController extends Controller
 
             return redirect()->route('employees.employees.index');
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
 
             Alert::error('Error', $e->getMessage());
@@ -339,7 +365,7 @@ class EmployeeController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return RedirectResponse
      */
     public function destroy(int $id)
     {
@@ -351,16 +377,142 @@ class EmployeeController extends Controller
             $employee->positions()->delete();
             $employee->delete();
 
+            $family = EmployeeFamily::where('employee_id', $id)->get();
+            foreach ($family as $item) {
+                if(Storage::exists($this->familyPath.$item->photo)) Storage::delete($this->familyPath.$item->photo);
+                $item->delete();
+            }
+
             DB::commit();
 
             Alert::success('Success', 'Data Pegawai berhasil dihapus');
 
             return redirect()->back();
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
 
             Alert::error('Error', $e->getMessage());
+
+            return redirect()->back();
+        }
+    }
+
+    public function familyCreate(int $id)
+    {
+        $relationships = AppMasterData::whereAppMasterCategoryCode('EHK')->pluck('name', 'id')->toArray();
+
+        return view('employees.employee.family-form', [
+            'id' => $id,
+            'relationships' => $relationships,
+        ]);
+    }
+    public function familyStore(EmployeeFamilyRequest $request, int $id)
+    {
+        try {
+            $filename = '';
+            if($request->hasFile('filename')) {
+                $resize = false;
+                $extension = $request->file('filename')->extension();
+                if ($extension == 'png' || $extension == 'jpg' || $extension == 'jpeg') $resize = true;
+
+                $filename = uploadFile(
+                    $request->file('filename'),
+                    'employee-family_' . Str::slug($request->input('name')) . '_' . time(),
+                    $this->familyPath, $resize);
+            }
+
+            EmployeeFamily::create([
+                'employee_id' => $request->input('employee_id'),
+                'name' => $request->input('name'),
+                'relationship_id' => $request->input('relationship_id'),
+                'identity_number' => $request->input('identity_number'),
+                'gender' => $request->input('gender'),
+                'birth_date' => $request->input('birth_date') ? resetDate($request->input('birth_date')) : null,
+                'birth_place' => $request->input('birth_place'),
+                'description' => $request->input('description'),
+                'filename' => $filename,
+            ]);
+
+            return response()->json([
+                'success'=>'Data Keluarga berhasil disimpan',
+                'url'=> route(Str::replace('/', '.', $this->menu_path()).'.show', $id),
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success'=>'Gagal '.$e->getMessage(),
+                'url'=> route(Str::replace('/', '.', $this->menu_path()).'.show', $id),
+            ]);
+        }
+    }
+
+    public function familyEdit(int $id)
+    {
+        $relationships = AppMasterData::whereAppMasterCategoryCode('EHK')->pluck('name', 'id')->toArray();
+        $family = EmployeeFamily::findOrFail($id);
+
+        return view('employees.employee.family-form', [
+            'id' => $id,
+            'relationships' => $relationships,
+            'family' => $family,
+        ]);
+    }
+
+    public function familyUpdate(EmployeeFamilyRequest $request, int $id)
+    {
+        $family = EmployeeFamily::find($id);
+        try {
+            if ($request->hasFile('filename')) {
+                $resize = false;
+                $extension = $request->file('filename')->extension();
+                if ($extension == 'png' || $extension == 'jpg' || $extension == 'jpeg') $resize = true;
+                Debugbar::info($extension);
+
+                $filename = uploadFile(
+                    $request->file('filename'),
+                    'employee-family_' . Str::slug($request->input('name')) . '_' . time(),
+                    $this->familyPath, $resize);
+
+                $family->update([
+                    'filename' => $filename,
+                ]);
+            }
+
+            $family->update([
+                'employee_id' => $request->input('employee_id'),
+                'name' => $request->input('name'),
+                'relationship_id' => $request->input('relationship_id'),
+                'identity_number' => $request->input('identity_number'),
+                'gender' => $request->input('gender'),
+                'birth_date' => $request->input('birth_date') ? resetDate($request->input('birth_date')) : null,
+                'birth_place' => $request->input('birth_place'),
+                'description' => $request->input('description'),
+            ]);
+
+            return response()->json([
+                'success' => 'Data Keluarga berhasil disimpan',
+                'url' => route(Str::replace('/', '.', $this->menu_path()) . '.show', $family->employee_id),
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => 'Gagal ' . $e->getMessage(),
+                'url' => route(Str::replace('/', '.', $this->menu_path()) . '.show', $family->employee_id),
+            ]);
+        }
+    }
+
+    public function familyDestroy(int $id)
+    {
+        $family = EmployeeFamily::findOrFail($id);
+        try {
+            if(Storage::exists($this->familyPath.$family->filename)) Storage::delete($this->familyPath.$family->filename);
+            $family->delete();
+
+            Alert::success('Success', 'Data Keluarga berhasil dihapus');
+
+            return redirect()->back();
+        } catch (Exception $e) {
+            Alert::success('Success', 'Gagal ' . $e->getMessage());
 
             return redirect()->back();
         }

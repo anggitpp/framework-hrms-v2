@@ -1,4 +1,4 @@
-@props(['url_edit' => '', 'url_destroy' => '', 'url_show' => '', 'isModal' => true, 'url_slot' => '', 'icon_slot' => 'fa-solid fa-list', 'isModalSlot' => true])
+@props(['url_edit' => '', 'url_destroy' => '', 'url_show' => '', 'isModal' => true, 'url_slot' => '', 'icon_slot' => 'fa-solid fa-list', 'isModalSlot' => true, 'menu_path' => ''])
 <div class="text-center justify-content-between">
     @if($url_slot)
         <a
@@ -7,7 +7,11 @@
             @else
                 href="{{ $url_slot }}"
             @endif
-            class="btn btn-icon btn-light-info w-30px h-30px me-1 {{ $isModalSlot ? 'btn-modal' : '' }}" data-bs-toggle="modal">
+            class="btn btn-icon btn-light-info w-30px h-30px me-1 {{ $isModalSlot ? 'btn-modal' : '' }}"
+            @if($isModalSlot)
+                data-bs-toggle="modal"
+            @endif
+        >
             <i class="{{ $icon_slot }}"></i>
         </a>
     @endif

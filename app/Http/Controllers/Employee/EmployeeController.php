@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Employee;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Employee\EmployeeEducationRequest;
 use App\Http\Requests\Employee\EmployeeFamilyRequest;
 use App\Http\Requests\Employee\EmployeeRequest;
 use App\Models\Attendance\AttendanceShift;
 use App\Models\Employee\Employee;
+use App\Models\Employee\EmployeeEducation;
 use App\Models\Employee\EmployeeFamily;
 use App\Models\Employee\EmployeePosition;
 use App\Models\Setting\AppMasterData;
@@ -34,6 +36,7 @@ class EmployeeController extends Controller
     public string $photoPath;
     public string $identityPath;
     public string $familyPath;
+    public string $educationPath;
     public array $genderOption;
 
     public function __construct()
@@ -42,6 +45,7 @@ class EmployeeController extends Controller
         $this->photoPath = '/uploads/employee/photo/';
         $this->identityPath = '/uploads/employee/identity/';
         $this->familyPath = '/uploads/employee/family/';
+        $this->educationPath = '/uploads/employee/education/';
         $this->genderOption = ['m' => "Laki-Laki", "f" => "Perempuan"];
 
         View::share('genderOption', $this->genderOption);
@@ -246,11 +250,13 @@ class EmployeeController extends Controller
         $employee->position->unit_id = AppMasterData::find($employee->position->unit_id)->name ?? '';
 
         $families = EmployeeFamily::where('employee_id', $id)->get();
+        $educations = EmployeeEducation::where('employee_id', $id)->get();
 
         return view('employees.employee.show', [
             'employee' => $employee,
             'masters' => $masters,
             'families' => $families,
+            'educations' => $educations,
             'menu_path' => $this->menu_path(),
         ]);
     }
@@ -466,7 +472,6 @@ class EmployeeController extends Controller
                 $resize = false;
                 $extension = $request->file('filename')->extension();
                 if ($extension == 'png' || $extension == 'jpg' || $extension == 'jpeg') $resize = true;
-                Debugbar::info($extension);
 
                 $filename = uploadFile(
                     $request->file('filename'),
@@ -509,6 +514,128 @@ class EmployeeController extends Controller
             $family->delete();
 
             Alert::success('Success', 'Data Keluarga berhasil dihapus');
+
+            return redirect()->back();
+        } catch (Exception $e) {
+            Alert::success('Success', 'Gagal ' . $e->getMessage());
+
+            return redirect()->back();
+        }
+    }
+
+    public function educationCreate(int $id)
+    {
+        $levels = AppMasterData::whereAppMasterCategoryCode('EMJP')->pluck('name', 'id')->toArray();
+
+        return view('employees.employee.education-form', [
+            'id' => $id,
+            'levels' => $levels,
+        ]);
+    }
+
+    public function educationStore(EmployeeEducationRequest $request, int $id)
+    {
+        try {
+            $filename = '';
+            if($request->hasFile('filename')){
+                $resize = false;
+                $extension = $request->file('filename')->extension();
+                if ($extension == 'png' || $extension == 'jpg' || $extension == 'jpeg') $resize = true;
+
+                $filename = uploadFile(
+                    $request->file('filename'),
+                    'employee-education_' . Str::slug($request->input('name')) . '_' . time(),
+                    $this->educationPath, $resize);
+            }
+
+            EmployeeEducation::create([
+                'employee_id' => $request->input('employee_id'),
+                'level_id' => $request->input('level_id'),
+                'name' => $request->input('name'),
+                'major' => $request->input('major'),
+                'start_year' => $request->input('start_year'),
+                'end_year' => $request->input('end_year'),
+                'score' => $request->input('score'),
+                'city' => $request->input('city'),
+                'filename' => $filename,
+                'description' => $request->input('description'),
+            ]);
+
+            return response()->json([
+                'success'=>'Data Pendidikan berhasil disimpan',
+                'url'=> route(Str::replace('/', '.', $this->menu_path()).'.show', $id),
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success'=>'Gagal '.$e->getMessage(),
+                'url'=> route(Str::replace('/', '.', $this->menu_path()).'.show', $id),
+            ]);
+        }
+    }
+
+    public function educationEdit(int $id)
+    {
+        $levels = AppMasterData::whereAppMasterCategoryCode('EMJP')->pluck('name', 'id')->toArray();
+        $education = EmployeeEducation::find($id);
+
+        return view('employees.employee.education-form', [
+            'id' => $id,
+            'levels' => $levels,
+            'education' => $education,
+        ]);
+    }
+
+    public function educationUpdate(EmployeeEducationRequest $request, int $id)
+    {
+        $education = EmployeeEducation::find($id);
+        try {
+            if ($request->hasFile('filename')) {
+                $resize = false;
+                $extension = $request->file('filename')->extension();
+                if ($extension == 'png' || $extension == 'jpg' || $extension == 'jpeg') $resize = true;
+
+                $filename = uploadFile(
+                    $request->file('filename'),
+                    'employee-education_' . Str::slug($request->input('name')) . '_' . time(),
+                    $this->educationPath, $resize);
+
+                $education->update([
+                    'filename' => $filename,
+                ]);
+            }
+
+            $education->update([
+                'employee_id' => $request->input('employee_id'),
+                'level_id' => $request->input('level_id'),
+                'name' => $request->input('name'),
+                'major' => $request->input('major'),
+                'start_year' => $request->input('start_year'),
+                'end_year' => $request->input('end_year'),
+                'score' => $request->input('score'),
+                'city' => $request->input('city'),
+                'description' => $request->input('description'),
+            ]);
+
+            return response()->json([
+                'success' => 'Data Pendidikan berhasil disimpan',
+                'url' => route(Str::replace('/', '.', $this->menu_path()) . '.show', $education->employee_id),
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => 'Gagal ' . $e->getMessage(),
+                'url' => route(Str::replace('/', '.', $this->menu_path()) . '.show', $education->employee_id),
+            ]);
+        }
+    }
+
+    public function educationDestroy(int $id)
+    {
+        $education = EmployeeEducation::findOrFail($id);
+        try {
+            if(Storage::exists($this->educationPath.$education->filename)) Storage::delete($this->educationPath.$education->filename);
+            $education->delete();
+
+            Alert::success('Success', 'Data Pendidikan berhasil dihapus');
 
             return redirect()->back();
         } catch (Exception $e) {

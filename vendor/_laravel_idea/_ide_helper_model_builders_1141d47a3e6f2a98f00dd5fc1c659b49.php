@@ -1,9 +1,10 @@
-<?php //708704d57bc0f7aa427572fd1d5ec184
+<?php //546ed71b1a174daa86d779a0e442d38b
 /** @noinspection all */
 
 namespace LaravelIdea\Helper\App\Models\Employee {
 
     use App\Models\Employee\Employee;
+    use App\Models\Employee\EmployeeEducation;
     use App\Models\Employee\EmployeeFamily;
     use App\Models\Employee\EmployeePosition;
     use App\Models\Employee\EmployeeSignatureSetting;
@@ -14,6 +15,78 @@ namespace LaravelIdea\Helper\App\Models\Employee {
     use Illuminate\Pagination\Paginator;
     use LaravelIdea\Helper\_BaseBuilder;
     use LaravelIdea\Helper\_BaseCollection;
+    
+    /**
+     * @method EmployeeEducation|null getOrPut($key, $value)
+     * @method EmployeeEducation|$this shift(int $count = 1)
+     * @method EmployeeEducation|null firstOrFail(callable|string $key = null, $operator = null, $value = null)
+     * @method EmployeeEducation|$this pop(int $count = 1)
+     * @method EmployeeEducation|null pull($key, \Closure $default = null)
+     * @method EmployeeEducation|null last(callable $callback = null, \Closure $default = null)
+     * @method EmployeeEducation|$this random(callable|int|null $number = null)
+     * @method EmployeeEducation|null sole(callable|string $key = null, $operator = null, $value = null)
+     * @method EmployeeEducation|null get($key, \Closure $default = null)
+     * @method EmployeeEducation|null first(callable $callback = null, \Closure $default = null)
+     * @method EmployeeEducation|null firstWhere(callable|string $key, $operator = null, $value = null)
+     * @method EmployeeEducation|null find($key, $default = null)
+     * @method EmployeeEducation[] all()
+     */
+    class _IH_EmployeeEducation_C extends _BaseCollection {
+        /**
+         * @param int $size
+         * @return EmployeeEducation[][]
+         */
+        public function chunk($size)
+        {
+            return [];
+        }
+    }
+    
+    /**
+     * @method _IH_EmployeeEducation_QB whereId($value)
+     * @method _IH_EmployeeEducation_QB whereEmployeeId($value)
+     * @method _IH_EmployeeEducation_QB whereLevelId($value)
+     * @method _IH_EmployeeEducation_QB whereName($value)
+     * @method _IH_EmployeeEducation_QB whereMajor($value)
+     * @method _IH_EmployeeEducation_QB whereEssay($value)
+     * @method _IH_EmployeeEducation_QB whereCity($value)
+     * @method _IH_EmployeeEducation_QB whereScore($value)
+     * @method _IH_EmployeeEducation_QB whereStartYear($value)
+     * @method _IH_EmployeeEducation_QB whereEndYear($value)
+     * @method _IH_EmployeeEducation_QB whereDescription($value)
+     * @method _IH_EmployeeEducation_QB whereFilename($value)
+     * @method _IH_EmployeeEducation_QB whereCreatedBy($value)
+     * @method _IH_EmployeeEducation_QB whereUpdatedBy($value)
+     * @method _IH_EmployeeEducation_QB whereCreatedAt($value)
+     * @method _IH_EmployeeEducation_QB whereUpdatedAt($value)
+     * @method EmployeeEducation baseSole(array|string $columns = ['*'])
+     * @method EmployeeEducation create(array $attributes = [])
+     * @method _IH_EmployeeEducation_C|EmployeeEducation[] cursor()
+     * @method EmployeeEducation|null|_IH_EmployeeEducation_C|EmployeeEducation[] find($id, array|string $columns = ['*'])
+     * @method _IH_EmployeeEducation_C|EmployeeEducation[] findMany(array|Arrayable $ids, array|string $columns = ['*'])
+     * @method EmployeeEducation|_IH_EmployeeEducation_C|EmployeeEducation[] findOr($id, array|\Closure|string $columns = ['*'], \Closure $callback = null)
+     * @method EmployeeEducation|_IH_EmployeeEducation_C|EmployeeEducation[] findOrFail($id, array|string $columns = ['*'])
+     * @method EmployeeEducation|_IH_EmployeeEducation_C|EmployeeEducation[] findOrNew($id, array|string $columns = ['*'])
+     * @method EmployeeEducation first(array|string $columns = ['*'])
+     * @method EmployeeEducation firstOr(array|\Closure|string $columns = ['*'], \Closure $callback = null)
+     * @method EmployeeEducation firstOrCreate(array $attributes = [], array $values = [])
+     * @method EmployeeEducation firstOrFail(array|string $columns = ['*'])
+     * @method EmployeeEducation firstOrNew(array $attributes = [], array $values = [])
+     * @method EmployeeEducation firstWhere(array|\Closure|Expression|string $column, $operator = null, $value = null, string $boolean = 'and')
+     * @method EmployeeEducation forceCreate(array $attributes)
+     * @method _IH_EmployeeEducation_C|EmployeeEducation[] fromQuery(string $query, array $bindings = [])
+     * @method _IH_EmployeeEducation_C|EmployeeEducation[] get(array|string $columns = ['*'])
+     * @method EmployeeEducation getModel()
+     * @method EmployeeEducation[] getModels(array|string $columns = ['*'])
+     * @method _IH_EmployeeEducation_C|EmployeeEducation[] hydrate(array $items)
+     * @method EmployeeEducation make(array $attributes = [])
+     * @method EmployeeEducation newModelInstance(array $attributes = [])
+     * @method LengthAwarePaginator|EmployeeEducation[]|_IH_EmployeeEducation_C paginate(\Closure|int|null $perPage = null, array|string $columns = ['*'], string $pageName = 'page', int|null $page = null)
+     * @method Paginator|EmployeeEducation[]|_IH_EmployeeEducation_C simplePaginate(int|null $perPage = null, array|string $columns = ['*'], string $pageName = 'page', int|null $page = null)
+     * @method EmployeeEducation sole(array|string $columns = ['*'])
+     * @method EmployeeEducation updateOrCreate(array $attributes, array $values = [])
+     */
+    class _IH_EmployeeEducation_QB extends _BaseBuilder {}
     
     /**
      * @method EmployeeFamily|null getOrPut($key, $value)

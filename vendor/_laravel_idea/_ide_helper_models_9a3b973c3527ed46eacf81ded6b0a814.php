@@ -1,4 +1,4 @@
-<?php //2cb512d3a8d12d9f0e56d8e1be8a9d3b
+<?php //a93330b2cc5d4c9fa636076f367dec26
 /** @noinspection all */
 
 namespace App\Models\Employee {
@@ -9,6 +9,8 @@ namespace App\Models\Employee {
     use Illuminate\Database\Eloquent\Relations\HasMany;
     use Illuminate\Database\Eloquent\Relations\HasOne;
     use Illuminate\Support\Carbon;
+    use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeEducation_C;
+    use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeEducation_QB;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeFamily_C;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeFamily_QB;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeePosition_C;
@@ -60,10 +62,45 @@ namespace App\Models\Employee {
      * @method false|int increment(string $column, float|int $amount = 1, array $extra = [])
      * @method false|int decrement(string $column, float|int $amount = 1, array $extra = [])
      * @method static _IH_Employee_C|Employee[] all()
-     * @foreignLinks id,\App\Models\Setting\User,employee_id|id,\App\Models\Employee\EmployeePosition,employee_id|id,\App\Models\Attendance\Attendance,employee_id|id,\App\Models\Attendance\AttendanceWorkSchedule,employee_id|id,\App\Models\ESS\EssTimesheet,employee_id|id,\App\Models\Attendance\AttendanceLeave,employee_id|id,\App\Models\Attendance\AttendancePermission,employee_id|id,\App\Models\Attendance\AttendanceOvertime,employee_id|id,\App\Models\Attendance\AttendanceCorrection,employee_id|id,\App\Models\Employee\EmployeeSignatureSetting,employee_id|id,\App\Models\Employee\EmployeeFamily,employee_id
+     * @foreignLinks id,\App\Models\Setting\User,employee_id|id,\App\Models\Employee\EmployeePosition,employee_id|id,\App\Models\Attendance\Attendance,employee_id|id,\App\Models\Attendance\AttendanceWorkSchedule,employee_id|id,\App\Models\ESS\EssTimesheet,employee_id|id,\App\Models\Attendance\AttendanceLeave,employee_id|id,\App\Models\Attendance\AttendancePermission,employee_id|id,\App\Models\Attendance\AttendanceOvertime,employee_id|id,\App\Models\Attendance\AttendanceCorrection,employee_id|id,\App\Models\Employee\EmployeeSignatureSetting,employee_id|id,\App\Models\Employee\EmployeeFamily,employee_id|id,\App\Models\Employee\EmployeeEducation,employee_id
      * @mixin _IH_Employee_QB
      */
     class Employee extends Model {}
+    
+    /**
+     * @property int $id
+     * @property int $employee_id
+     * @property int $level_id
+     * @property string $name
+     * @property string|null $major
+     * @property string|null $essay
+     * @property string|null $city
+     * @property string|null $score
+     * @property string|null $start_year
+     * @property string|null $end_year
+     * @property string|null $description
+     * @property string|null $filename
+     * @property string|null $created_by
+     * @property string|null $updated_by
+     * @property Carbon|null $created_at
+     * @property Carbon|null $updated_at
+     * @property Employee $employee
+     * @method BelongsTo|_IH_Employee_QB employee()
+     * @property AppMasterData $level
+     * @method BelongsTo|_IH_AppMasterData_QB level()
+     * @method static _IH_EmployeeEducation_QB onWriteConnection()
+     * @method _IH_EmployeeEducation_QB newQuery()
+     * @method static _IH_EmployeeEducation_QB on(null|string $connection = null)
+     * @method static _IH_EmployeeEducation_QB query()
+     * @method static _IH_EmployeeEducation_QB with(array|string $relations)
+     * @method _IH_EmployeeEducation_QB newModelQuery()
+     * @method false|int increment(string $column, float|int $amount = 1, array $extra = [])
+     * @method false|int decrement(string $column, float|int $amount = 1, array $extra = [])
+     * @method static _IH_EmployeeEducation_C|EmployeeEducation[] all()
+     * @ownLinks employee_id,\App\Models\Employee\Employee,id
+     * @mixin _IH_EmployeeEducation_QB
+     */
+    class EmployeeEducation extends Model {}
     
     /**
      * @property int $id
@@ -80,6 +117,10 @@ namespace App\Models\Employee {
      * @property string|null $updated_by
      * @property Carbon|null $created_at
      * @property Carbon|null $updated_at
+     * @property Employee $employee
+     * @method BelongsTo|_IH_Employee_QB employee()
+     * @property AppMasterData $relationship
+     * @method BelongsTo|_IH_AppMasterData_QB relationship()
      * @method static _IH_EmployeeFamily_QB onWriteConnection()
      * @method _IH_EmployeeFamily_QB newQuery()
      * @method static _IH_EmployeeFamily_QB on(null|string $connection = null)

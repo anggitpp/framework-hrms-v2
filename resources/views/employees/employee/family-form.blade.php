@@ -4,7 +4,7 @@
         @if(!empty($family))
             @method('PATCH')
         @endif
-        <x-form.modal-header title="{{ empty($fmaily) ? __('Tambah Keluarga') : __('Edit Keluarga') }}" />
+        <x-form.modal-header title="{{ empty($family) ? __('Tambah Keluarga') : __('Edit Keluarga') }}" />
         <div class="separator mt-2 mb-5 d-flex"></div>
         <div class="card-body pt-0">
             <input type="hidden" name="employee_id" value="{{ $family->employee_id ?? $id }}"/>

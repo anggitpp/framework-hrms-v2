@@ -1,9 +1,10 @@
-<?php //0866ca386c11c6368beef55a2bbdd712
+<?php //708704d57bc0f7aa427572fd1d5ec184
 /** @noinspection all */
 
 namespace LaravelIdea\Helper\App\Models\Employee {
 
     use App\Models\Employee\Employee;
+    use App\Models\Employee\EmployeeFamily;
     use App\Models\Employee\EmployeePosition;
     use App\Models\Employee\EmployeeSignatureSetting;
     use App\Models\Employee\EmployeeUnitStructure;
@@ -13,6 +14,76 @@ namespace LaravelIdea\Helper\App\Models\Employee {
     use Illuminate\Pagination\Paginator;
     use LaravelIdea\Helper\_BaseBuilder;
     use LaravelIdea\Helper\_BaseCollection;
+    
+    /**
+     * @method EmployeeFamily|null getOrPut($key, $value)
+     * @method EmployeeFamily|$this shift(int $count = 1)
+     * @method EmployeeFamily|null firstOrFail(callable|string $key = null, $operator = null, $value = null)
+     * @method EmployeeFamily|$this pop(int $count = 1)
+     * @method EmployeeFamily|null pull($key, \Closure $default = null)
+     * @method EmployeeFamily|null last(callable $callback = null, \Closure $default = null)
+     * @method EmployeeFamily|$this random(callable|int|null $number = null)
+     * @method EmployeeFamily|null sole(callable|string $key = null, $operator = null, $value = null)
+     * @method EmployeeFamily|null get($key, \Closure $default = null)
+     * @method EmployeeFamily|null first(callable $callback = null, \Closure $default = null)
+     * @method EmployeeFamily|null firstWhere(callable|string $key, $operator = null, $value = null)
+     * @method EmployeeFamily|null find($key, $default = null)
+     * @method EmployeeFamily[] all()
+     */
+    class _IH_EmployeeFamily_C extends _BaseCollection {
+        /**
+         * @param int $size
+         * @return EmployeeFamily[][]
+         */
+        public function chunk($size)
+        {
+            return [];
+        }
+    }
+    
+    /**
+     * @method _IH_EmployeeFamily_QB whereId($value)
+     * @method _IH_EmployeeFamily_QB whereEmployeeId($value)
+     * @method _IH_EmployeeFamily_QB whereRelationshipId($value)
+     * @method _IH_EmployeeFamily_QB whereName($value)
+     * @method _IH_EmployeeFamily_QB whereIdentityNumber($value)
+     * @method _IH_EmployeeFamily_QB whereGender($value)
+     * @method _IH_EmployeeFamily_QB whereBirthDate($value)
+     * @method _IH_EmployeeFamily_QB whereBirthPlace($value)
+     * @method _IH_EmployeeFamily_QB whereFilename($value)
+     * @method _IH_EmployeeFamily_QB whereDescription($value)
+     * @method _IH_EmployeeFamily_QB whereCreatedBy($value)
+     * @method _IH_EmployeeFamily_QB whereUpdatedBy($value)
+     * @method _IH_EmployeeFamily_QB whereCreatedAt($value)
+     * @method _IH_EmployeeFamily_QB whereUpdatedAt($value)
+     * @method EmployeeFamily baseSole(array|string $columns = ['*'])
+     * @method EmployeeFamily create(array $attributes = [])
+     * @method _IH_EmployeeFamily_C|EmployeeFamily[] cursor()
+     * @method EmployeeFamily|null|_IH_EmployeeFamily_C|EmployeeFamily[] find($id, array|string $columns = ['*'])
+     * @method _IH_EmployeeFamily_C|EmployeeFamily[] findMany(array|Arrayable $ids, array|string $columns = ['*'])
+     * @method EmployeeFamily|_IH_EmployeeFamily_C|EmployeeFamily[] findOr($id, array|\Closure|string $columns = ['*'], \Closure $callback = null)
+     * @method EmployeeFamily|_IH_EmployeeFamily_C|EmployeeFamily[] findOrFail($id, array|string $columns = ['*'])
+     * @method EmployeeFamily|_IH_EmployeeFamily_C|EmployeeFamily[] findOrNew($id, array|string $columns = ['*'])
+     * @method EmployeeFamily first(array|string $columns = ['*'])
+     * @method EmployeeFamily firstOr(array|\Closure|string $columns = ['*'], \Closure $callback = null)
+     * @method EmployeeFamily firstOrCreate(array $attributes = [], array $values = [])
+     * @method EmployeeFamily firstOrFail(array|string $columns = ['*'])
+     * @method EmployeeFamily firstOrNew(array $attributes = [], array $values = [])
+     * @method EmployeeFamily firstWhere(array|\Closure|Expression|string $column, $operator = null, $value = null, string $boolean = 'and')
+     * @method EmployeeFamily forceCreate(array $attributes)
+     * @method _IH_EmployeeFamily_C|EmployeeFamily[] fromQuery(string $query, array $bindings = [])
+     * @method _IH_EmployeeFamily_C|EmployeeFamily[] get(array|string $columns = ['*'])
+     * @method EmployeeFamily getModel()
+     * @method EmployeeFamily[] getModels(array|string $columns = ['*'])
+     * @method _IH_EmployeeFamily_C|EmployeeFamily[] hydrate(array $items)
+     * @method EmployeeFamily make(array $attributes = [])
+     * @method EmployeeFamily newModelInstance(array $attributes = [])
+     * @method LengthAwarePaginator|EmployeeFamily[]|_IH_EmployeeFamily_C paginate(\Closure|int|null $perPage = null, array|string $columns = ['*'], string $pageName = 'page', int|null $page = null)
+     * @method Paginator|EmployeeFamily[]|_IH_EmployeeFamily_C simplePaginate(int|null $perPage = null, array|string $columns = ['*'], string $pageName = 'page', int|null $page = null)
+     * @method EmployeeFamily sole(array|string $columns = ['*'])
+     * @method EmployeeFamily updateOrCreate(array $attributes, array $values = [])
+     */
+    class _IH_EmployeeFamily_QB extends _BaseBuilder {}
     
     /**
      * @method EmployeePosition|null getOrPut($key, $value)

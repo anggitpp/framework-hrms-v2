@@ -1,4 +1,4 @@
-<?php //6e7310feb198488b7bd0d50aa591c58c
+<?php //2cb512d3a8d12d9f0e56d8e1be8a9d3b
 /** @noinspection all */
 
 namespace App\Models\Employee {
@@ -9,6 +9,8 @@ namespace App\Models\Employee {
     use Illuminate\Database\Eloquent\Relations\HasMany;
     use Illuminate\Database\Eloquent\Relations\HasOne;
     use Illuminate\Support\Carbon;
+    use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeFamily_C;
+    use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeFamily_QB;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeePosition_C;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeePosition_QB;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeSignatureSetting_C;
@@ -58,10 +60,39 @@ namespace App\Models\Employee {
      * @method false|int increment(string $column, float|int $amount = 1, array $extra = [])
      * @method false|int decrement(string $column, float|int $amount = 1, array $extra = [])
      * @method static _IH_Employee_C|Employee[] all()
-     * @foreignLinks id,\App\Models\Setting\User,employee_id|id,\App\Models\Employee\EmployeePosition,employee_id|id,\App\Models\Attendance\Attendance,employee_id|id,\App\Models\Attendance\AttendanceWorkSchedule,employee_id|id,\App\Models\ESS\EssTimesheet,employee_id|id,\App\Models\Attendance\AttendanceLeave,employee_id|id,\App\Models\Attendance\AttendancePermission,employee_id|id,\App\Models\Attendance\AttendanceOvertime,employee_id|id,\App\Models\Attendance\AttendanceCorrection,employee_id|id,\App\Models\Employee\EmployeeSignatureSetting,employee_id
+     * @foreignLinks id,\App\Models\Setting\User,employee_id|id,\App\Models\Employee\EmployeePosition,employee_id|id,\App\Models\Attendance\Attendance,employee_id|id,\App\Models\Attendance\AttendanceWorkSchedule,employee_id|id,\App\Models\ESS\EssTimesheet,employee_id|id,\App\Models\Attendance\AttendanceLeave,employee_id|id,\App\Models\Attendance\AttendancePermission,employee_id|id,\App\Models\Attendance\AttendanceOvertime,employee_id|id,\App\Models\Attendance\AttendanceCorrection,employee_id|id,\App\Models\Employee\EmployeeSignatureSetting,employee_id|id,\App\Models\Employee\EmployeeFamily,employee_id
      * @mixin _IH_Employee_QB
      */
     class Employee extends Model {}
+    
+    /**
+     * @property int $id
+     * @property int $employee_id
+     * @property int $relationship_id
+     * @property string $name
+     * @property string|null $identity_number
+     * @property string $gender
+     * @property Carbon|null $birth_date
+     * @property string|null $birth_place
+     * @property string|null $filename
+     * @property string|null $description
+     * @property string|null $created_by
+     * @property string|null $updated_by
+     * @property Carbon|null $created_at
+     * @property Carbon|null $updated_at
+     * @method static _IH_EmployeeFamily_QB onWriteConnection()
+     * @method _IH_EmployeeFamily_QB newQuery()
+     * @method static _IH_EmployeeFamily_QB on(null|string $connection = null)
+     * @method static _IH_EmployeeFamily_QB query()
+     * @method static _IH_EmployeeFamily_QB with(array|string $relations)
+     * @method _IH_EmployeeFamily_QB newModelQuery()
+     * @method false|int increment(string $column, float|int $amount = 1, array $extra = [])
+     * @method false|int decrement(string $column, float|int $amount = 1, array $extra = [])
+     * @method static _IH_EmployeeFamily_C|EmployeeFamily[] all()
+     * @ownLinks employee_id,\App\Models\Employee\Employee,id
+     * @mixin _IH_EmployeeFamily_QB
+     */
+    class EmployeeFamily extends Model {}
     
     /**
      * @property int $id

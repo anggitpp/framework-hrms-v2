@@ -82,6 +82,7 @@ function uploadOne(UploadedFile $uploadedFile, $folder = null, $disk = 'public',
 
 function uploadFile($image, $name, $folder, $resize = false, $width = 300, $height = 300)
 {
+
     if($image){
         // Make a file path where image will be stored [ folder path + file name + file extension]
         $filePath = $folder . $name. '.' . $image->getClientOriginalExtension();
@@ -102,6 +103,13 @@ function uploadFile($image, $name, $folder, $resize = false, $width = 300, $heig
         return $picture;
 
     }
+}
+
+function deleteFile($path): bool
+{
+    if(Storage::exists($path)) Storage::delete($path);
+
+    return true;
 }
 
 function generatePagination($items, $form = 'form-filter')

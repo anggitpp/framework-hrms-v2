@@ -8,6 +8,7 @@ use App\Http\Requests\Employee\EmployeePositionHistoryRequest;
 use App\Http\Requests\Employee\EmployeeFamilyRequest;
 use App\Http\Requests\Employee\EmployeeRequest;
 use App\Http\Requests\Employee\EmployeeTrainingRequest;
+use App\Http\Requests\Employee\EmployeeWorkRequest;
 use App\Models\Attendance\AttendanceShift;
 use App\Models\Employee\Employee;
 use App\Models\Employee\EmployeeContact;
@@ -15,6 +16,7 @@ use App\Models\Employee\EmployeeEducation;
 use App\Models\Employee\EmployeeFamily;
 use App\Models\Employee\EmployeePosition;
 use App\Models\Employee\EmployeeTraining;
+use App\Models\Employee\EmployeeWork;
 use App\Models\Setting\AppMasterData;
 use Auth;
 use Barryvdh\Debugbar\Facades\Debugbar;
@@ -42,6 +44,7 @@ class EmployeeController extends Controller
     public string $familyPath;
     public string $educationPath;
     public string $trainingPath;
+    public string $workPath;
     public array $genderOption;
 
     public function __construct()
@@ -52,6 +55,7 @@ class EmployeeController extends Controller
         $this->familyPath = '/uploads/employee/family/';
         $this->educationPath = '/uploads/employee/education/';
         $this->trainingPath = '/uploads/employee/training/';
+        $this->workPath = '/uploads/employee/work/';
         $this->genderOption = ['m' => "Laki-Laki", "f" => "Perempuan"];
 
 
@@ -257,11 +261,12 @@ class EmployeeController extends Controller
         $employee->position->grade_id = AppMasterData::find($employee->position->grade_id)->name ?? '';
         $employee->position->unit_id = AppMasterData::find($employee->position->unit_id)->name ?? '';
 
-        $families = EmployeeFamily::where('employee_id', $id)->paginate($this->defaultPagination($request));
-        $educations = EmployeeEducation::where('employee_id', $id)->paginate($this->defaultPagination($request));
-        $contacts = EmployeeContact::where('employee_id', $id)->paginate($this->defaultPagination($request));
-        $positions = EmployeePosition::where('employee_id', $id)->paginate($this->defaultPagination($request));
-        $trainings = EmployeeTraining::where('employee_id', $id)->paginate($this->defaultPagination($request));
+        $families = EmployeeFamily::whereEmployeeId($id)->paginate($this->defaultPagination($request));
+        $educations = EmployeeEducation::whereEmployeeId($id)->paginate($this->defaultPagination($request));
+        $contacts = EmployeeContact::whereEmployeeId($id)->paginate($this->defaultPagination($request));
+        $positions = EmployeePosition::whereEmployeeId($id)->paginate($this->defaultPagination($request));
+        $trainings = EmployeeTraining::whereEmployeeId($id)->paginate($this->defaultPagination($request));
+        $works = EmployeeWork::whereEmployeeId($id)->paginate($this->defaultPagination($request));
 
         return view('employees.employee.show', [
             'employee' => $employee,
@@ -271,6 +276,7 @@ class EmployeeController extends Controller
             'contacts' => $contacts,
             'positions' => $positions,
             'trainings' => $trainings,
+            'works' => $works,
             'menu_path' => $this->menu_path(),
         ]);
     }
@@ -551,6 +557,7 @@ class EmployeeController extends Controller
 
     public function educationStore(EmployeePositionHistoryRequest $request, int $id)
     {
+        $employee = Employee::findOrFail($id);
         try {
             $filename = '';
             if($request->hasFile('filename')){
@@ -560,7 +567,7 @@ class EmployeeController extends Controller
 
                 $filename = uploadFile(
                     $request->file('filename'),
-                    'employee-education_' . Str::slug($request->input('name')) . '_' . time(),
+                    'employee-education_' . Str::slug($employee->name) . '_' . time(),
                     $this->educationPath, $resize);
             }
 
@@ -614,7 +621,7 @@ class EmployeeController extends Controller
 
                 $filename = uploadFile(
                     $request->file('filename'),
-                    'employee-education_' . Str::slug($request->input('name')) . '_' . time(),
+                    'employee-education_' . Str::slug($education->employee->name) . '_' . time(),
                     $this->educationPath, $resize);
 
                 $education->update([
@@ -893,6 +900,7 @@ class EmployeeController extends Controller
 
     public function trainingStore(EmployeeTrainingRequest $request, int $id)
     {
+        $employee = Employee::findOrFail($id);
         try {
             $filename = '';
             if($request->hasFile('filename')){
@@ -902,7 +910,7 @@ class EmployeeController extends Controller
 
                 $filename = uploadFile(
                     $request->file('filename'),
-                    'employee-training' . Str::slug($request->input('name')) . '_' . time(),
+                    'employee-training' . Str::slug($employee->name) . '_' . time(),
                     $this->trainingPath, $resize);
             }
 
@@ -952,7 +960,7 @@ class EmployeeController extends Controller
 
                 $filename = uploadFile(
                     $request->file('filename'),
-                    'employee-training_' . Str::slug($request->input('name')) . '_' . time(),
+                    'employee-training_' . Str::slug($training->employee->name) . '_' . time(),
                     $this->educationPath, $resize);
 
                 $training->update([
@@ -985,6 +993,111 @@ class EmployeeController extends Controller
             $training->delete();
 
             Alert::success('Success', 'Data Pelatihan berhasil dihapus');
+
+            return redirect()->back();
+        } catch (Exception $e) {
+            Alert::success('Success', 'Gagal ' . $e->getMessage());
+
+            return redirect()->back();
+        }
+    }
+
+    public function workCreate(int $id)
+    {
+        return view('employees.employee.work-form', compact('id'));
+    }
+
+    public function workStore(EmployeeWorkRequest $request, int $id)
+    {
+        $employee = Employee::find($id);
+        try {
+            $filename = '';
+            if($request->hasFile('filename')){
+                $resize = false;
+                $extension = $request->file('filename')->extension();
+                if ($extension == 'png' || $extension == 'jpg' || $extension == 'jpeg') $resize = true;
+
+                $filename = uploadFile(
+                    $request->file('filename'),
+                    'employee-work' . Str::slug($employee->name) . '_' . time(),
+                    $this->workPath, $resize);
+            }
+
+            $request->merge(['start_date' => resetDate($request->input('start_date'))]);
+            $request->merge(['end_date' => $request->input('end_date') ? resetDate($request->input('end_date')) : '']);
+
+            $work = EmployeeWork::create($request->except('filename'));
+            $work->filename = $filename;
+            $work->save();
+
+            return response()->json([
+                'success'=>'Data Kerja berhasil disimpan',
+                'url'=> route(Str::replace('/', '.', $this->menu_path()).'.show', $id),
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success'=>'Gagal '.$e->getMessage(),
+                'url'=> route(Str::replace('/', '.', $this->menu_path()).'.show', $id),
+            ]);
+        }
+    }
+
+    public function workEdit(int $id)
+    {
+        $work = EmployeeWork::find($id);
+
+        return view('employees.employee.work-form', [
+            'id' => $id,
+            'work' => $work,
+        ]);
+    }
+
+    public function workUpdate(EmployeeWorkRequest $request, int $id)
+    {
+        $work = EmployeeWork::find($id);
+
+        try {
+            if($request->get('isDelete') == 't') deleteFile($this->workPath.$work->filename);
+            if ($request->hasFile('filename')) {
+                $resize = false;
+                $extension = $request->file('filename')->extension();
+                if ($extension == 'png' || $extension == 'jpg' || $extension == 'jpeg') $resize = true;
+
+                $filename = uploadFile(
+                    $request->file('filename'),
+                    'employee-work_' . Str::slug($work->employee->name) . '_' . time(),
+                    $this->educationPath, $resize);
+
+                $work->update([
+                    'filename' => $filename,
+                ]);
+            }
+
+            $request->merge(['start_date' => resetDate($request->input('start_date'))]);
+            $request->merge(['end_date' => $request->input('end_date') ? resetDate($request->input('end_date')) : '']);
+
+            $work->update($request->except('filename'));
+
+            return response()->json([
+                'success' => 'Data Kerja berhasil disimpan',
+                'url' => route(Str::replace('/', '.', $this->menu_path()) . '.show', $work->employee_id),
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => 'Gagal ' . $e->getMessage(),
+                'url' => route(Str::replace('/', '.', $this->menu_path()) . '.show', $work->employee_id),
+            ]);
+        }
+    }
+
+    public function workDestroy(int $id)
+    {
+        $work = EmployeeWork::findOrFail($id);
+        try {
+            if(Storage::exists($this->workPath.$work->filename)) Storage::delete($this->workPath.$work->filename);
+            $work->delete();
+
+            Alert::success('Success', 'Data Kerja berhasil dihapus');
 
             return redirect()->back();
         } catch (Exception $e) {

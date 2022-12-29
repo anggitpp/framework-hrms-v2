@@ -51,6 +51,9 @@
                 <div class="tab-pane fade" id="training">
                     @include('employees.employee.training-index')
                 </div>
+                <div class="tab-pane fade" id="work">
+                    @include('employees.employee.work-index')
+                </div>
             </div>
         </div>
     </div>

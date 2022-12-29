@@ -1,4 +1,4 @@
-<?php //1b6319ad3833534e500731e0b04c4af1
+<?php //bb411c45ab150cf084a1261551cc1b07
 /** @noinspection all */
 
 namespace App\Models\Employee {
@@ -23,6 +23,8 @@ namespace App\Models\Employee {
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeTraining_QB;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeUnitStructure_C;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeUnitStructure_QB;
+    use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeWork_C;
+    use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeWork_QB;
     use LaravelIdea\Helper\App\Models\Employee\_IH_Employee_C;
     use LaravelIdea\Helper\App\Models\Employee\_IH_Employee_QB;
     use LaravelIdea\Helper\App\Models\Setting\_IH_AppMasterData_QB;
@@ -66,7 +68,7 @@ namespace App\Models\Employee {
      * @method false|int increment(string $column, float|int $amount = 1, array $extra = [])
      * @method false|int decrement(string $column, float|int $amount = 1, array $extra = [])
      * @method static _IH_Employee_C|Employee[] all()
-     * @foreignLinks id,\App\Models\Setting\User,employee_id|id,\App\Models\Employee\EmployeePosition,employee_id|id,\App\Models\Attendance\Attendance,employee_id|id,\App\Models\Attendance\AttendanceWorkSchedule,employee_id|id,\App\Models\ESS\EssTimesheet,employee_id|id,\App\Models\Attendance\AttendanceLeave,employee_id|id,\App\Models\Attendance\AttendancePermission,employee_id|id,\App\Models\Attendance\AttendanceOvertime,employee_id|id,\App\Models\Attendance\AttendanceCorrection,employee_id|id,\App\Models\Employee\EmployeeSignatureSetting,employee_id|id,\App\Models\Employee\EmployeeFamily,employee_id|id,\App\Models\Employee\EmployeeEducation,employee_id|id,\App\Models\Employee\EmployeeContact,employee_id|id,\App\Models\Employee\EmployeeTraining,employee_id
+     * @foreignLinks id,\App\Models\Setting\User,employee_id|id,\App\Models\Employee\EmployeePosition,employee_id|id,\App\Models\Attendance\Attendance,employee_id|id,\App\Models\Attendance\AttendanceWorkSchedule,employee_id|id,\App\Models\ESS\EssTimesheet,employee_id|id,\App\Models\Attendance\AttendanceLeave,employee_id|id,\App\Models\Attendance\AttendancePermission,employee_id|id,\App\Models\Attendance\AttendanceOvertime,employee_id|id,\App\Models\Attendance\AttendanceCorrection,employee_id|id,\App\Models\Employee\EmployeeSignatureSetting,employee_id|id,\App\Models\Employee\EmployeeFamily,employee_id|id,\App\Models\Employee\EmployeeEducation,employee_id|id,\App\Models\Employee\EmployeeContact,employee_id|id,\App\Models\Employee\EmployeeTraining,employee_id|id,\App\Models\Employee\EmployeeWork,employee_id
      * @mixin _IH_Employee_QB
      */
     class Employee extends Model {}
@@ -235,7 +237,7 @@ namespace App\Models\Employee {
     /**
      * @property int $id
      * @property int $employee_id
-     * @property string|null $cerficate_number
+     * @property string|null $certificate_number
      * @property string $subject
      * @property string $institution
      * @property int|null $category_id
@@ -249,6 +251,12 @@ namespace App\Models\Employee {
      * @property string|null $updated_by
      * @property Carbon|null $created_at
      * @property Carbon|null $updated_at
+     * @property AppMasterData|null $category
+     * @method BelongsTo|_IH_AppMasterData_QB category()
+     * @property Employee $employee
+     * @method BelongsTo|_IH_Employee_QB employee()
+     * @property AppMasterData|null $type
+     * @method BelongsTo|_IH_AppMasterData_QB type()
      * @method static _IH_EmployeeTraining_QB onWriteConnection()
      * @method _IH_EmployeeTraining_QB newQuery()
      * @method static _IH_EmployeeTraining_QB on(null|string $connection = null)
@@ -290,4 +298,35 @@ namespace App\Models\Employee {
      * @mixin _IH_EmployeeUnitStructure_QB
      */
     class EmployeeUnitStructure extends Model {}
+    
+    /**
+     * @property int $id
+     * @property int $employee_id
+     * @property string $company
+     * @property string $position
+     * @property Carbon $start_date
+     * @property Carbon|null $end_date
+     * @property string|null $city
+     * @property string|null $job_desc
+     * @property string|null $description
+     * @property string|null $filename
+     * @property string|null $created_by
+     * @property string|null $updated_by
+     * @property Carbon|null $created_at
+     * @property Carbon|null $updated_at
+     * @property Employee $employee
+     * @method BelongsTo|_IH_Employee_QB employee()
+     * @method static _IH_EmployeeWork_QB onWriteConnection()
+     * @method _IH_EmployeeWork_QB newQuery()
+     * @method static _IH_EmployeeWork_QB on(null|string $connection = null)
+     * @method static _IH_EmployeeWork_QB query()
+     * @method static _IH_EmployeeWork_QB with(array|string $relations)
+     * @method _IH_EmployeeWork_QB newModelQuery()
+     * @method false|int increment(string $column, float|int $amount = 1, array $extra = [])
+     * @method false|int decrement(string $column, float|int $amount = 1, array $extra = [])
+     * @method static _IH_EmployeeWork_C|EmployeeWork[] all()
+     * @ownLinks employee_id,\App\Models\Employee\Employee,id
+     * @mixin _IH_EmployeeWork_QB
+     */
+    class EmployeeWork extends Model {}
 }

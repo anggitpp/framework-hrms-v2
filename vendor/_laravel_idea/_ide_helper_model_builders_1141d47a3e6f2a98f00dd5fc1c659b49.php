@@ -1,4 +1,4 @@
-<?php //b368864282c24cabf2bf125f4de45cd7
+<?php //efc39e0d068cccc1454d768c2182371a
 /** @noinspection all */
 
 namespace LaravelIdea\Helper\App\Models\Employee {
@@ -11,6 +11,7 @@ namespace LaravelIdea\Helper\App\Models\Employee {
     use App\Models\Employee\EmployeeSignatureSetting;
     use App\Models\Employee\EmployeeTraining;
     use App\Models\Employee\EmployeeUnitStructure;
+    use App\Models\Employee\EmployeeWork;
     use Illuminate\Contracts\Support\Arrayable;
     use Illuminate\Database\Query\Expression;
     use Illuminate\Pagination\LengthAwarePaginator;
@@ -397,7 +398,7 @@ namespace LaravelIdea\Helper\App\Models\Employee {
     /**
      * @method _IH_EmployeeTraining_QB whereId($value)
      * @method _IH_EmployeeTraining_QB whereEmployeeId($value)
-     * @method _IH_EmployeeTraining_QB whereCerficateNumber($value)
+     * @method _IH_EmployeeTraining_QB whereCertificateNumber($value)
      * @method _IH_EmployeeTraining_QB whereSubject($value)
      * @method _IH_EmployeeTraining_QB whereInstitution($value)
      * @method _IH_EmployeeTraining_QB whereCategoryId($value)
@@ -503,6 +504,76 @@ namespace LaravelIdea\Helper\App\Models\Employee {
      * @method EmployeeUnitStructure updateOrCreate(array $attributes, array $values = [])
      */
     class _IH_EmployeeUnitStructure_QB extends _BaseBuilder {}
+    
+    /**
+     * @method EmployeeWork|null getOrPut($key, $value)
+     * @method EmployeeWork|$this shift(int $count = 1)
+     * @method EmployeeWork|null firstOrFail(callable|string $key = null, $operator = null, $value = null)
+     * @method EmployeeWork|$this pop(int $count = 1)
+     * @method EmployeeWork|null pull($key, \Closure $default = null)
+     * @method EmployeeWork|null last(callable $callback = null, \Closure $default = null)
+     * @method EmployeeWork|$this random(callable|int|null $number = null)
+     * @method EmployeeWork|null sole(callable|string $key = null, $operator = null, $value = null)
+     * @method EmployeeWork|null get($key, \Closure $default = null)
+     * @method EmployeeWork|null first(callable $callback = null, \Closure $default = null)
+     * @method EmployeeWork|null firstWhere(callable|string $key, $operator = null, $value = null)
+     * @method EmployeeWork|null find($key, $default = null)
+     * @method EmployeeWork[] all()
+     */
+    class _IH_EmployeeWork_C extends _BaseCollection {
+        /**
+         * @param int $size
+         * @return EmployeeWork[][]
+         */
+        public function chunk($size)
+        {
+            return [];
+        }
+    }
+    
+    /**
+     * @method _IH_EmployeeWork_QB whereId($value)
+     * @method _IH_EmployeeWork_QB whereEmployeeId($value)
+     * @method _IH_EmployeeWork_QB whereCompany($value)
+     * @method _IH_EmployeeWork_QB wherePosition($value)
+     * @method _IH_EmployeeWork_QB whereStartDate($value)
+     * @method _IH_EmployeeWork_QB whereEndDate($value)
+     * @method _IH_EmployeeWork_QB whereCity($value)
+     * @method _IH_EmployeeWork_QB whereJobDesc($value)
+     * @method _IH_EmployeeWork_QB whereDescription($value)
+     * @method _IH_EmployeeWork_QB whereFilename($value)
+     * @method _IH_EmployeeWork_QB whereCreatedBy($value)
+     * @method _IH_EmployeeWork_QB whereUpdatedBy($value)
+     * @method _IH_EmployeeWork_QB whereCreatedAt($value)
+     * @method _IH_EmployeeWork_QB whereUpdatedAt($value)
+     * @method EmployeeWork baseSole(array|string $columns = ['*'])
+     * @method EmployeeWork create(array $attributes = [])
+     * @method _IH_EmployeeWork_C|EmployeeWork[] cursor()
+     * @method EmployeeWork|null|_IH_EmployeeWork_C|EmployeeWork[] find($id, array|string $columns = ['*'])
+     * @method _IH_EmployeeWork_C|EmployeeWork[] findMany(array|Arrayable $ids, array|string $columns = ['*'])
+     * @method EmployeeWork|_IH_EmployeeWork_C|EmployeeWork[] findOr($id, array|\Closure|string $columns = ['*'], \Closure $callback = null)
+     * @method EmployeeWork|_IH_EmployeeWork_C|EmployeeWork[] findOrFail($id, array|string $columns = ['*'])
+     * @method EmployeeWork|_IH_EmployeeWork_C|EmployeeWork[] findOrNew($id, array|string $columns = ['*'])
+     * @method EmployeeWork first(array|string $columns = ['*'])
+     * @method EmployeeWork firstOr(array|\Closure|string $columns = ['*'], \Closure $callback = null)
+     * @method EmployeeWork firstOrCreate(array $attributes = [], array $values = [])
+     * @method EmployeeWork firstOrFail(array|string $columns = ['*'])
+     * @method EmployeeWork firstOrNew(array $attributes = [], array $values = [])
+     * @method EmployeeWork firstWhere(array|\Closure|Expression|string $column, $operator = null, $value = null, string $boolean = 'and')
+     * @method EmployeeWork forceCreate(array $attributes)
+     * @method _IH_EmployeeWork_C|EmployeeWork[] fromQuery(string $query, array $bindings = [])
+     * @method _IH_EmployeeWork_C|EmployeeWork[] get(array|string $columns = ['*'])
+     * @method EmployeeWork getModel()
+     * @method EmployeeWork[] getModels(array|string $columns = ['*'])
+     * @method _IH_EmployeeWork_C|EmployeeWork[] hydrate(array $items)
+     * @method EmployeeWork make(array $attributes = [])
+     * @method EmployeeWork newModelInstance(array $attributes = [])
+     * @method LengthAwarePaginator|EmployeeWork[]|_IH_EmployeeWork_C paginate(\Closure|int|null $perPage = null, array|string $columns = ['*'], string $pageName = 'page', int|null $page = null)
+     * @method Paginator|EmployeeWork[]|_IH_EmployeeWork_C simplePaginate(int|null $perPage = null, array|string $columns = ['*'], string $pageName = 'page', int|null $page = null)
+     * @method EmployeeWork sole(array|string $columns = ['*'])
+     * @method EmployeeWork updateOrCreate(array $attributes, array $values = [])
+     */
+    class _IH_EmployeeWork_QB extends _BaseBuilder {}
     
     /**
      * @method Employee|null getOrPut($key, $value)

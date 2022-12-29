@@ -40,6 +40,12 @@ Route::name('employees.')->group(function () {
     Route::patch('/employees/employees/training/{id}', [EmployeeController::class, 'trainingUpdate'])->name('employees.training.update');
     Route::delete('/employees/employees/training/{id}', [EmployeeController::class, 'trainingDestroy'])->name('employees.training.destroy');
 
+    Route::get('/employees/employees/work/{id}/create', [EmployeeController::class, 'workCreate'])->name('employees.work.create');
+    Route::post('/employees/employees/work/{id}', [EmployeeController::class, 'workStore'])->name('employees.work.store');
+    Route::get('/employees/employees/work/{id}/edit', [EmployeeController::class, 'workEdit'])->name('employees.work.edit');
+    Route::patch('/employees/employees/work/{id}', [EmployeeController::class, 'workUpdate'])->name('employees.work.update');
+    Route::delete('/employees/employees/work/{id}', [EmployeeController::class, 'workDestroy'])->name('employees.work.destroy');
+
     Route::resource('/employees/setting-unit-structures', EmployeeUnitStructureController::class);
 
     Route::resource('/employees/position-histories', EmployeePositionHistoryController::class);

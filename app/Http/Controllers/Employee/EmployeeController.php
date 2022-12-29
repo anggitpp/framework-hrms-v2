@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Employee;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Employee\EmployeeAssetRequest;
 use App\Http\Requests\Employee\EmployeeContactRequest;
+use App\Http\Requests\Employee\EmployeeFileRequest;
 use App\Http\Requests\Employee\EmployeePositionHistoryRequest;
 use App\Http\Requests\Employee\EmployeeFamilyRequest;
 use App\Http\Requests\Employee\EmployeeRequest;
@@ -16,6 +17,7 @@ use App\Models\Employee\EmployeeAsset;
 use App\Models\Employee\EmployeeContact;
 use App\Models\Employee\EmployeeEducation;
 use App\Models\Employee\EmployeeFamily;
+use App\Models\Employee\EmployeeFile;
 use App\Models\Employee\EmployeePosition;
 use App\Models\Employee\EmployeeTraining;
 use App\Models\Employee\EmployeeWork;
@@ -48,6 +50,7 @@ class EmployeeController extends Controller
     public string $trainingPath;
     public string $workPath;
     public string $assetPath;
+    public string $filePath;
     public array $genderOption;
 
     public function __construct()
@@ -60,6 +63,7 @@ class EmployeeController extends Controller
         $this->trainingPath = '/uploads/employee/training/';
         $this->workPath = '/uploads/employee/work/';
         $this->assetPath = '/uploads/employee/asset/';
+        $this->filePath = '/uploads/employee/file/';
         $this->genderOption = ['m' => "Laki-Laki", "f" => "Perempuan"];
 
 
@@ -272,6 +276,7 @@ class EmployeeController extends Controller
         $trainings = EmployeeTraining::whereEmployeeId($id)->paginate($this->defaultPagination($request));
         $works = EmployeeWork::whereEmployeeId($id)->paginate($this->defaultPagination($request));
         $assets = EmployeeAsset::whereEmployeeId($id)->paginate($this->defaultPagination($request));
+        $files = EmployeeFile::whereEmployeeId($id)->paginate($this->defaultPagination($request));
 
         return view('employees.employee.show', [
             'employee' => $employee,
@@ -283,6 +288,7 @@ class EmployeeController extends Controller
             'trainings' => $trainings,
             'works' => $works,
             'assets' => $assets,
+            'files' => $files,
             'menu_path' => $this->menu_path(),
         ]);
     }
@@ -1222,6 +1228,104 @@ class EmployeeController extends Controller
             $asset->delete();
 
             Alert::success('Success', 'Data Asset berhasil dihapus');
+
+            return redirect()->back();
+        } catch (Exception $e) {
+            Alert::success('Success', 'Gagal ' . $e->getMessage());
+
+            return redirect()->back();
+        }
+    }
+
+    public function fileCreate(int $id)
+    {
+        return view('employees.employee.file-form', compact('id'));
+    }
+    public function fileStore(EmployeeFileRequest $request, int $id)
+    {
+        $employee = Employee::find($id);
+        try {
+            $filename = '';
+            if($request->hasFile('filename')){
+                $resize = false;
+                $extension = $request->file('filename')->extension();
+                if ($extension == 'png' || $extension == 'jpg' || $extension == 'jpeg') $resize = true;
+
+                $filename = uploadFile(
+                    $request->file('filename'),
+                    'employee-file' . Str::slug($employee->name) . '_' . time(),
+                    $this->filePath, $resize);
+            }
+
+            $asset = EmployeeFile::create($request->except('filename'));
+            $asset->filename = $filename;
+            $asset->save();
+
+            return response()->json([
+                'success'=>'Data File berhasil disimpan',
+                'url'=> route(Str::replace('/', '.', $this->menu_path()).'.show', $id),
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success'=>'Gagal '.$e->getMessage(),
+                'url'=> route(Str::replace('/', '.', $this->menu_path()).'.show', $id),
+            ]);
+        }
+    }
+
+    public function fileEdit(int $id)
+    {
+        $file = EmployeeFile::findOrFail($id);
+
+        return view('employees.employee.file-form', [
+            'id' => $id,
+            'file' => $file,
+        ]);
+    }
+
+    public function fileUpdate(EmployeeFileRequest $request, int $id)
+    {
+        $file = EmployeeFile::find($id);
+
+        try {
+            if($request->get('isDelete') == 't') deleteFile($this->filePath.$file->filename);
+            if ($request->hasFile('filename')) {
+                $resize = false;
+                $extension = $request->file('filename')->extension();
+                if ($extension == 'png' || $extension == 'jpg' || $extension == 'jpeg') $resize = true;
+
+                $filename = uploadFile(
+                    $request->file('filename'),
+                    'employee-file_' . Str::slug($file->employee->name) . '_' . time(),
+                    $this->filePath, $resize);
+
+                $file->update([
+                    'filename' => $filename,
+                ]);
+            }
+
+            $file->update($request->except('filename'));
+
+            return response()->json([
+                'success' => 'Data File berhasil disimpan',
+                'url' => route(Str::replace('/', '.', $this->menu_path()) . '.show', $file->employee_id),
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => 'Gagal ' . $e->getMessage(),
+                'url' => route(Str::replace('/', '.', $this->menu_path()) . '.show', $file->employee_id),
+            ]);
+        }
+    }
+
+    public function fileDestroy(int $id)
+    {
+        $file = EmployeeFile::findOrFail($id);
+        try {
+            if(Storage::exists($this->filePath.$file->filename)) Storage::delete($this->filePath.$file->filename);
+            $file->delete();
+
+            Alert::success('Success', 'Data File berhasil dihapus');
 
             return redirect()->back();
         } catch (Exception $e) {

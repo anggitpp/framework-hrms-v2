@@ -1,4 +1,4 @@
-<?php //670d9478d7674d9c306e9694e67378a0
+<?php //134dad75c254fe72429ca6db174272a8
 /** @noinspection all */
 
 namespace LaravelIdea\Helper\App\Models\Employee {
@@ -8,6 +8,7 @@ namespace LaravelIdea\Helper\App\Models\Employee {
     use App\Models\Employee\EmployeeContact;
     use App\Models\Employee\EmployeeEducation;
     use App\Models\Employee\EmployeeFamily;
+    use App\Models\Employee\EmployeeFile;
     use App\Models\Employee\EmployeePosition;
     use App\Models\Employee\EmployeeSignatureSetting;
     use App\Models\Employee\EmployeeTraining;
@@ -298,6 +299,71 @@ namespace LaravelIdea\Helper\App\Models\Employee {
      * @method EmployeeFamily updateOrCreate(array $attributes, array $values = [])
      */
     class _IH_EmployeeFamily_QB extends _BaseBuilder {}
+    
+    /**
+     * @method EmployeeFile|null getOrPut($key, $value)
+     * @method EmployeeFile|$this shift(int $count = 1)
+     * @method EmployeeFile|null firstOrFail(callable|string $key = null, $operator = null, $value = null)
+     * @method EmployeeFile|$this pop(int $count = 1)
+     * @method EmployeeFile|null pull($key, \Closure $default = null)
+     * @method EmployeeFile|null last(callable $callback = null, \Closure $default = null)
+     * @method EmployeeFile|$this random(callable|int|null $number = null)
+     * @method EmployeeFile|null sole(callable|string $key = null, $operator = null, $value = null)
+     * @method EmployeeFile|null get($key, \Closure $default = null)
+     * @method EmployeeFile|null first(callable $callback = null, \Closure $default = null)
+     * @method EmployeeFile|null firstWhere(callable|string $key, $operator = null, $value = null)
+     * @method EmployeeFile|null find($key, $default = null)
+     * @method EmployeeFile[] all()
+     */
+    class _IH_EmployeeFile_C extends _BaseCollection {
+        /**
+         * @param int $size
+         * @return EmployeeFile[][]
+         */
+        public function chunk($size)
+        {
+            return [];
+        }
+    }
+    
+    /**
+     * @method _IH_EmployeeFile_QB whereId($value)
+     * @method _IH_EmployeeFile_QB whereEmployeeId($value)
+     * @method _IH_EmployeeFile_QB whereName($value)
+     * @method _IH_EmployeeFile_QB whereFilename($value)
+     * @method _IH_EmployeeFile_QB whereDescription($value)
+     * @method _IH_EmployeeFile_QB whereCreatedBy($value)
+     * @method _IH_EmployeeFile_QB whereUpdatedBy($value)
+     * @method _IH_EmployeeFile_QB whereCreatedAt($value)
+     * @method _IH_EmployeeFile_QB whereUpdatedAt($value)
+     * @method EmployeeFile baseSole(array|string $columns = ['*'])
+     * @method EmployeeFile create(array $attributes = [])
+     * @method _IH_EmployeeFile_C|EmployeeFile[] cursor()
+     * @method EmployeeFile|null|_IH_EmployeeFile_C|EmployeeFile[] find($id, array|string $columns = ['*'])
+     * @method _IH_EmployeeFile_C|EmployeeFile[] findMany(array|Arrayable $ids, array|string $columns = ['*'])
+     * @method EmployeeFile|_IH_EmployeeFile_C|EmployeeFile[] findOr($id, array|\Closure|string $columns = ['*'], \Closure $callback = null)
+     * @method EmployeeFile|_IH_EmployeeFile_C|EmployeeFile[] findOrFail($id, array|string $columns = ['*'])
+     * @method EmployeeFile|_IH_EmployeeFile_C|EmployeeFile[] findOrNew($id, array|string $columns = ['*'])
+     * @method EmployeeFile first(array|string $columns = ['*'])
+     * @method EmployeeFile firstOr(array|\Closure|string $columns = ['*'], \Closure $callback = null)
+     * @method EmployeeFile firstOrCreate(array $attributes = [], array $values = [])
+     * @method EmployeeFile firstOrFail(array|string $columns = ['*'])
+     * @method EmployeeFile firstOrNew(array $attributes = [], array $values = [])
+     * @method EmployeeFile firstWhere(array|\Closure|Expression|string $column, $operator = null, $value = null, string $boolean = 'and')
+     * @method EmployeeFile forceCreate(array $attributes)
+     * @method _IH_EmployeeFile_C|EmployeeFile[] fromQuery(string $query, array $bindings = [])
+     * @method _IH_EmployeeFile_C|EmployeeFile[] get(array|string $columns = ['*'])
+     * @method EmployeeFile getModel()
+     * @method EmployeeFile[] getModels(array|string $columns = ['*'])
+     * @method _IH_EmployeeFile_C|EmployeeFile[] hydrate(array $items)
+     * @method EmployeeFile make(array $attributes = [])
+     * @method EmployeeFile newModelInstance(array $attributes = [])
+     * @method LengthAwarePaginator|EmployeeFile[]|_IH_EmployeeFile_C paginate(\Closure|int|null $perPage = null, array|string $columns = ['*'], string $pageName = 'page', int|null $page = null)
+     * @method Paginator|EmployeeFile[]|_IH_EmployeeFile_C simplePaginate(int|null $perPage = null, array|string $columns = ['*'], string $pageName = 'page', int|null $page = null)
+     * @method EmployeeFile sole(array|string $columns = ['*'])
+     * @method EmployeeFile updateOrCreate(array $attributes, array $values = [])
+     */
+    class _IH_EmployeeFile_QB extends _BaseBuilder {}
     
     /**
      * @method EmployeePosition|null getOrPut($key, $value)

@@ -1,4 +1,4 @@
-<?php //e3ec1f6e00d8d047b1c5e95ef77ea7e1
+<?php //f286e81dbb8409fe26b9a56b2aa697b1
 /** @noinspection all */
 
 namespace App\Models\Employee {
@@ -17,6 +17,8 @@ namespace App\Models\Employee {
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeEducation_QB;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeFamily_C;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeFamily_QB;
+    use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeFile_C;
+    use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeFile_QB;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeePosition_C;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeePosition_QB;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeSignatureSetting_C;
@@ -70,7 +72,7 @@ namespace App\Models\Employee {
      * @method false|int increment(string $column, float|int $amount = 1, array $extra = [])
      * @method false|int decrement(string $column, float|int $amount = 1, array $extra = [])
      * @method static _IH_Employee_C|Employee[] all()
-     * @foreignLinks id,\App\Models\Setting\User,employee_id|id,\App\Models\Employee\EmployeePosition,employee_id|id,\App\Models\Attendance\Attendance,employee_id|id,\App\Models\Attendance\AttendanceWorkSchedule,employee_id|id,\App\Models\ESS\EssTimesheet,employee_id|id,\App\Models\Attendance\AttendanceLeave,employee_id|id,\App\Models\Attendance\AttendancePermission,employee_id|id,\App\Models\Attendance\AttendanceOvertime,employee_id|id,\App\Models\Attendance\AttendanceCorrection,employee_id|id,\App\Models\Employee\EmployeeSignatureSetting,employee_id|id,\App\Models\Employee\EmployeeFamily,employee_id|id,\App\Models\Employee\EmployeeEducation,employee_id|id,\App\Models\Employee\EmployeeContact,employee_id|id,\App\Models\Employee\EmployeeTraining,employee_id|id,\App\Models\Employee\EmployeeWork,employee_id|id,\App\Models\Employee\EmployeeAsset,employee_id
+     * @foreignLinks id,\App\Models\Setting\User,employee_id|id,\App\Models\Employee\EmployeePosition,employee_id|id,\App\Models\Attendance\Attendance,employee_id|id,\App\Models\Attendance\AttendanceWorkSchedule,employee_id|id,\App\Models\ESS\EssTimesheet,employee_id|id,\App\Models\Attendance\AttendanceLeave,employee_id|id,\App\Models\Attendance\AttendancePermission,employee_id|id,\App\Models\Attendance\AttendanceOvertime,employee_id|id,\App\Models\Attendance\AttendanceCorrection,employee_id|id,\App\Models\Employee\EmployeeSignatureSetting,employee_id|id,\App\Models\Employee\EmployeeFamily,employee_id|id,\App\Models\Employee\EmployeeEducation,employee_id|id,\App\Models\Employee\EmployeeContact,employee_id|id,\App\Models\Employee\EmployeeTraining,employee_id|id,\App\Models\Employee\EmployeeWork,employee_id|id,\App\Models\Employee\EmployeeAsset,employee_id|id,\App\Models\Employee\EmployeeFile,employee_id
      * @mixin _IH_Employee_QB
      */
     class Employee extends Model {}
@@ -208,6 +210,32 @@ namespace App\Models\Employee {
      * @mixin _IH_EmployeeFamily_QB
      */
     class EmployeeFamily extends Model {}
+    
+    /**
+     * @property int $id
+     * @property int $employee_id
+     * @property string $name
+     * @property string|null $filename
+     * @property string|null $description
+     * @property string|null $created_by
+     * @property string|null $updated_by
+     * @property Carbon|null $created_at
+     * @property Carbon|null $updated_at
+     * @property Employee $employee
+     * @method BelongsTo|_IH_Employee_QB employee()
+     * @method static _IH_EmployeeFile_QB onWriteConnection()
+     * @method _IH_EmployeeFile_QB newQuery()
+     * @method static _IH_EmployeeFile_QB on(null|string $connection = null)
+     * @method static _IH_EmployeeFile_QB query()
+     * @method static _IH_EmployeeFile_QB with(array|string $relations)
+     * @method _IH_EmployeeFile_QB newModelQuery()
+     * @method false|int increment(string $column, float|int $amount = 1, array $extra = [])
+     * @method false|int decrement(string $column, float|int $amount = 1, array $extra = [])
+     * @method static _IH_EmployeeFile_C|EmployeeFile[] all()
+     * @ownLinks employee_id,\App\Models\Employee\Employee,id
+     * @mixin _IH_EmployeeFile_QB
+     */
+    class EmployeeFile extends Model {}
     
     /**
      * @property int $id

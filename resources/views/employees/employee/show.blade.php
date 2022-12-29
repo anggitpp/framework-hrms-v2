@@ -57,6 +57,9 @@
                 <div class="tab-pane fade" id="asset">
                     @include('employees.employee.asset-index')
                 </div>
+                <div class="tab-pane fade" id="file">
+                    @include('employees.employee.file-index')
+                </div>
             </div>
         </div>
     </div>

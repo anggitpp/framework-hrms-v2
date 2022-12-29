@@ -8,6 +8,9 @@
                     <a class="nav-link text-active-primary ms-0 me-10 py-5 active" data-bs-toggle="tab" href="#identity">Identitas</a>
                 </li>
                 <li class="nav-item mt-2">
+                    <a class="nav-link text-active-primary ms-0 me-10 py-5" data-bs-toggle="tab" href="#contact">Kontak Darurat</a>
+                </li>
+                <li class="nav-item mt-2">
                     <a class="nav-link text-active-primary ms-0 me-10 py-5" data-bs-toggle="tab" href="#family">Keluarga</a>
                 </li>
                 <li class="nav-item mt-2">
@@ -17,6 +20,9 @@
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="identity">
                     @include('employees.employee.identity-index')
+                </div>
+                <div class="tab-pane fade" id="contact">
+                    @include('employees.employee.contact-index')
                 </div>
                 <div class="tab-pane fade" id="family">
                     @include('employees.employee.family-index')

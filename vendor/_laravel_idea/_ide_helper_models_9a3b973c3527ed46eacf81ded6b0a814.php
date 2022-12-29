@@ -1,4 +1,4 @@
-<?php //a93330b2cc5d4c9fa636076f367dec26
+<?php //a28834c874f3147cc27822be8aa28b5e
 /** @noinspection all */
 
 namespace App\Models\Employee {
@@ -9,6 +9,8 @@ namespace App\Models\Employee {
     use Illuminate\Database\Eloquent\Relations\HasMany;
     use Illuminate\Database\Eloquent\Relations\HasOne;
     use Illuminate\Support\Carbon;
+    use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeContact_C;
+    use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeContact_QB;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeEducation_C;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeEducation_QB;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeFamily_C;
@@ -62,10 +64,35 @@ namespace App\Models\Employee {
      * @method false|int increment(string $column, float|int $amount = 1, array $extra = [])
      * @method false|int decrement(string $column, float|int $amount = 1, array $extra = [])
      * @method static _IH_Employee_C|Employee[] all()
-     * @foreignLinks id,\App\Models\Setting\User,employee_id|id,\App\Models\Employee\EmployeePosition,employee_id|id,\App\Models\Attendance\Attendance,employee_id|id,\App\Models\Attendance\AttendanceWorkSchedule,employee_id|id,\App\Models\ESS\EssTimesheet,employee_id|id,\App\Models\Attendance\AttendanceLeave,employee_id|id,\App\Models\Attendance\AttendancePermission,employee_id|id,\App\Models\Attendance\AttendanceOvertime,employee_id|id,\App\Models\Attendance\AttendanceCorrection,employee_id|id,\App\Models\Employee\EmployeeSignatureSetting,employee_id|id,\App\Models\Employee\EmployeeFamily,employee_id|id,\App\Models\Employee\EmployeeEducation,employee_id
+     * @foreignLinks id,\App\Models\Setting\User,employee_id|id,\App\Models\Employee\EmployeePosition,employee_id|id,\App\Models\Attendance\Attendance,employee_id|id,\App\Models\Attendance\AttendanceWorkSchedule,employee_id|id,\App\Models\ESS\EssTimesheet,employee_id|id,\App\Models\Attendance\AttendanceLeave,employee_id|id,\App\Models\Attendance\AttendancePermission,employee_id|id,\App\Models\Attendance\AttendanceOvertime,employee_id|id,\App\Models\Attendance\AttendanceCorrection,employee_id|id,\App\Models\Employee\EmployeeSignatureSetting,employee_id|id,\App\Models\Employee\EmployeeFamily,employee_id|id,\App\Models\Employee\EmployeeEducation,employee_id|id,\App\Models\Employee\EmployeeContact,employee_id
      * @mixin _IH_Employee_QB
      */
     class Employee extends Model {}
+    
+    /**
+     * @property int $id
+     * @property int $employee_id
+     * @property int $relationship_id
+     * @property string $name
+     * @property string $phone_number
+     * @property string|null $description
+     * @property string|null $created_by
+     * @property string|null $updated_by
+     * @property Carbon|null $created_at
+     * @property Carbon|null $updated_at
+     * @method static _IH_EmployeeContact_QB onWriteConnection()
+     * @method _IH_EmployeeContact_QB newQuery()
+     * @method static _IH_EmployeeContact_QB on(null|string $connection = null)
+     * @method static _IH_EmployeeContact_QB query()
+     * @method static _IH_EmployeeContact_QB with(array|string $relations)
+     * @method _IH_EmployeeContact_QB newModelQuery()
+     * @method false|int increment(string $column, float|int $amount = 1, array $extra = [])
+     * @method false|int decrement(string $column, float|int $amount = 1, array $extra = [])
+     * @method static _IH_EmployeeContact_C|EmployeeContact[] all()
+     * @ownLinks employee_id,\App\Models\Employee\Employee,id
+     * @mixin _IH_EmployeeContact_QB
+     */
+    class EmployeeContact extends Model {}
     
     /**
      * @property int $id

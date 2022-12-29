@@ -1,9 +1,10 @@
-<?php //546ed71b1a174daa86d779a0e442d38b
+<?php //3edbb0cee5e8ea69f4677c47bfb2c995
 /** @noinspection all */
 
 namespace LaravelIdea\Helper\App\Models\Employee {
 
     use App\Models\Employee\Employee;
+    use App\Models\Employee\EmployeeContact;
     use App\Models\Employee\EmployeeEducation;
     use App\Models\Employee\EmployeeFamily;
     use App\Models\Employee\EmployeePosition;
@@ -15,6 +16,72 @@ namespace LaravelIdea\Helper\App\Models\Employee {
     use Illuminate\Pagination\Paginator;
     use LaravelIdea\Helper\_BaseBuilder;
     use LaravelIdea\Helper\_BaseCollection;
+    
+    /**
+     * @method EmployeeContact|null getOrPut($key, $value)
+     * @method EmployeeContact|$this shift(int $count = 1)
+     * @method EmployeeContact|null firstOrFail(callable|string $key = null, $operator = null, $value = null)
+     * @method EmployeeContact|$this pop(int $count = 1)
+     * @method EmployeeContact|null pull($key, \Closure $default = null)
+     * @method EmployeeContact|null last(callable $callback = null, \Closure $default = null)
+     * @method EmployeeContact|$this random(callable|int|null $number = null)
+     * @method EmployeeContact|null sole(callable|string $key = null, $operator = null, $value = null)
+     * @method EmployeeContact|null get($key, \Closure $default = null)
+     * @method EmployeeContact|null first(callable $callback = null, \Closure $default = null)
+     * @method EmployeeContact|null firstWhere(callable|string $key, $operator = null, $value = null)
+     * @method EmployeeContact|null find($key, $default = null)
+     * @method EmployeeContact[] all()
+     */
+    class _IH_EmployeeContact_C extends _BaseCollection {
+        /**
+         * @param int $size
+         * @return EmployeeContact[][]
+         */
+        public function chunk($size)
+        {
+            return [];
+        }
+    }
+    
+    /**
+     * @method _IH_EmployeeContact_QB whereId($value)
+     * @method _IH_EmployeeContact_QB whereEmployeeId($value)
+     * @method _IH_EmployeeContact_QB whereRelationshipId($value)
+     * @method _IH_EmployeeContact_QB whereName($value)
+     * @method _IH_EmployeeContact_QB wherePhoneNumber($value)
+     * @method _IH_EmployeeContact_QB whereDescription($value)
+     * @method _IH_EmployeeContact_QB whereCreatedBy($value)
+     * @method _IH_EmployeeContact_QB whereUpdatedBy($value)
+     * @method _IH_EmployeeContact_QB whereCreatedAt($value)
+     * @method _IH_EmployeeContact_QB whereUpdatedAt($value)
+     * @method EmployeeContact baseSole(array|string $columns = ['*'])
+     * @method EmployeeContact create(array $attributes = [])
+     * @method _IH_EmployeeContact_C|EmployeeContact[] cursor()
+     * @method EmployeeContact|null|_IH_EmployeeContact_C|EmployeeContact[] find($id, array|string $columns = ['*'])
+     * @method _IH_EmployeeContact_C|EmployeeContact[] findMany(array|Arrayable $ids, array|string $columns = ['*'])
+     * @method EmployeeContact|_IH_EmployeeContact_C|EmployeeContact[] findOr($id, array|\Closure|string $columns = ['*'], \Closure $callback = null)
+     * @method EmployeeContact|_IH_EmployeeContact_C|EmployeeContact[] findOrFail($id, array|string $columns = ['*'])
+     * @method EmployeeContact|_IH_EmployeeContact_C|EmployeeContact[] findOrNew($id, array|string $columns = ['*'])
+     * @method EmployeeContact first(array|string $columns = ['*'])
+     * @method EmployeeContact firstOr(array|\Closure|string $columns = ['*'], \Closure $callback = null)
+     * @method EmployeeContact firstOrCreate(array $attributes = [], array $values = [])
+     * @method EmployeeContact firstOrFail(array|string $columns = ['*'])
+     * @method EmployeeContact firstOrNew(array $attributes = [], array $values = [])
+     * @method EmployeeContact firstWhere(array|\Closure|Expression|string $column, $operator = null, $value = null, string $boolean = 'and')
+     * @method EmployeeContact forceCreate(array $attributes)
+     * @method _IH_EmployeeContact_C|EmployeeContact[] fromQuery(string $query, array $bindings = [])
+     * @method _IH_EmployeeContact_C|EmployeeContact[] get(array|string $columns = ['*'])
+     * @method EmployeeContact getModel()
+     * @method EmployeeContact[] getModels(array|string $columns = ['*'])
+     * @method _IH_EmployeeContact_C|EmployeeContact[] hydrate(array $items)
+     * @method EmployeeContact make(array $attributes = [])
+     * @method EmployeeContact newModelInstance(array $attributes = [])
+     * @method LengthAwarePaginator|EmployeeContact[]|_IH_EmployeeContact_C paginate(\Closure|int|null $perPage = null, array|string $columns = ['*'], string $pageName = 'page', int|null $page = null)
+     * @method Paginator|EmployeeContact[]|_IH_EmployeeContact_C simplePaginate(int|null $perPage = null, array|string $columns = ['*'], string $pageName = 'page', int|null $page = null)
+     * @method EmployeeContact sole(array|string $columns = ['*'])
+     * @method EmployeeContact updateOrCreate(array $attributes, array $values = [])
+     */
+    class _IH_EmployeeContact_QB extends _BaseBuilder {}
     
     /**
      * @method EmployeeEducation|null getOrPut($key, $value)

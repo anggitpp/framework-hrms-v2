@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Employee;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Employee\EmployeeContactRequest;
 use App\Http\Requests\Employee\EmployeeEducationRequest;
 use App\Http\Requests\Employee\EmployeeFamilyRequest;
 use App\Http\Requests\Employee\EmployeeRequest;
 use App\Models\Attendance\AttendanceShift;
 use App\Models\Employee\Employee;
+use App\Models\Employee\EmployeeContact;
 use App\Models\Employee\EmployeeEducation;
 use App\Models\Employee\EmployeeFamily;
 use App\Models\Employee\EmployeePosition;
@@ -251,12 +253,14 @@ class EmployeeController extends Controller
 
         $families = EmployeeFamily::where('employee_id', $id)->get();
         $educations = EmployeeEducation::where('employee_id', $id)->get();
+        $contacts = EmployeeContact::where('employee_id', $id)->get();
 
         return view('employees.employee.show', [
             'employee' => $employee,
             'masters' => $masters,
             'families' => $families,
             'educations' => $educations,
+            'contacts' => $contacts,
             'menu_path' => $this->menu_path(),
         ]);
     }
@@ -467,7 +471,9 @@ class EmployeeController extends Controller
     public function familyUpdate(EmployeeFamilyRequest $request, int $id)
     {
         $family = EmployeeFamily::find($id);
+
         try {
+            if($request->get('isDelete') == 't') deleteFile($this->familyPath.$family->filename);
             if ($request->hasFile('filename')) {
                 $resize = false;
                 $extension = $request->file('filename')->extension();
@@ -588,7 +594,9 @@ class EmployeeController extends Controller
     public function educationUpdate(EmployeeEducationRequest $request, int $id)
     {
         $education = EmployeeEducation::find($id);
+
         try {
+            if($request->get('isDelete') == 't') deleteFile($this->educationPath.$education->filename);
             if ($request->hasFile('filename')) {
                 $resize = false;
                 $extension = $request->file('filename')->extension();
@@ -636,6 +644,91 @@ class EmployeeController extends Controller
             $education->delete();
 
             Alert::success('Success', 'Data Pendidikan berhasil dihapus');
+
+            return redirect()->back();
+        } catch (Exception $e) {
+            Alert::success('Success', 'Gagal ' . $e->getMessage());
+
+            return redirect()->back();
+        }
+    }
+
+    public function contactCreate(int $id)
+    {
+        $relationships = AppMasterData::whereAppMasterCategoryCode('EHK')->pluck('name', 'id')->toArray();
+
+        return view('employees.employee.contact-form', [
+            'id' => $id,
+            'relationships' => $relationships,
+        ]);
+    }
+    public function contactStore(EmployeeContactRequest $request, int $id)
+    {
+        try {
+            EmployeeContact::create([
+                'employee_id' => $request->input('employee_id'),
+                'name' => $request->input('name'),
+                'relationship_id' => $request->input('relationship_id'),
+                'phone_number' => $request->input('phone_number'),
+                'description' => $request->input('description'),
+            ]);
+
+            return response()->json([
+                'success'=>'Data Kontak berhasil disimpan',
+                'url'=> route(Str::replace('/', '.', $this->menu_path()).'.show', $id),
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success'=>'Gagal '.$e->getMessage(),
+                'url'=> route(Str::replace('/', '.', $this->menu_path()).'.show', $id),
+            ]);
+        }
+    }
+
+    public function contactEdit(int $id)
+    {
+        $relationships = AppMasterData::whereAppMasterCategoryCode('EHK')->pluck('name', 'id')->toArray();
+        $contact = EmployeeContact::findOrFail($id);
+
+        return view('employees.employee.contact-form', [
+            'id' => $id,
+            'relationships' => $relationships,
+            'contact' => $contact,
+        ]);
+    }
+
+    public function contactUpdate(EmployeeContactRequest $request, int $id)
+    {
+        $contact = EmployeeContact::find($id);
+
+        try {
+            $contact->update([
+                'employee_id' => $request->input('employee_id'),
+                'name' => $request->input('name'),
+                'relationship_id' => $request->input('relationship_id'),
+                'phone_number' => $request->input('phone_number'),
+                'description' => $request->input('description'),
+            ]);
+
+            return response()->json([
+                'success' => 'Data Kontak berhasil disimpan',
+                'url' => route(Str::replace('/', '.', $this->menu_path()) . '.show', $contact->employee_id),
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => 'Gagal ' . $e->getMessage(),
+                'url' => route(Str::replace('/', '.', $this->menu_path()) . '.show', $contact->employee_id),
+            ]);
+        }
+    }
+
+    public function contactDestroy(int $id)
+    {
+        $contact = EmployeeContact::findOrFail($id);
+        try {
+            $contact->delete();
+
+            Alert::success('Success', 'Data Kontak berhasil dihapus');
 
             return redirect()->back();
         } catch (Exception $e) {

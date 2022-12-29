@@ -15,7 +15,7 @@
                     <x-form.input label="Kode" class="text-uppercase" name="code" value="{{ $category->code ?? '' }}" required/>
                 </div>
                 <div class="col-md-6">
-                    <x-form.input label="Order" placeholder="Masukkan Order" name="order" required value="{{ $category->order ?? '' }}" numeric/>
+                    <x-form.input label="Order" placeholder="Masukkan Order" name="order" required value="{{ $category->order ?? $lastOrder }}" numeric/>
                 </div>
             </div>
         </div>

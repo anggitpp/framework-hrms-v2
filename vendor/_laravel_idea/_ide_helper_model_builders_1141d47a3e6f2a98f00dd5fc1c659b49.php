@@ -1,4 +1,4 @@
-<?php //3edbb0cee5e8ea69f4677c47bfb2c995
+<?php //b368864282c24cabf2bf125f4de45cd7
 /** @noinspection all */
 
 namespace LaravelIdea\Helper\App\Models\Employee {
@@ -9,6 +9,7 @@ namespace LaravelIdea\Helper\App\Models\Employee {
     use App\Models\Employee\EmployeeFamily;
     use App\Models\Employee\EmployeePosition;
     use App\Models\Employee\EmployeeSignatureSetting;
+    use App\Models\Employee\EmployeeTraining;
     use App\Models\Employee\EmployeeUnitStructure;
     use Illuminate\Contracts\Support\Arrayable;
     use Illuminate\Database\Query\Expression;
@@ -366,6 +367,78 @@ namespace LaravelIdea\Helper\App\Models\Employee {
      * @method _IH_EmployeeSignatureSetting_QB active()
      */
     class _IH_EmployeeSignatureSetting_QB extends _BaseBuilder {}
+    
+    /**
+     * @method EmployeeTraining|null getOrPut($key, $value)
+     * @method EmployeeTraining|$this shift(int $count = 1)
+     * @method EmployeeTraining|null firstOrFail(callable|string $key = null, $operator = null, $value = null)
+     * @method EmployeeTraining|$this pop(int $count = 1)
+     * @method EmployeeTraining|null pull($key, \Closure $default = null)
+     * @method EmployeeTraining|null last(callable $callback = null, \Closure $default = null)
+     * @method EmployeeTraining|$this random(callable|int|null $number = null)
+     * @method EmployeeTraining|null sole(callable|string $key = null, $operator = null, $value = null)
+     * @method EmployeeTraining|null get($key, \Closure $default = null)
+     * @method EmployeeTraining|null first(callable $callback = null, \Closure $default = null)
+     * @method EmployeeTraining|null firstWhere(callable|string $key, $operator = null, $value = null)
+     * @method EmployeeTraining|null find($key, $default = null)
+     * @method EmployeeTraining[] all()
+     */
+    class _IH_EmployeeTraining_C extends _BaseCollection {
+        /**
+         * @param int $size
+         * @return EmployeeTraining[][]
+         */
+        public function chunk($size)
+        {
+            return [];
+        }
+    }
+    
+    /**
+     * @method _IH_EmployeeTraining_QB whereId($value)
+     * @method _IH_EmployeeTraining_QB whereEmployeeId($value)
+     * @method _IH_EmployeeTraining_QB whereCerficateNumber($value)
+     * @method _IH_EmployeeTraining_QB whereSubject($value)
+     * @method _IH_EmployeeTraining_QB whereInstitution($value)
+     * @method _IH_EmployeeTraining_QB whereCategoryId($value)
+     * @method _IH_EmployeeTraining_QB whereTypeId($value)
+     * @method _IH_EmployeeTraining_QB whereStartDate($value)
+     * @method _IH_EmployeeTraining_QB whereEndDate($value)
+     * @method _IH_EmployeeTraining_QB whereLocation($value)
+     * @method _IH_EmployeeTraining_QB whereDescription($value)
+     * @method _IH_EmployeeTraining_QB whereFilename($value)
+     * @method _IH_EmployeeTraining_QB whereCreatedBy($value)
+     * @method _IH_EmployeeTraining_QB whereUpdatedBy($value)
+     * @method _IH_EmployeeTraining_QB whereCreatedAt($value)
+     * @method _IH_EmployeeTraining_QB whereUpdatedAt($value)
+     * @method EmployeeTraining baseSole(array|string $columns = ['*'])
+     * @method EmployeeTraining create(array $attributes = [])
+     * @method _IH_EmployeeTraining_C|EmployeeTraining[] cursor()
+     * @method EmployeeTraining|null|_IH_EmployeeTraining_C|EmployeeTraining[] find($id, array|string $columns = ['*'])
+     * @method _IH_EmployeeTraining_C|EmployeeTraining[] findMany(array|Arrayable $ids, array|string $columns = ['*'])
+     * @method EmployeeTraining|_IH_EmployeeTraining_C|EmployeeTraining[] findOr($id, array|\Closure|string $columns = ['*'], \Closure $callback = null)
+     * @method EmployeeTraining|_IH_EmployeeTraining_C|EmployeeTraining[] findOrFail($id, array|string $columns = ['*'])
+     * @method EmployeeTraining|_IH_EmployeeTraining_C|EmployeeTraining[] findOrNew($id, array|string $columns = ['*'])
+     * @method EmployeeTraining first(array|string $columns = ['*'])
+     * @method EmployeeTraining firstOr(array|\Closure|string $columns = ['*'], \Closure $callback = null)
+     * @method EmployeeTraining firstOrCreate(array $attributes = [], array $values = [])
+     * @method EmployeeTraining firstOrFail(array|string $columns = ['*'])
+     * @method EmployeeTraining firstOrNew(array $attributes = [], array $values = [])
+     * @method EmployeeTraining firstWhere(array|\Closure|Expression|string $column, $operator = null, $value = null, string $boolean = 'and')
+     * @method EmployeeTraining forceCreate(array $attributes)
+     * @method _IH_EmployeeTraining_C|EmployeeTraining[] fromQuery(string $query, array $bindings = [])
+     * @method _IH_EmployeeTraining_C|EmployeeTraining[] get(array|string $columns = ['*'])
+     * @method EmployeeTraining getModel()
+     * @method EmployeeTraining[] getModels(array|string $columns = ['*'])
+     * @method _IH_EmployeeTraining_C|EmployeeTraining[] hydrate(array $items)
+     * @method EmployeeTraining make(array $attributes = [])
+     * @method EmployeeTraining newModelInstance(array $attributes = [])
+     * @method LengthAwarePaginator|EmployeeTraining[]|_IH_EmployeeTraining_C paginate(\Closure|int|null $perPage = null, array|string $columns = ['*'], string $pageName = 'page', int|null $page = null)
+     * @method Paginator|EmployeeTraining[]|_IH_EmployeeTraining_C simplePaginate(int|null $perPage = null, array|string $columns = ['*'], string $pageName = 'page', int|null $page = null)
+     * @method EmployeeTraining sole(array|string $columns = ['*'])
+     * @method EmployeeTraining updateOrCreate(array $attributes, array $values = [])
+     */
+    class _IH_EmployeeTraining_QB extends _BaseBuilder {}
     
     /**
      * @method EmployeeUnitStructure|null getOrPut($key, $value)

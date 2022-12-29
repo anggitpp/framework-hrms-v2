@@ -33,8 +33,12 @@ Route::name('employees.')->group(function () {
     Route::get('/employees/employees/position/{id}/edit', [EmployeeController::class, 'positionEdit'])->name('employees.position.edit');
     Route::patch('/employees/employees/position/{id}', [EmployeeController::class, 'positionUpdate'])->name('employees.position.update');
     Route::delete('/employees/employees/position/{id}', [EmployeeController::class, 'positionDestroy'])->name('employees.position.destroy');
-    Route::get('/employees/employees/position/subMasters/{id}', [EmployeeController::class, 'subMasters'])->name('employees.position.subMasters');
 
+    Route::get('/employees/employees/training/{id}/create', [EmployeeController::class, 'trainingCreate'])->name('employees.training.create');
+    Route::post('/employees/employees/training/{id}', [EmployeeController::class, 'trainingStore'])->name('employees.training.store');
+    Route::get('/employees/employees/training/{id}/edit', [EmployeeController::class, 'trainingEdit'])->name('employees.training.edit');
+    Route::patch('/employees/employees/training/{id}', [EmployeeController::class, 'trainingUpdate'])->name('employees.training.update');
+    Route::delete('/employees/employees/training/{id}', [EmployeeController::class, 'trainingDestroy'])->name('employees.training.destroy');
 
     Route::resource('/employees/setting-unit-structures', EmployeeUnitStructureController::class);
 

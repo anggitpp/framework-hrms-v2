@@ -61,8 +61,12 @@ class AppMasterDataController extends Controller
     public function create()
     {
         $categories = AppMasterCategory::pluck('name', 'id')->toArray();
+        $lastOrder = AppMasterCategory::orderBy('order', 'desc')->value('order') + 1;
 
-        return view('settings.app-master-data.form', compact('categories'));
+        return view('settings.app-master-data.form', [
+            'categories' => $categories,
+            'lastOrder' => $lastOrder,
+        ]);
     }
 
     /**
@@ -76,6 +80,14 @@ class AppMasterDataController extends Controller
         DB::beginTransaction();
 
         try {
+            $checkExist = AppMasterCategory::where('code', $request->get('code'))->first();
+            if($checkExist) {
+                return response()->json([
+                    'success'=>'Gagal, kode sudah terpakai',
+                    'url'=> route('settings.app-master-datas.index')
+                ]);
+            }
+
             AppMasterCategory::create($request->all());
 
             DB::commit();
@@ -120,6 +132,14 @@ class AppMasterDataController extends Controller
         DB::beginTransaction();
 
         try {
+            $checkExist = AppMasterCategory::where('code', $request->get('code'))->whereNot('id', $id)->first();
+            if($checkExist) {
+                return response()->json([
+                    'success'=>'Gagal, kode sudah terpakai',
+                    'url'=> route('settings.app-master-datas.index')
+                ]);
+            }
+
             $category = AppMasterCategory::findOrFail($id);
             $category->update($request->all());
 

@@ -8,7 +8,7 @@
                     <a class="nav-link text-active-primary ms-0 me-10 py-5 active" data-bs-toggle="tab" href="#identity">Identitas</a>
                 </li>
                 <li class="nav-item mt-2">
-                    <a class="nav-link text-active-primary ms-0 me-10 py-5" data-bs-toggle="tab" href="#contact">Kontak Darurat</a>
+                    <a class="nav-link text-active-primary ms-0 me-10 py-5" data-bs-toggle="tab" href="#contact">Kontak</a>
                 </li>
                 <li class="nav-item mt-2">
                     <a class="nav-link text-active-primary ms-0 me-10 py-5" data-bs-toggle="tab" href="#family">Keluarga</a>
@@ -17,7 +17,19 @@
                     <a class="nav-link text-active-primary ms-0 me-10 py-5" data-bs-toggle="tab" href="#education">Pendidikan</a>
                 </li>
                 <li class="nav-item mt-2">
-                    <a class="nav-link text-active-primary ms-0 me-10 py-5" data-bs-toggle="tab" href="#position">Riwayat Jabatan</a>
+                    <a class="nav-link text-active-primary ms-0 me-10 py-5" data-bs-toggle="tab" href="#position">Jabatan</a>
+                </li>
+                <li class="nav-item mt-2">
+                    <a class="nav-link text-active-primary ms-0 me-10 py-5" data-bs-toggle="tab" href="#training">Pelatihan</a>
+                </li>
+                <li class="nav-item mt-2">
+                    <a class="nav-link text-active-primary ms-0 me-10 py-5" data-bs-toggle="tab" href="#work">Pekerjaan</a>
+                </li>
+                <li class="nav-item mt-2">
+                    <a class="nav-link text-active-primary ms-0 me-10 py-5" data-bs-toggle="tab" href="#asset">Aset</a>
+                </li>
+                <li class="nav-item mt-2">
+                    <a class="nav-link text-active-primary ms-0 me-10 py-5" data-bs-toggle="tab" href="#file">File</a>
                 </li>
             </ul>
             <div class="tab-content" id="myTabContent">
@@ -35,6 +47,9 @@
                 </div>
                 <div class="tab-pane fade" id="position">
                     @include('employees.employee.position-index')
+                </div>
+                <div class="tab-pane fade" id="training">
+                    @include('employees.employee.training-index')
                 </div>
             </div>
         </div>

@@ -1,9 +1,10 @@
-<?php //efc39e0d068cccc1454d768c2182371a
+<?php //670d9478d7674d9c306e9694e67378a0
 /** @noinspection all */
 
 namespace LaravelIdea\Helper\App\Models\Employee {
 
     use App\Models\Employee\Employee;
+    use App\Models\Employee\EmployeeAsset;
     use App\Models\Employee\EmployeeContact;
     use App\Models\Employee\EmployeeEducation;
     use App\Models\Employee\EmployeeFamily;
@@ -18,6 +19,77 @@ namespace LaravelIdea\Helper\App\Models\Employee {
     use Illuminate\Pagination\Paginator;
     use LaravelIdea\Helper\_BaseBuilder;
     use LaravelIdea\Helper\_BaseCollection;
+    
+    /**
+     * @method EmployeeAsset|null getOrPut($key, $value)
+     * @method EmployeeAsset|$this shift(int $count = 1)
+     * @method EmployeeAsset|null firstOrFail(callable|string $key = null, $operator = null, $value = null)
+     * @method EmployeeAsset|$this pop(int $count = 1)
+     * @method EmployeeAsset|null pull($key, \Closure $default = null)
+     * @method EmployeeAsset|null last(callable $callback = null, \Closure $default = null)
+     * @method EmployeeAsset|$this random(callable|int|null $number = null)
+     * @method EmployeeAsset|null sole(callable|string $key = null, $operator = null, $value = null)
+     * @method EmployeeAsset|null get($key, \Closure $default = null)
+     * @method EmployeeAsset|null first(callable $callback = null, \Closure $default = null)
+     * @method EmployeeAsset|null firstWhere(callable|string $key, $operator = null, $value = null)
+     * @method EmployeeAsset|null find($key, $default = null)
+     * @method EmployeeAsset[] all()
+     */
+    class _IH_EmployeeAsset_C extends _BaseCollection {
+        /**
+         * @param int $size
+         * @return EmployeeAsset[][]
+         */
+        public function chunk($size)
+        {
+            return [];
+        }
+    }
+    
+    /**
+     * @method _IH_EmployeeAsset_QB whereId($value)
+     * @method _IH_EmployeeAsset_QB whereEmployeeId($value)
+     * @method _IH_EmployeeAsset_QB whereName($value)
+     * @method _IH_EmployeeAsset_QB whereNumber($value)
+     * @method _IH_EmployeeAsset_QB whereCategoryId($value)
+     * @method _IH_EmployeeAsset_QB whereTypeId($value)
+     * @method _IH_EmployeeAsset_QB whereStartDate($value)
+     * @method _IH_EmployeeAsset_QB whereEndDate($value)
+     * @method _IH_EmployeeAsset_QB whereDescription($value)
+     * @method _IH_EmployeeAsset_QB whereFilename($value)
+     * @method _IH_EmployeeAsset_QB whereStatus($value)
+     * @method _IH_EmployeeAsset_QB whereCreatedBy($value)
+     * @method _IH_EmployeeAsset_QB whereUpdatedBy($value)
+     * @method _IH_EmployeeAsset_QB whereCreatedAt($value)
+     * @method _IH_EmployeeAsset_QB whereUpdatedAt($value)
+     * @method EmployeeAsset baseSole(array|string $columns = ['*'])
+     * @method EmployeeAsset create(array $attributes = [])
+     * @method _IH_EmployeeAsset_C|EmployeeAsset[] cursor()
+     * @method EmployeeAsset|null|_IH_EmployeeAsset_C|EmployeeAsset[] find($id, array|string $columns = ['*'])
+     * @method _IH_EmployeeAsset_C|EmployeeAsset[] findMany(array|Arrayable $ids, array|string $columns = ['*'])
+     * @method EmployeeAsset|_IH_EmployeeAsset_C|EmployeeAsset[] findOr($id, array|\Closure|string $columns = ['*'], \Closure $callback = null)
+     * @method EmployeeAsset|_IH_EmployeeAsset_C|EmployeeAsset[] findOrFail($id, array|string $columns = ['*'])
+     * @method EmployeeAsset|_IH_EmployeeAsset_C|EmployeeAsset[] findOrNew($id, array|string $columns = ['*'])
+     * @method EmployeeAsset first(array|string $columns = ['*'])
+     * @method EmployeeAsset firstOr(array|\Closure|string $columns = ['*'], \Closure $callback = null)
+     * @method EmployeeAsset firstOrCreate(array $attributes = [], array $values = [])
+     * @method EmployeeAsset firstOrFail(array|string $columns = ['*'])
+     * @method EmployeeAsset firstOrNew(array $attributes = [], array $values = [])
+     * @method EmployeeAsset firstWhere(array|\Closure|Expression|string $column, $operator = null, $value = null, string $boolean = 'and')
+     * @method EmployeeAsset forceCreate(array $attributes)
+     * @method _IH_EmployeeAsset_C|EmployeeAsset[] fromQuery(string $query, array $bindings = [])
+     * @method _IH_EmployeeAsset_C|EmployeeAsset[] get(array|string $columns = ['*'])
+     * @method EmployeeAsset getModel()
+     * @method EmployeeAsset[] getModels(array|string $columns = ['*'])
+     * @method _IH_EmployeeAsset_C|EmployeeAsset[] hydrate(array $items)
+     * @method EmployeeAsset make(array $attributes = [])
+     * @method EmployeeAsset newModelInstance(array $attributes = [])
+     * @method LengthAwarePaginator|EmployeeAsset[]|_IH_EmployeeAsset_C paginate(\Closure|int|null $perPage = null, array|string $columns = ['*'], string $pageName = 'page', int|null $page = null)
+     * @method Paginator|EmployeeAsset[]|_IH_EmployeeAsset_C simplePaginate(int|null $perPage = null, array|string $columns = ['*'], string $pageName = 'page', int|null $page = null)
+     * @method EmployeeAsset sole(array|string $columns = ['*'])
+     * @method EmployeeAsset updateOrCreate(array $attributes, array $values = [])
+     */
+    class _IH_EmployeeAsset_QB extends _BaseBuilder {}
     
     /**
      * @method EmployeeContact|null getOrPut($key, $value)

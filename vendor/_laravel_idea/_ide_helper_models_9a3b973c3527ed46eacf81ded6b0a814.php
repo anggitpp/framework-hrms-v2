@@ -1,4 +1,4 @@
-<?php //bb411c45ab150cf084a1261551cc1b07
+<?php //e3ec1f6e00d8d047b1c5e95ef77ea7e1
 /** @noinspection all */
 
 namespace App\Models\Employee {
@@ -9,6 +9,8 @@ namespace App\Models\Employee {
     use Illuminate\Database\Eloquent\Relations\HasMany;
     use Illuminate\Database\Eloquent\Relations\HasOne;
     use Illuminate\Support\Carbon;
+    use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeAsset_C;
+    use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeAsset_QB;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeContact_C;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeContact_QB;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeEducation_C;
@@ -68,10 +70,47 @@ namespace App\Models\Employee {
      * @method false|int increment(string $column, float|int $amount = 1, array $extra = [])
      * @method false|int decrement(string $column, float|int $amount = 1, array $extra = [])
      * @method static _IH_Employee_C|Employee[] all()
-     * @foreignLinks id,\App\Models\Setting\User,employee_id|id,\App\Models\Employee\EmployeePosition,employee_id|id,\App\Models\Attendance\Attendance,employee_id|id,\App\Models\Attendance\AttendanceWorkSchedule,employee_id|id,\App\Models\ESS\EssTimesheet,employee_id|id,\App\Models\Attendance\AttendanceLeave,employee_id|id,\App\Models\Attendance\AttendancePermission,employee_id|id,\App\Models\Attendance\AttendanceOvertime,employee_id|id,\App\Models\Attendance\AttendanceCorrection,employee_id|id,\App\Models\Employee\EmployeeSignatureSetting,employee_id|id,\App\Models\Employee\EmployeeFamily,employee_id|id,\App\Models\Employee\EmployeeEducation,employee_id|id,\App\Models\Employee\EmployeeContact,employee_id|id,\App\Models\Employee\EmployeeTraining,employee_id|id,\App\Models\Employee\EmployeeWork,employee_id
+     * @foreignLinks id,\App\Models\Setting\User,employee_id|id,\App\Models\Employee\EmployeePosition,employee_id|id,\App\Models\Attendance\Attendance,employee_id|id,\App\Models\Attendance\AttendanceWorkSchedule,employee_id|id,\App\Models\ESS\EssTimesheet,employee_id|id,\App\Models\Attendance\AttendanceLeave,employee_id|id,\App\Models\Attendance\AttendancePermission,employee_id|id,\App\Models\Attendance\AttendanceOvertime,employee_id|id,\App\Models\Attendance\AttendanceCorrection,employee_id|id,\App\Models\Employee\EmployeeSignatureSetting,employee_id|id,\App\Models\Employee\EmployeeFamily,employee_id|id,\App\Models\Employee\EmployeeEducation,employee_id|id,\App\Models\Employee\EmployeeContact,employee_id|id,\App\Models\Employee\EmployeeTraining,employee_id|id,\App\Models\Employee\EmployeeWork,employee_id|id,\App\Models\Employee\EmployeeAsset,employee_id
      * @mixin _IH_Employee_QB
      */
     class Employee extends Model {}
+    
+    /**
+     * @property int $id
+     * @property int $employee_id
+     * @property string $name
+     * @property string|null $number
+     * @property Carbon $date
+     * @property int|null $category_id
+     * @property int|null $type_id
+     * @property Carbon|null $start_date
+     * @property Carbon|null $end_date
+     * @property string|null $description
+     * @property string|null $filename
+     * @property string $status
+     * @property string|null $created_by
+     * @property string|null $updated_by
+     * @property Carbon|null $created_at
+     * @property Carbon|null $updated_at
+     * @property AppMasterData|null $category
+     * @method BelongsTo|_IH_AppMasterData_QB category()
+     * @property Employee $employee
+     * @method BelongsTo|_IH_Employee_QB employee()
+     * @property AppMasterData|null $type
+     * @method BelongsTo|_IH_AppMasterData_QB type()
+     * @method static _IH_EmployeeAsset_QB onWriteConnection()
+     * @method _IH_EmployeeAsset_QB newQuery()
+     * @method static _IH_EmployeeAsset_QB on(null|string $connection = null)
+     * @method static _IH_EmployeeAsset_QB query()
+     * @method static _IH_EmployeeAsset_QB with(array|string $relations)
+     * @method _IH_EmployeeAsset_QB newModelQuery()
+     * @method false|int increment(string $column, float|int $amount = 1, array $extra = [])
+     * @method false|int decrement(string $column, float|int $amount = 1, array $extra = [])
+     * @method static _IH_EmployeeAsset_C|EmployeeAsset[] all()
+     * @ownLinks employee_id,\App\Models\Employee\Employee,id
+     * @mixin _IH_EmployeeAsset_QB
+     */
+    class EmployeeAsset extends Model {}
     
     /**
      * @property int $id

@@ -33,5 +33,6 @@
         @endforeach
         </tbody>
     </table>
+    {{ generatePagination($contacts) }}
     <x-views.delete-form/>
 </div>

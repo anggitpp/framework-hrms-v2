@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::name('employees.')->group(function () {
     Route::resource('/employees/employees', EmployeeController::class);
+    Route::get('/employees/employees/subMasters/{id}', [EmployeeController::class, 'subMasters'])->name('employees.subMasters');
 
     Route::get('/employees/employees/families/{id}/create', [EmployeeController::class, 'familyCreate'])->name('employees.families.create');
     Route::post('/employees/employees/families/{id}', [EmployeeController::class, 'familyStore'])->name('employees.families.store');
@@ -26,6 +27,14 @@ Route::name('employees.')->group(function () {
     Route::get('/employees/employees/contact/{id}/edit', [EmployeeController::class, 'contactEdit'])->name('employees.contact.edit');
     Route::patch('/employees/employees/contact/{id}', [EmployeeController::class, 'contactUpdate'])->name('employees.contact.update');
     Route::delete('/employees/employees/contact/{id}', [EmployeeController::class, 'contactDestroy'])->name('employees.contact.destroy');
+
+    Route::get('/employees/employees/position/{id}/create', [EmployeeController::class, 'positionCreate'])->name('employees.position.create');
+    Route::post('/employees/employees/position/{id}', [EmployeeController::class, 'positionStore'])->name('employees.position.store');
+    Route::get('/employees/employees/position/{id}/edit', [EmployeeController::class, 'positionEdit'])->name('employees.position.edit');
+    Route::patch('/employees/employees/position/{id}', [EmployeeController::class, 'positionUpdate'])->name('employees.position.update');
+    Route::delete('/employees/employees/position/{id}', [EmployeeController::class, 'positionDestroy'])->name('employees.position.destroy');
+    Route::get('/employees/employees/position/subMasters/{id}', [EmployeeController::class, 'subMasters'])->name('employees.position.subMasters');
+
 
     Route::resource('/employees/setting-unit-structures', EmployeeUnitStructureController::class);
 

@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests\Employee;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\ValidationException;
 
 class EmployeePositionHistoryRequest extends FormRequest
 {
@@ -45,5 +48,17 @@ class EmployeePositionHistoryRequest extends FormRequest
             'unit_id.required' => 'Kolom Unit tidak boleh kosong',
             'start_date.required' => 'Kolom Tanggal Mulai tidak boleh kosong',
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        if ($this->expectsJson()) {
+            $errors = (new ValidationException($validator))->errors();
+            throw new HttpResponseException(
+                response()->json(['errors' => $errors], 200)
+            );
+        }
+
+        parent::failedValidation($validator);
     }
 }

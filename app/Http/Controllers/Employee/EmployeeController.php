@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Employee;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Employee\EmployeeContactRequest;
-use App\Http\Requests\Employee\EmployeeEducationRequest;
+use App\Http\Requests\Employee\EmployeePositionHistoryRequest;
 use App\Http\Requests\Employee\EmployeeFamilyRequest;
 use App\Http\Requests\Employee\EmployeeRequest;
 use App\Models\Attendance\AttendanceShift;
@@ -50,6 +50,8 @@ class EmployeeController extends Controller
         $this->educationPath = '/uploads/employee/education/';
         $this->genderOption = ['m' => "Laki-Laki", "f" => "Perempuan"];
 
+
+        \View::share('statusOption', defaultStatus());
         View::share('genderOption', $this->genderOption);
     }
 
@@ -241,7 +243,7 @@ class EmployeeController extends Controller
      * @param  int  $id
      * @return Application|Factory
      */
-    public function show(int $id)
+    public function show(Request $request, int $id)
     {
         $masters = AppMasterData::pluck('name', 'id')->toArray();
 
@@ -251,9 +253,10 @@ class EmployeeController extends Controller
         $employee->position->grade_id = AppMasterData::find($employee->position->grade_id)->name ?? '';
         $employee->position->unit_id = AppMasterData::find($employee->position->unit_id)->name ?? '';
 
-        $families = EmployeeFamily::where('employee_id', $id)->get();
-        $educations = EmployeeEducation::where('employee_id', $id)->get();
-        $contacts = EmployeeContact::where('employee_id', $id)->get();
+        $families = EmployeeFamily::where('employee_id', $id)->paginate($this->defaultPagination($request));
+        $educations = EmployeeEducation::where('employee_id', $id)->paginate($this->defaultPagination($request));
+        $contacts = EmployeeContact::where('employee_id', $id)->paginate($this->defaultPagination($request));
+        $positions = EmployeePosition::where('employee_id', $id)->paginate($this->defaultPagination($request));
 
         return view('employees.employee.show', [
             'employee' => $employee,
@@ -261,6 +264,7 @@ class EmployeeController extends Controller
             'families' => $families,
             'educations' => $educations,
             'contacts' => $contacts,
+            'positions' => $positions,
             'menu_path' => $this->menu_path(),
         ]);
     }
@@ -539,7 +543,7 @@ class EmployeeController extends Controller
         ]);
     }
 
-    public function educationStore(EmployeeEducationRequest $request, int $id)
+    public function educationStore(EmployeePositionHistoryRequest $request, int $id)
     {
         try {
             $filename = '';
@@ -591,7 +595,7 @@ class EmployeeController extends Controller
         ]);
     }
 
-    public function educationUpdate(EmployeeEducationRequest $request, int $id)
+    public function educationUpdate(EmployeePositionHistoryRequest $request, int $id)
     {
         $education = EmployeeEducation::find($id);
 
@@ -729,6 +733,137 @@ class EmployeeController extends Controller
             $contact->delete();
 
             Alert::success('Success', 'Data Kontak berhasil dihapus');
+
+            return redirect()->back();
+        } catch (Exception $e) {
+            Alert::success('Success', 'Gagal ' . $e->getMessage());
+
+            return redirect()->back();
+        }
+    }
+
+    public function positionCreate(int $id)
+    {
+        $user = Session::get('user');
+
+        $masters = AppMasterData::whereIn('app_master_category_code', ['ELK', 'EP', 'EG', 'ESPK', 'ESP', 'ETP', 'EMP', 'EMU'])->get();
+
+        $data['id'] = $id;
+        $data['maritals'] = $masters->where('app_master_category_code', 'ESPK')->pluck('name', 'id')->toArray();
+        $data['statuses'] = $masters->where('app_master_category_code', 'ESP')->pluck('name', 'id')->toArray();
+        $data['types'] = $masters->where('app_master_category_code', 'ETP')->pluck('name', 'id')->toArray();
+        $data['locations'] = $masters->where('app_master_category_code', 'ELK')->pluck('name', 'id')->toArray();
+        $data['ranks'] = $masters->where('app_master_category_code', 'EP')->pluck('name', 'id')->toArray();
+        $data['grades'] = $masters->where('app_master_category_code', 'EG')->pluck('name', 'id')->toArray();
+        $data['units'] = $masters->where('app_master_category_code', 'EMU')->pluck('name', 'id')->toArray();
+        $data['positions'] = $masters->where('app_master_category_code', 'EMP')->pluck('name', 'id')->toArray();
+        $data['shifts'] = AttendanceShift::pluck('name', 'id')->toArray();
+        $data['employees'] = Employee::select(['id','name', 'employee_number', DB::raw("CONCAT(employee_number, ' - ', name) as empName")])
+            ->whereHas('position', function ($query) use ($user) {
+                if(!$user->hasPermissionTo('lvl3 '.$this->menu_path())) $query->where('leader_id', $user->employee_id);
+            })
+            ->orderBy('name')
+            ->pluck('empName', 'id')
+            ->toArray();
+
+        return view('employees.employee.position-form', $data);
+    }
+
+    public function positionStore(EmployeePositionHistoryRequest $request, int $id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $request->merge(['sk_date' => $request->input('sk_date') ? resetDate($request->input('sk_date')) : '']);
+            $request->merge(['start_date' => $request->input('start_date') ? resetDate($request->input('start_date')) : '']);
+            $request->merge(['end_date' => $request->input('end_date') ? resetDate($request->input('end_date')) : '']);
+
+            $position = EmployeePosition::create($request->all());
+
+            if($request->input('status') == 't') EmployeePosition::where('employee_id', $request->input('employee_id'))->where('id', '!=', $position->id)->update(['status' => 'f']);
+
+            DB::commit();
+
+            return response()->json([
+                'success'=>'Data Jabatan berhasil disimpan',
+                'url'=> route(Str::replace('/', '.', $this->menu_path()).'.show', $id),
+            ]);
+        } catch (Exception $e) {
+
+            DB::rollBack();
+
+            return response()->json([
+                'success'=>'Gagal '.$e->getMessage(),
+                'url'=> route(Str::replace('/', '.', $this->menu_path()).'.show', $id),
+            ]);
+        }
+    }
+
+    public function positionEdit(int $id)
+    {
+        $user = Session::get('user');
+
+        $data['position'] = EmployeePosition::find($id);
+        $data['id'] = $id;
+
+        $masters = AppMasterData::whereIn('app_master_category_code', ['ELK', 'EP', 'EG', 'ESPK', 'ESP', 'ETP', 'EMP', 'EMU'])->get();
+
+        $data['maritals'] = $masters->where('app_master_category_code', 'ESPK')->pluck('name', 'id')->toArray();
+        $data['statuses'] = $masters->where('app_master_category_code', 'ESP')->pluck('name', 'id')->toArray();
+        $data['types'] = $masters->where('app_master_category_code', 'ETP')->pluck('name', 'id')->toArray();
+        $data['locations'] = $masters->where('app_master_category_code', 'ELK')->pluck('name', 'id')->toArray();
+        $data['ranks'] = $masters->where('app_master_category_code', 'EP')->pluck('name', 'id')->toArray();
+        $data['grades'] = $masters->where('app_master_category_code', 'EG')->pluck('name', 'id')->toArray();
+        $data['units'] = $masters->where('app_master_category_code', 'EMU')->pluck('name', 'id')->toArray();
+        $data['positions'] = $masters->where('app_master_category_code', 'EMP')->pluck('name', 'id')->toArray();
+        $data['shifts'] = AttendanceShift::pluck('name', 'id')->toArray();
+        $data['employees'] = Employee::select(['id','name', 'employee_number', DB::raw("CONCAT(employee_number, ' - ', name) as empName")])
+            ->whereHas('position', function ($query) use ($user) {
+                if(!$user->hasPermissionTo('lvl3 '.$this->menu_path())) $query->where('leader_id', $user->employee_id);
+            })
+            ->orderBy('name')
+            ->pluck('empName', 'id')
+            ->toArray();
+
+        return view('employees.employee.position-form', $data);
+    }
+
+    public function positionUpdate(EmployeePositionHistoryRequest $request, int $id)
+    {
+        DB::beginTransaction();
+
+        $position = EmployeePosition::findOrFail($id);
+
+        try {
+            $request->merge(['sk_date' => $request->input('sk_date') ? resetDate($request->input('sk_date')) : '']);
+            $request->merge(['start_date' => $request->input('start_date') ? resetDate($request->input('start_date')) : '']);
+            $request->merge(['end_date' => $request->input('end_date') ? resetDate($request->input('end_date')) : '']);
+
+            $position->update($request->all());
+
+            if($request->input('status') == 't') EmployeePosition::where('employee_id', $request->input('employee_id'))->where('id', '!=', $position->id)->update(['status' => 'f']);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => 'Data Jabatan berhasil disimpan',
+                'url' => route(Str::replace('/', '.', $this->menu_path()) . '.show', $position->employee_id),
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => 'Gagal ' . $e->getMessage(),
+                'url' => route(Str::replace('/', '.', $this->menu_path()) . '.show', $position->employee_id),
+            ]);
+        }
+    }
+
+    public function positionDestroy(int $id)
+    {
+        $position = EmployeePosition::findOrFail($id);
+        try {
+            $position->delete();
+
+            Alert::success('Success', 'Data Jabatan berhasil dihapus');
 
             return redirect()->back();
         } catch (Exception $e) {

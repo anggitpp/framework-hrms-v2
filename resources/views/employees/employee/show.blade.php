@@ -16,6 +16,9 @@
                 <li class="nav-item mt-2">
                     <a class="nav-link text-active-primary ms-0 me-10 py-5" data-bs-toggle="tab" href="#education">Pendidikan</a>
                 </li>
+                <li class="nav-item mt-2">
+                    <a class="nav-link text-active-primary ms-0 me-10 py-5" data-bs-toggle="tab" href="#position">Riwayat Jabatan</a>
+                </li>
             </ul>
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="identity">
@@ -29,6 +32,9 @@
                 </div>
                 <div class="tab-pane fade" id="education">
                     @include('employees.employee.education-index')
+                </div>
+                <div class="tab-pane fade" id="position">
+                    @include('employees.employee.position-index')
                 </div>
             </div>
         </div>

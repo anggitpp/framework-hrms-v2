@@ -41,5 +41,6 @@
         @endforeach
         </tbody>
     </table>
+    {{ generatePagination($educations) }}
     <x-views.delete-form/>
 </div>

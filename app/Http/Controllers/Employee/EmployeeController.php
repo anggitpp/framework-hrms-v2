@@ -22,6 +22,7 @@ use App\Models\Employee\EmployeePosition;
 use App\Models\Employee\EmployeeTraining;
 use App\Models\Employee\EmployeeWork;
 use App\Models\Setting\AppMasterData;
+use App\Models\Setting\AppParameter;
 use Auth;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use Exception;
@@ -90,6 +91,13 @@ class EmployeeController extends Controller
             $masters[$value->app_master_category_code][$value->id] = $value->name;
         }
 
+        $getStatusActive = AppParameter::whereCode('SAP')->first()->value;
+
+        $statusNonActives = AppMasterData::where('app_master_category_code', 'ESP')
+            ->whereNot('id', $getStatusActive)
+            ->pluck('name', 'id')
+            ->toArray();
+
         $user = Auth::user();
 
         if($request->ajax()){
@@ -97,6 +105,7 @@ class EmployeeController extends Controller
             $filterRank = $request->get('combo_2');
             $filterGrade = $request->get('combo_3');
             $filterLocation = $request->get('combo_4');
+            $filterStatus = $request->get('combo_5');
             $filter = $request->get('search')['value'];
 
             $table = DB::table('employees as t1')
@@ -104,18 +113,24 @@ class EmployeeController extends Controller
                     $join->on('t1.id', 't2.employee_id')
                         ->where('t2.status', 't');
                 })
-                ->select(['t1.id', 't1.employee_number', 't1.name', 't1.join_date', 't2.position_id', 't2.rank_id']);
+                ->select(['t1.id', 't1.employee_number', 't1.name', 't1.join_date', 't1.leave_date', 't1.status_id', 't2.position_id', 't2.rank_id']);
+                if(str_contains($this->menu_path(), 'nonactive')) {
+                    $table->whereNot('t1.status_id', $getStatusActive);
+                }else{
+                    $table->where('t1.status_id', $getStatusActive);
+                }
 
             if(!$user->hasPermissionTo('lvl3 '.$this->menu_path()))
                 $table->where('t2.leader_id', $user->employee_id);
 
             return DataTables::of($table)
-                ->filter(function ($query) use ($filter, $filterPosition, $filterRank, $filterGrade, $filterLocation) {
+                ->filter(function ($query) use ($filter, $filterPosition, $filterRank, $filterGrade, $filterLocation, $filterStatus) {
                     if (isset($filter)) $query->where('name', 'like', "%{$filter}%")->orWhere('employee_number', 'like', "%{$filter}%");
                     if (isset($filterPosition)) $query->where('position_id', $filterPosition);
                     if (isset($filterRank)) $query->where('rank_id', $filterRank);
                     if (isset($filterGrade)) $query->where('grade_id', $filterGrade);
                     if (isset($filterLocation)) $query->where('location_id', $filterLocation);
+                    if (isset($filterStatus)) $query->where('status_id', $filterStatus);
                 })
                 ->editColumn('position_id', function ($model) use ($masters) {
                     return $masters['EMP'][$model->position_id] ?? '';
@@ -125,6 +140,12 @@ class EmployeeController extends Controller
                 })
                 ->editColumn('join_date', function ($model) {
                     return $model->join_date ? setDate($model->join_date) : '';
+                })
+                ->editColumn('leave_date', function ($model) {
+                    return $model->leave_date ? setDate($model->leave_date) : '';
+                })
+                ->editColumn('status_id', function ($model) use ($masters) {
+                    return $masters['ESP'][$model->status_id] ?? '';
                 })
                 ->addColumn('action', function ($model) {
                     return view('components.views.action', [
@@ -143,7 +164,8 @@ class EmployeeController extends Controller
         Session::put('user', $user);
 
         return view('employees.employee.index', [
-            'masters' => $masters
+            'masters' => $masters,
+            'statusNonActives' => $statusNonActives,
         ]);
     }
 
@@ -242,14 +264,15 @@ class EmployeeController extends Controller
 
             Alert::success('Success', 'Data Pegawai berhasil disimpan');
 
-            return redirect()->route('employees.employees.index');
+
+            return redirect()->route(Str::replace('/', '.', $this->menu_path()).'.index');
 
         }catch (Exception $e) {
             DB::rollBack();
 
             Alert::error('Error', $e->getMessage());
 
-            return redirect()->route('employees.employees.index');
+            return redirect()->route(Str::replace('/', '.', $this->menu_path()).'.index');
         }
     }
 
@@ -388,14 +411,14 @@ class EmployeeController extends Controller
 
             Alert::success('Success', 'Data Pegawai berhasil diubah');
 
-            return redirect()->route('employees.employees.index');
+            return redirect()->route(Str::replace('/', '.', $this->menu_path()).'.index');
 
         } catch (Exception $e) {
             DB::rollBack();
 
             Alert::error('Error', $e->getMessage());
 
-            return redirect()->route('employees.employees.index');
+            return redirect()->route(Str::replace('/', '.', $this->menu_path()).'.index');
         }
     }
 

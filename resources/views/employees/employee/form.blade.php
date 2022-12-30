@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 <div class="card">
-    <form method="POST" id="form-edit" action="{{ empty($employee) ? route('employees.employees.store') : route('employees.employees.update', $employee->id) }}" enctype="multipart/form-data">
+    <form method="POST" id="form-edit" action="{{ empty($employee) ? route(Str::replace('/', '.', $menu_path).'.store') : route(Str::replace('/', '.', $menu_path).'.update', $employee->id) }}" enctype="multipart/form-data">
         @csrf
         @if(!empty($employee))
             @method('PATCH')

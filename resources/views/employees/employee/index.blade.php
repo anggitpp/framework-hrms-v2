@@ -17,6 +17,9 @@
             </div>
             <div class="card-toolbar">
                 <div class="d-flex justify-content-end">
+                    @if(str_contains($menu_target, 'nonactive'))
+                        <x-form.select name="combo_5" :datas="$statusNonActives" option="- Semua Status -" class="w-250px" />
+                    @endif
                     @can('add '.$menu_path)
                         <x-views.add-button route="{{ route(str_replace('/', '.', $menu_path).'.create') }}" text="Tambah {{ $selected_menu->name }}" />
                     @endcan
@@ -33,7 +36,12 @@
                             <th width="*">Nama</th>
                             <th width="150">Jabatan</th>
                             <th width="150">Kelas Jabatan</th>
-                            <th width="100">Tgl Masuk</th>
+                            @if(str_contains($menu_target, 'nonactive'))
+                                <th width="100">Tgl Keluar</th>
+                                <th width="150">Status</th>
+                            @else
+                                <th width="100">Tgl Masuk</th>
+                            @endif
                             <th width="150" class="text-center">Kontrol</th>
                         </tr>
                     </thead>
@@ -42,7 +50,11 @@
                 </table>
                 @php
                     $route = route(str_replace('/', '.', $menu_path).'.index');
-                    $datas = array("employee_number", "name", "position_id", "rank_id", "join_date", "action\ttrue\tfalse");
+                    if(str_contains($menu_target, 'nonactive')) {
+                        $datas = array("employee_number", "name", "position_id", "rank_id", "leave_date", "status_id", "action\ttrue\tfalse");
+                    }else{
+                        $datas = array("employee_number", "name", "position_id", "rank_id", "join_date", "action\ttrue\ttrue");
+                    }
                 @endphp
                 <x-views.datatables :datas="$datas" :route="$route" def-order="2"/>
                 <x-views.delete-form/>

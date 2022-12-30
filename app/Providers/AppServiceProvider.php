@@ -69,7 +69,7 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('app_sub_moduls', $data['sub_moduls']);
                 $view->with('param', $data['param']);
                 $view->with('menu_path', $data['module_path']."/".$data['menu_path']);
-
+                $view->with('menu_target', $data['menu_path']);
             }
         });
     }

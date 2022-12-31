@@ -1,4 +1,4 @@
-<?php //4c50c85a90cb6d938829d361d9b042d1
+<?php //d36550fff8cbdfac089e25cda3e6771b
 /** @noinspection all */
 
 namespace LaravelIdea\Helper\App\Models\Attendance {
@@ -652,6 +652,7 @@ namespace LaravelIdea\Helper\App\Models\Attendance {
      * @method Paginator|AttendanceShift[]|_IH_AttendanceShift_C simplePaginate(int|null $perPage = null, array|string $columns = ['*'], string $pageName = 'page', int|null $page = null)
      * @method AttendanceShift sole(array|string $columns = ['*'])
      * @method AttendanceShift updateOrCreate(array $attributes, array $values = [])
+     * @method _IH_AttendanceShift_QB active()
      */
     class _IH_AttendanceShift_QB extends _BaseBuilder {}
     

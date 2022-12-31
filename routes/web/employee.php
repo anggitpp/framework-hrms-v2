@@ -7,6 +7,7 @@ use App\Http\Controllers\Employee\EmployeeUnitStructureController;
 use Illuminate\Support\Facades\Route;
 
 Route::name('employees.')->group(function () {
+    Route::get('/employees/employees/export', [EmployeeController::class, 'export'])->name('employees.export');
     Route::resource('/employees/employees', EmployeeController::class);
     Route::get('/employees/employees/subMasters/{id}', [EmployeeController::class, 'subMasters'])->name('employees.subMasters');
 

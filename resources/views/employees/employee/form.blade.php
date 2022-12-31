@@ -84,12 +84,13 @@
                     <div class="row">
                         <div class="col-md-6">
                             <x-form.select name="status_id" required label="Status" option="- Pilih Status Pegawai -" :datas="$statuses" value="{{ $employee->status_id ?? '' }}" />
-                            <x-form.datepicker name="join_date" required label="Tanggal Masuk" value="{{ $employee->join_date ?? '' }}" />
+                            <x-form.datepicker name="leave_date" label="Tanggal Keluar" value="{{ $employee->leave_date ?? '' }}" />
                             <x-form.select name="marital_status_id" label="Status Perkawinan" option="- Pilih Status Perkawinan -" :datas="$maritals" value="{{ $employee->marital_status_id ?? '' }}" />
                         </div>
                         <div class="col-md-6">
-                            <x-form.datepicker name="leave_date" label="Tanggal Keluar" value="{{ $employee->leave_date ?? '' }}" />
+                            <x-form.datepicker name="join_date" required label="Tanggal Masuk" value="{{ $employee->join_date ?? '' }}" />
                             <x-form.input name="attendance_pin" numeric label="PIN Mesin Absen" value="{{ $employee->attendance_pin ?? '' }}" maxlength="5" />
+                            <x-form.select name="religion_id" label="Agama" option="- Pilih Agama -" :datas="$religions" value="{{ $employee->religion_id ?? '' }}" />
                         </div>
                     </div>
                 </div>

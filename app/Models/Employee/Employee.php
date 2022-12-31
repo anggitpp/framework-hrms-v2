@@ -22,6 +22,7 @@ class Employee extends Model
         'identity_number',
         'identity_address',
         'address',
+        'religion_id',
         'status_id',
         'photo',
         'identity_file',

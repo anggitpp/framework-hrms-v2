@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Employee;
 
+use App\Exports\Employee\EmployeeExport;
+use App\Exports\GlobalExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Employee\EmployeeAssetRequest;
 use App\Http\Requests\Employee\EmployeeContactRequest;
@@ -11,7 +13,10 @@ use App\Http\Requests\Employee\EmployeeFamilyRequest;
 use App\Http\Requests\Employee\EmployeeRequest;
 use App\Http\Requests\Employee\EmployeeTrainingRequest;
 use App\Http\Requests\Employee\EmployeeWorkRequest;
+use App\Models\Attendance\AttendanceLeave;
+use App\Models\Attendance\AttendancePermission;
 use App\Models\Attendance\AttendanceShift;
+use App\Models\Attendance\AttendanceWorkSchedule;
 use App\Models\Employee\Employee;
 use App\Models\Employee\EmployeeAsset;
 use App\Models\Employee\EmployeeContact;
@@ -31,8 +36,10 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 use RealRashid\SweetAlert\Facades\Alert;
 use Session;
 use Storage;
@@ -178,9 +185,10 @@ class EmployeeController extends Controller
     {
         $user = Session::get('user');
 
-        $masters = AppMasterData::whereIn('app_master_category_code', ['ELK', 'EP', 'EG', 'ESPK', 'ESP', 'ETP', 'EMP', 'EMU'])->get();
+        $masters = AppMasterData::whereIn('app_master_category_code', ['ELK', 'EP', 'EG', 'ESPK', 'ESP', 'ETP', 'EMP', 'EMU', 'EAG'])->get();
 
         $data['maritals'] = $masters->where('app_master_category_code', 'ESPK')->pluck('name', 'id')->toArray();
+        $data['religions'] = $masters->where('app_master_category_code', 'EAG')->pluck('name', 'id')->toArray();
         $data['statuses'] = $masters->where('app_master_category_code', 'ESP')->pluck('name', 'id')->toArray();
         $data['types'] = $masters->where('app_master_category_code', 'ETP')->pluck('name', 'id')->toArray();
         $data['locations'] = $masters->where('app_master_category_code', 'ELK')->pluck('name', 'id')->toArray();
@@ -238,6 +246,7 @@ class EmployeeController extends Controller
                 'phone_number' => $request->input('phone_number'),
                 'mobile_phone_number' => $request->input('mobile_phone_number'),
                 'marital_status_id' => $request->input('marital_status_id'),
+                'religion_id' => $request->input('religion_id'),
                 'email' => $request->input('email'),
                 'gender' => $request->input('gender'),
                 'attendance_pin' => $request->input('attendance_pin'),
@@ -326,9 +335,10 @@ class EmployeeController extends Controller
     {
         $user = Session::get('user');
 
-        $masters = AppMasterData::whereIn('app_master_category_code', ['ELK', 'EP', 'EG', 'ESPK', 'ESP', 'ETP', 'EMP', 'EMU'])->get();
+        $masters = AppMasterData::whereIn('app_master_category_code', ['ELK', 'EP', 'EG', 'ESPK', 'ESP', 'ETP', 'EMP', 'EMU', 'EAG'])->get();
 
         $data['maritals'] = $masters->where('app_master_category_code', 'ESPK')->pluck('name', 'id')->toArray();
+        $data['religions'] = $masters->where('app_master_category_code', 'EAG')->pluck('name', 'id')->toArray();
         $data['statuses'] = $masters->where('app_master_category_code', 'ESP')->pluck('name', 'id')->toArray();
         $data['types'] = $masters->where('app_master_category_code', 'ETP')->pluck('name', 'id')->toArray();
         $data['locations'] = $masters->where('app_master_category_code', 'ELK')->pluck('name', 'id')->toArray();
@@ -386,6 +396,7 @@ class EmployeeController extends Controller
                 'phone_number' => $request->input('phone_number'),
                 'mobile_phone_number' => $request->input('mobile_phone_number'),
                 'marital_status_id' => $request->input('marital_status_id'),
+                'religion_id' => $request->input('religion_id'),
                 'email' => $request->input('email'),
                 'gender' => $request->input('gender'),
                 'attendance_pin' => $request->input('attendance_pin'),
@@ -1356,5 +1367,108 @@ class EmployeeController extends Controller
 
             return redirect()->back();
         }
+    }
+
+    public function export(Request $request)
+    {
+        $masters = AppMasterData::whereIn('app_master_category_code', ['ELK', 'EP', 'EG', 'ESPK', 'ESP', 'ETP', 'EMP', 'EMU'])
+            ->where('status', 't')
+            ->pluck('name', 'id')
+            ->toArray();
+
+        $shifts = AttendanceShift::active()->pluck('name', 'id')->toArray();
+
+        $emp = Employee::active()->pluck('name', 'id')->toArray();
+
+        $getStatusActive = AppParameter::whereCode('SAP')->first()->value;
+
+        $user = Auth::user();
+
+        $filterPosition = $request->get('combo_1');
+        $filterRank = $request->get('combo_2');
+        $filterGrade = $request->get('combo_3');
+        $filterLocation = $request->get('combo_4');
+        $filterStatus = $request->get('combo_5');
+        $filter = $request->get('filter');
+
+        $sql = DB::table('employees as t1')
+            ->join('employee_positions as t2', function ($join) {
+                $join->on('t1.id', 't2.employee_id')
+                    ->where('t2.status', 't');
+            });
+        if(str_contains($this->menu_path(), 'nonactive')) {
+            $sql->whereNot('t1.status_id', $getStatusActive);
+        }else{
+            $sql->where('t1.status_id', $getStatusActive);
+        }
+
+        if(!$user->hasPermissionTo('lvl3 '.$this->menu_path())) $sql->where('t2.leader_id', $user->employee_id);
+
+//        if (isset($filter)) $sql->where('name', 'like', "%{$filter}%")->orWhere('employee_number', 'like', "%{$filter}%");
+//        if (isset($filterPosition)) $sql->where('position_id', $filterPosition);
+//        if (isset($filterRank)) $sql->where('rank_id', $filterRank);
+//        if (isset($filterGrade)) $sql->where('grade_id', $filterGrade);
+//        if (isset($filterLocation)) $sql->where('location_id', $filterLocation);
+//        if (isset($filterStatus)) $sql->where('status_id', $filterStatus);
+//        dd(DB::getQueryLog());
+
+        $data = [];
+        $employees = $sql->get();
+        foreach ($employees as $k => $employee){
+            $data[] = [
+                $k + 1,
+                $employee->name,
+                $employee->nickname,
+                $employee->place_of_birth,
+                $employee->date_of_birth ? setDate($employee->date_of_birth) : '',
+                $employee->employee_number." ",
+                $employee->identity_number." ",
+                $employee->gender == 'm' ? 'Laki-laki' : 'Perempuan',
+                $employee->email,
+                $employee->identity_address,
+                $employee->address,
+                $employee->mobile_phone_number." ",
+                $employee->phone_number." ",
+                $masters[$employee->position_id] ?? '',
+                $masters[$employee->employee_type_id] ?? '',
+                $masters[$employee->rank_id] ?? '',
+                $masters[$employee->grade_id] ?? '',
+                $employee->sk_number,
+                $employee->sk_date ? setDate($employee->sk_date) : '',
+                $employee->start_date ? setDate($employee->start_date) : '',
+                $employee->end_date ? setDate($employee->end_date) : '',
+                $masters[$employee->location_id] ?? '',
+                $masters[$employee->unit_id] ?? '',
+                $shifts[$employee->shift_id] ?? '',
+                $emp[$employee->leader_id] ?? '',
+                $masters[$employee->status_id] ?? '',
+                $employee->join_date ? setDate($employee->join_date) : '',
+                $employee->leave_date ? setDate($employee->leave_date) : '',
+                $employee->attendance_pin,
+                $masters[$employee->marital_status_id] ?? '',
+                $masters[$employee->religion_id] ?? '',
+            ];
+        }
+
+        $columns = ["no", "identitas" => array("nama", "nama panggilan", "tempat lahir", "tanggal lahir", "nomor pegawai", "nomor identitas", "jenis kelamin", "email",
+                    "alamat ktp", "alamat domisili", "nomor handphone", "nomor telepon"), "posisi" => array("jabatan", "tipe pegawai", "pangkat", "grade", "nomor sk",
+                    "tanggal sk", "tanggal mulai", "tanggal selesai", "lokasi kerja", "unit", "shift", "atasan langsung"), "status" => array("status", "tanggal masuk",
+                    "tanggal keluar", "pin absen", "status kawin", "agama")];
+
+        $widths = [10, 30, 20, 20, 20, 25, 20, 20, 20];
+
+        $aligns = ['center', 'left', 'right', 'left'];
+
+        return Excel::download(new GlobalExport(
+            [
+                'startColumn' => 'A',
+                'startRow' => 5,
+                'columns' => $columns,
+                'widths' => $widths,
+                'aligns' => $aligns,
+                'data' => $data,
+                'title' => 'Data Pegawai',
+            ]
+        ), 'Data Pegawai.xlsx');
     }
 }

@@ -1,4 +1,4 @@
-<?php //134dad75c254fe72429ca6db174272a8
+<?php //0746b00ecb42d159628eb7f7d53547de
 /** @noinspection all */
 
 namespace LaravelIdea\Helper\App\Models\Employee {
@@ -764,6 +764,7 @@ namespace LaravelIdea\Helper\App\Models\Employee {
      * @method _IH_Employee_QB whereUpdatedAt($value)
      * @method _IH_Employee_QB whereGender($value)
      * @method _IH_Employee_QB whereAttendancePin($value)
+     * @method _IH_Employee_QB whereReligionId($value)
      * @method Employee baseSole(array|string $columns = ['*'])
      * @method Employee create(array $attributes = [])
      * @method _IH_Employee_C|Employee[] cursor()

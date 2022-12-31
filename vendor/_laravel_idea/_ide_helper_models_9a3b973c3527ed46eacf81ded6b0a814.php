@@ -1,4 +1,4 @@
-<?php //f286e81dbb8409fe26b9a56b2aa697b1
+<?php //aaad0698133a284b1f9e42fb4ded392e
 /** @noinspection all */
 
 namespace App\Models\Employee {
@@ -58,6 +58,7 @@ namespace App\Models\Employee {
      * @property Carbon|null $updated_at
      * @property string|null $gender
      * @property string|null $attendance_pin
+     * @property int|null $religion_id
      * @property EmployeePosition $position
      * @method HasOne|_IH_EmployeePosition_QB position()
      * @property _IH_EmployeePosition_C|EmployeePosition[] $positions

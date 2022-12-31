@@ -20,8 +20,9 @@
                     @if(str_contains($menu_target, 'nonactive'))
                         <x-form.select name="combo_5" :datas="$statusNonActives" option="- Semua Status -" class="w-250px" />
                     @endif
+                    <x-views.export-button id="btnExport" text="Export Data" class="me-3" url="{{ $menu_path }}" />
                     @can('add '.$menu_path)
-                        <x-views.add-button route="{{ route(str_replace('/', '.', $menu_path).'.create') }}" text="Tambah {{ $selected_menu->name }}" />
+                        <x-views.add-button route="{{ route(str_replace('/', '.', $menu_path).'.create') }}" text="Tambah Data Pegawai" />
                     @endcan
                 </div>
             </div>

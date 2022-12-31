@@ -29,4 +29,9 @@ class AttendanceShift extends Model
     {
         return $this->belongsTo(AppMasterData::class)->where('app_master_category_code', 'ELK');
     }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 't');
+    }
 }

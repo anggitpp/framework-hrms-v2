@@ -5,17 +5,13 @@ namespace App\Http\Controllers\Employee;
 use App\Exports\GlobalExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Employee\EmployeeContactRequest;
-use App\Http\Requests\Employee\EmployeePositionHistoryRequest;
-use App\Models\Attendance\AttendanceShift;
 use App\Models\Employee\Employee;
 use App\Models\Employee\EmployeeContact;
-use App\Models\Employee\EmployeePosition;
 use App\Models\Setting\AppMasterData;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -295,7 +291,7 @@ class EmployeeContactController extends Controller
         foreach ($contacts as $k => $contact){
             $data[] = [
                 $k + 1,
-                $contact->employee_number,
+                $contact->employee_number." ",
                 $contact->employee_name,
                 $contact->name,
                 $relationships[$contact->relationship_id] ?? '',

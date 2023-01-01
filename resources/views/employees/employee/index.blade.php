@@ -32,18 +32,18 @@
                 <table id="datatables" class="table table-rounded table-row-bordered border gy-5 gs-7">
                     <thead>
                         <tr class="text-start text-muted bg-gray-100 fw-bold fs-7 text-uppercase gs-0 border-bottom border-gray-200">
-                            <th width="10">No</th>
-                            <th width="100">NIP</th>
-                            <th width="*">Nama</th>
-                            <th width="150">Jabatan</th>
-                            <th width="150">Kelas Jabatan</th>
+                            <th class="min-w-10px">No</th>
+                            <th class="min-w-150px">NIP</th>
+                            <th class="min-w-250px">Nama</th>
+                            <th class="min-w-200px">Jabatan</th>
+                            <th class="min-w-150px">Kelas Jabatan</th>
                             @if(str_contains($menu_target, 'nonactive'))
-                                <th width="100">Tgl Keluar</th>
-                                <th width="150">Status</th>
+                                <th class="min-w-150px">Tgl Keluar</th>
+                                <th class="min-w-150px">Status</th>
                             @else
-                                <th width="100">Tgl Masuk</th>
+                                <th class="min-w-150px">Tgl Masuk</th>
                             @endif
-                            <th width="150" class="text-center">Kontrol</th>
+                            <th class="min-w-150px text-center">Kontrol</th>
                         </tr>
                     </thead>
                     <tbody class="text-gray-600 fw-semibold">

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Employee\EmployeeContactController;
 use App\Http\Controllers\Employee\EmployeeController;
+use App\Http\Controllers\Employee\EmployeeFamilyController;
 use App\Http\Controllers\Employee\EmployeePositionHistoryController;
 use App\Http\Controllers\Employee\EmployeeSignatureSettingController;
 use App\Http\Controllers\Employee\EmployeeUnitStructureController;
@@ -113,6 +114,10 @@ Route::name('employees.')->group(function () {
     Route::get('/employees/contacts/data', [EmployeeContactController::class, 'data'])->name('contacts.data');
     Route::get('/employees/contacts/export', [EmployeeContactController::class, 'export'])->name('contacts.export');
     Route::resource('/employees/contacts', EmployeeContactController::class);
+
+    Route::get('/employees/families/data', [EmployeeFamilyController::class, 'data'])->name('families.data');
+    Route::get('/employees/families/export', [EmployeeFamilyController::class, 'export'])->name('families.export');
+    Route::resource('/employees/families', EmployeeFamilyController::class);
 
     Route::resource('/employees/position-histories', EmployeePositionHistoryController::class);
     Route::get('/employees/position-histories/subMasters/{id}', [EmployeePositionHistoryController::class, 'subMasters'])->name('position-histories.subMasters');

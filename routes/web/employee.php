@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Employee\EmployeeContactController;
 use App\Http\Controllers\Employee\EmployeeController;
 use App\Http\Controllers\Employee\EmployeePositionHistoryController;
 use App\Http\Controllers\Employee\EmployeeSignatureSettingController;
@@ -109,10 +110,14 @@ Route::name('employees.')->group(function () {
     Route::patch('/employees/employees-nonactive/file/{id}', [EmployeeController::class, 'fileUpdate'])->name('employees-nonactive.file.update');
     Route::delete('/employees/employees-nonactive/file/{id}', [EmployeeController::class, 'fileDestroy'])->name('employees-nonactive.file.destroy');
 
-    Route::resource('/employees/setting-unit-structures', EmployeeUnitStructureController::class);
+    Route::get('/employees/contacts/data', [EmployeeContactController::class, 'data'])->name('contacts.data');
+    Route::get('/employees/contacts/export', [EmployeeContactController::class, 'export'])->name('contacts.export');
+    Route::resource('/employees/contacts', EmployeeContactController::class);
 
     Route::resource('/employees/position-histories', EmployeePositionHistoryController::class);
     Route::get('/employees/position-histories/subMasters/{id}', [EmployeePositionHistoryController::class, 'subMasters'])->name('position-histories.subMasters');
+
+    Route::resource('/employees/setting-unit-structures', EmployeeUnitStructureController::class);
 
     Route::resource('/employees/signatures', EmployeeSignatureSettingController::class);
 });

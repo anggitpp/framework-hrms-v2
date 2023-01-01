@@ -37,7 +37,7 @@ class EmployeeContactRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'employee_id.required' => 'Karyawan harus diisi',
+            'employee_id.required' => 'Pegawai harus diisi',
             'relationship_id.required' => 'Hubungan harus diisi',
             'name.required' => 'Nama harus diisi',
             'phone_number.required' => 'Nomor telepon harus diisi',

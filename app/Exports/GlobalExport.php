@@ -42,31 +42,14 @@ class GlobalExport implements FromCollection, WithCustomStartCell, WithEvents
 
                 $columns = $this->data['columns'];
                 $data = $this->data['data'];
-                $startRow = $this->data['startRow'];
-                $startColumn = $this->data['startColumn'];
+                $startRow = $this->data['startRow'] ?? 5;
+                $startColumn = $this->data['startColumn'] ?? 'A';
                 $title = $this->data['title'];
                 $subtitle = $this->data['subtitle'] ?? '';
                 $widths = $this->data['widths'];
                 $aligns = $this->data['aligns'];
 
                 $sheet = $event->sheet;
-
-                $highestColumn = numToAlpha(count($columns) - 1);
-                $highestRow = count($data) + 6;
-
-                $sheet->mergeCells("A2:".$highestColumn."2");
-                $sheet->mergeCells("A3:".$highestColumn."3");
-
-                $sheet->getStyle("A2:".$highestColumn."3")->applyFromArray([
-                    'font' => [
-                        'bold' => true,
-                        'size' => 14,
-                    ],
-                    'alignment' => [
-                        'horizontal' => Alignment::HORIZONTAL_CENTER,
-                        'vertical' => Alignment::VERTICAL_CENTER,
-                    ],
-                ]);
 
                 $sheet->setCellValue("A2", Str::upper($title));
                 $sheet->setCellValue("A3", Str::upper($subtitle));
@@ -97,9 +80,25 @@ class GlobalExport implements FromCollection, WithCustomStartCell, WithEvents
 
                 $column--;
 
+                $highestRow = count($data) + 6;
+
+                $sheet->mergeCells("A2:".numToAlpha($column)."2");
+                $sheet->mergeCells("A3:".numToAlpha($column)."3");
+
+                $sheet->getStyle("A2:".numToAlpha($column)."3")->applyFromArray([
+                    'font' => [
+                        'bold' => true,
+                        'size' => 14,
+                    ],
+                    'alignment' => [
+                        'horizontal' => Alignment::HORIZONTAL_CENTER,
+                        'vertical' => Alignment::VERTICAL_CENTER,
+                    ],
+                ]);
+
                 if(isset($aligns)) {
                     foreach ($aligns as $key => $align) {
-                        $sheet->getStyle(numToAlpha($key) . ($startRow + 2).":" . numToAlpha($column) . $highestRow)->applyFromArray([
+                        $sheet->getStyle(numToAlpha($key) . ($startRow + 2).":" . numToAlpha($key) . $highestRow)->applyFromArray([
                             'alignment' => [
                                 'horizontal' => $arrAligns[$align],
                                 'vertical' => Alignment::VERTICAL_CENTER,
@@ -137,6 +136,8 @@ class GlobalExport implements FromCollection, WithCustomStartCell, WithEvents
 
     public function startCell(): string
     {
-        return $this->data['startColumn'].$this->data['startRow'] + 2;
+        $startColumn = $this->data['startColumn'] ?? 'A';
+        $startRow = $this->data['startRow'] ?? 5;
+        return $startColumn . ($startRow + 2);
     }
 }

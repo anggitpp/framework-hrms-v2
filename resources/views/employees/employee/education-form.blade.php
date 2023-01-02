@@ -14,11 +14,11 @@
             <div class="row">
                 <div class="col-md-6">
                     <x-form.input label="Tahun Mulai" name="start_year" value="{{ $education->start_year ?? '' }}" class="w-50 text-end" numeric maxlength="4"/>
-                    <x-form.input label="Kota/Lokasi" name="city" value="{{ $education->major ?? '' }}"/>
+                    <x-form.input label="Kota/Lokasi" name="city" value="{{ $education->city ?? '' }}"/>
                 </div>
                 <div class="col-md-6">
                     <x-form.input label="Tahun Selesai" name="end_year" value="{{ $education->end_year ?? '' }}" class="w-50 text-end" numeric maxlength="4"/>
-                    <x-form.input label="Nilai/IPK" name="score" value="{{ $education->major ?? '' }}" class="w-50 text-end" numeric/>
+                    <x-form.input label="Nilai/IPK" name="score" value="{{ $education->score ?? '' }}" class="w-50 text-end" numeric/>
                 </div>
             </div>
             <x-form.textarea label="Keterangan" name="description" value="{{ $education->description ?? '' }}"/>

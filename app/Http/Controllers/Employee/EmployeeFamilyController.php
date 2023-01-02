@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Employee;
 
 use App\Exports\GlobalExport;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Employee\EmployeeContactRequest;
 use App\Http\Requests\Employee\EmployeeFamilyRequest;
 use App\Models\Employee\Employee;
 use App\Models\Employee\EmployeeFamily;
@@ -19,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use RealRashid\SweetAlert\Facades\Alert;
+use Storage;
 use Str;
 use Yajra\DataTables\DataTables;
 
@@ -266,6 +266,7 @@ class EmployeeFamilyController extends Controller
     {
         try {
             $family = EmployeeFamily::findOrFail($id);
+            if(Storage::exists($this->familyPath.$family->filename)) Storage::delete($this->familyPath.$family->filename);
             $family->delete();
 
             DB::commit();

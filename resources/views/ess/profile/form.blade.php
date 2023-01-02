@@ -42,6 +42,7 @@
                     <div class="col-md-6">
                         <x-form.datepicker name="leave_date" label="Tanggal Keluar" value="{{ $employee->leave_date ?? '' }}" />
                         <x-form.input name="attendance_pin" numeric label="PIN Mesin Absen" value="{{ $employee->attendance_pin ?? '' }}" maxlength="5" />
+                        <x-form.select name="religion_id" label="Agama" option="- Pilih Agama -" :datas="$religions" value="{{ $employee->religion_id ?? '' }}" />
                     </div>
                 </div>
             </div>

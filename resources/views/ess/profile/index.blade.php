@@ -35,6 +35,7 @@
                     <x-views.span-inline text="Nomor Telepon" :value="$employee->phone_number" />
                     <x-views.span-inline text="Status Perkawinan" :value="$employee->marital_status_id" />
                     <x-views.span-inline text="Tanggal Keluar" :value="$employee->leave_date ? setDate($employee->leave_date) : ''" />
+                    <x-views.span-inline text="Agama" :value="$masters[$employee->religion_id] ?? ''" />
                 </div>
             </div>
         </div>

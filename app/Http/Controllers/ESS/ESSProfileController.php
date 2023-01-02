@@ -63,11 +63,13 @@ class ESSProfileController extends Controller
         $employee = Employee::find(Auth::user()->employee_id);
         $maritals = AppMasterData::where('app_master_category_code', 'ESPK')->pluck('name', 'id')->toArray();
         $statuses = AppMasterData::where('app_master_category_code', 'ESP')->pluck('name', 'id')->toArray();
+        $religions = AppMasterData::where('app_master_category_code', 'EAG')->pluck('name', 'id')->toArray();
 
         return view('ess.profile.form', [
             'employee' => $employee,
             'maritals' => $maritals,
             'statuses' => $statuses,
+            'religions' => $religions,
         ]);
     }
 
@@ -106,21 +108,11 @@ class ESSProfileController extends Controller
             'email' => $request->input('email'),
             'gender' => $request->input('gender'),
             'attendance_pin' => $request->input('attendance_pin'),
+            'religion_id' => $request->input('religion_id'),
         ]);
 
         Alert::success('Success', 'Profile berhasil diubah');
 
         return redirect()->route(Str::replace('/', '.', $this->menu_path()).'.index');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

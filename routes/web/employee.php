@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Employee\EmployeeAssetController;
 use App\Http\Controllers\Employee\EmployeeContactController;
 use App\Http\Controllers\Employee\EmployeeController;
 use App\Http\Controllers\Employee\EmployeeEducationController;
@@ -133,6 +134,10 @@ Route::name('employees.')->group(function () {
     Route::get('/employees/works/data', [EmployeeWorkController::class, 'data'])->name('works.data');
     Route::get('/employees/works/export', [EmployeeWorkController::class, 'export'])->name('works.export');
     Route::resource('/employees/works', EmployeeWorkController::class);
+
+    Route::get('/employees/assets/data', [EmployeeAssetController::class, 'data'])->name('assets.data');
+    Route::get('/employees/assets/export', [EmployeeAssetController::class, 'export'])->name('assets.export');
+    Route::resource('/employees/assets', EmployeeAssetController::class);
 
     Route::resource('/employees/position-histories', EmployeePositionHistoryController::class);
     Route::get('/employees/position-histories/subMasters/{id}', [EmployeePositionHistoryController::class, 'subMasters'])->name('position-histories.subMasters');

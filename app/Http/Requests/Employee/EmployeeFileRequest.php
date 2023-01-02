@@ -27,6 +27,7 @@ class EmployeeFileRequest extends FormRequest
     public function rules()
     {
         return [
+            'employee_id' => 'required',
             'name' => 'required',
         ];
     }
@@ -34,6 +35,7 @@ class EmployeeFileRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'employee_id.required' => 'Pegawai harus diisi',
             'name.required' => 'Nama file harus diisi',
         ];
     }

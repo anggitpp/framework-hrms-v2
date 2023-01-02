@@ -5,6 +5,7 @@ use App\Http\Controllers\Employee\EmployeeContactController;
 use App\Http\Controllers\Employee\EmployeeController;
 use App\Http\Controllers\Employee\EmployeeEducationController;
 use App\Http\Controllers\Employee\EmployeeFamilyController;
+use App\Http\Controllers\Employee\EmployeeFileController;
 use App\Http\Controllers\Employee\EmployeePositionHistoryController;
 use App\Http\Controllers\Employee\EmployeeSignatureSettingController;
 use App\Http\Controllers\Employee\EmployeeTrainingController;
@@ -138,6 +139,10 @@ Route::name('employees.')->group(function () {
     Route::get('/employees/assets/data', [EmployeeAssetController::class, 'data'])->name('assets.data');
     Route::get('/employees/assets/export', [EmployeeAssetController::class, 'export'])->name('assets.export');
     Route::resource('/employees/assets', EmployeeAssetController::class);
+
+    Route::get('/employees/files/data', [EmployeeFileController::class, 'data'])->name('files.data');
+    Route::get('/employees/files/export', [EmployeeFileController::class, 'export'])->name('files.export');
+    Route::resource('/employees/files', EmployeeFileController::class);
 
     Route::resource('/employees/position-histories', EmployeePositionHistoryController::class);
     Route::get('/employees/position-histories/subMasters/{id}', [EmployeePositionHistoryController::class, 'subMasters'])->name('position-histories.subMasters');

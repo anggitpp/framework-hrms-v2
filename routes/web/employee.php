@@ -8,6 +8,7 @@ use App\Http\Controllers\Employee\EmployeePositionHistoryController;
 use App\Http\Controllers\Employee\EmployeeSignatureSettingController;
 use App\Http\Controllers\Employee\EmployeeTrainingController;
 use App\Http\Controllers\Employee\EmployeeUnitStructureController;
+use App\Http\Controllers\Employee\EmployeeWorkController;
 use Illuminate\Support\Facades\Route;
 
 Route::name('employees.')->group(function () {
@@ -128,6 +129,10 @@ Route::name('employees.')->group(function () {
     Route::get('/employees/trainings/data', [EmployeeTrainingController::class, 'data'])->name('trainings.data');
     Route::get('/employees/trainings/export', [EmployeeTrainingController::class, 'export'])->name('trainings.export');
     Route::resource('/employees/trainings', EmployeeTrainingController::class);
+
+    Route::get('/employees/works/data', [EmployeeWorkController::class, 'data'])->name('works.data');
+    Route::get('/employees/works/export', [EmployeeWorkController::class, 'export'])->name('works.export');
+    Route::resource('/employees/works', EmployeeWorkController::class);
 
     Route::resource('/employees/position-histories', EmployeePositionHistoryController::class);
     Route::get('/employees/position-histories/subMasters/{id}', [EmployeePositionHistoryController::class, 'subMasters'])->name('position-histories.subMasters');

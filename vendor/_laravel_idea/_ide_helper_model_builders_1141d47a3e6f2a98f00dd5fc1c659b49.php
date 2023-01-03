@@ -1,4 +1,4 @@
-<?php //0746b00ecb42d159628eb7f7d53547de
+<?php //5e153e8712b913d78954f963332ce6be
 /** @noinspection all */
 
 namespace LaravelIdea\Helper\App\Models\Employee {
@@ -10,7 +10,9 @@ namespace LaravelIdea\Helper\App\Models\Employee {
     use App\Models\Employee\EmployeeFamily;
     use App\Models\Employee\EmployeeFile;
     use App\Models\Employee\EmployeePosition;
+    use App\Models\Employee\EmployeeRehired;
     use App\Models\Employee\EmployeeSignatureSetting;
+    use App\Models\Employee\EmployeeTermination;
     use App\Models\Employee\EmployeeTraining;
     use App\Models\Employee\EmployeeUnitStructure;
     use App\Models\Employee\EmployeeWork;
@@ -442,6 +444,76 @@ namespace LaravelIdea\Helper\App\Models\Employee {
     class _IH_EmployeePosition_QB extends _BaseBuilder {}
     
     /**
+     * @method EmployeeRehired|null getOrPut($key, $value)
+     * @method EmployeeRehired|$this shift(int $count = 1)
+     * @method EmployeeRehired|null firstOrFail(callable|string $key = null, $operator = null, $value = null)
+     * @method EmployeeRehired|$this pop(int $count = 1)
+     * @method EmployeeRehired|null pull($key, \Closure $default = null)
+     * @method EmployeeRehired|null last(callable $callback = null, \Closure $default = null)
+     * @method EmployeeRehired|$this random(callable|int|null $number = null)
+     * @method EmployeeRehired|null sole(callable|string $key = null, $operator = null, $value = null)
+     * @method EmployeeRehired|null get($key, \Closure $default = null)
+     * @method EmployeeRehired|null first(callable $callback = null, \Closure $default = null)
+     * @method EmployeeRehired|null firstWhere(callable|string $key, $operator = null, $value = null)
+     * @method EmployeeRehired|null find($key, $default = null)
+     * @method EmployeeRehired[] all()
+     */
+    class _IH_EmployeeRehired_C extends _BaseCollection {
+        /**
+         * @param int $size
+         * @return EmployeeRehired[][]
+         */
+        public function chunk($size)
+        {
+            return [];
+        }
+    }
+    
+    /**
+     * @method _IH_EmployeeRehired_QB whereId($value)
+     * @method _IH_EmployeeRehired_QB whereNumber($value)
+     * @method _IH_EmployeeRehired_QB whereEmployeeId($value)
+     * @method _IH_EmployeeRehired_QB whereDescription($value)
+     * @method _IH_EmployeeRehired_QB whereFilename($value)
+     * @method _IH_EmployeeRehired_QB whereEffectiveDate($value)
+     * @method _IH_EmployeeRehired_QB whereApprovedBy($value)
+     * @method _IH_EmployeeRehired_QB whereApprovedStatus($value)
+     * @method _IH_EmployeeRehired_QB whereApprovedDate($value)
+     * @method _IH_EmployeeRehired_QB whereApprovedNote($value)
+     * @method _IH_EmployeeRehired_QB whereCreatedBy($value)
+     * @method _IH_EmployeeRehired_QB whereUpdatedBy($value)
+     * @method _IH_EmployeeRehired_QB whereCreatedAt($value)
+     * @method _IH_EmployeeRehired_QB whereUpdatedAt($value)
+     * @method EmployeeRehired baseSole(array|string $columns = ['*'])
+     * @method EmployeeRehired create(array $attributes = [])
+     * @method _IH_EmployeeRehired_C|EmployeeRehired[] cursor()
+     * @method EmployeeRehired|null|_IH_EmployeeRehired_C|EmployeeRehired[] find($id, array|string $columns = ['*'])
+     * @method _IH_EmployeeRehired_C|EmployeeRehired[] findMany(array|Arrayable $ids, array|string $columns = ['*'])
+     * @method EmployeeRehired|_IH_EmployeeRehired_C|EmployeeRehired[] findOr($id, array|\Closure|string $columns = ['*'], \Closure $callback = null)
+     * @method EmployeeRehired|_IH_EmployeeRehired_C|EmployeeRehired[] findOrFail($id, array|string $columns = ['*'])
+     * @method EmployeeRehired|_IH_EmployeeRehired_C|EmployeeRehired[] findOrNew($id, array|string $columns = ['*'])
+     * @method EmployeeRehired first(array|string $columns = ['*'])
+     * @method EmployeeRehired firstOr(array|\Closure|string $columns = ['*'], \Closure $callback = null)
+     * @method EmployeeRehired firstOrCreate(array $attributes = [], array $values = [])
+     * @method EmployeeRehired firstOrFail(array|string $columns = ['*'])
+     * @method EmployeeRehired firstOrNew(array $attributes = [], array $values = [])
+     * @method EmployeeRehired firstWhere(array|\Closure|Expression|string $column, $operator = null, $value = null, string $boolean = 'and')
+     * @method EmployeeRehired forceCreate(array $attributes)
+     * @method _IH_EmployeeRehired_C|EmployeeRehired[] fromQuery(string $query, array $bindings = [])
+     * @method _IH_EmployeeRehired_C|EmployeeRehired[] get(array|string $columns = ['*'])
+     * @method EmployeeRehired getModel()
+     * @method EmployeeRehired[] getModels(array|string $columns = ['*'])
+     * @method _IH_EmployeeRehired_C|EmployeeRehired[] hydrate(array $items)
+     * @method EmployeeRehired make(array $attributes = [])
+     * @method EmployeeRehired newModelInstance(array $attributes = [])
+     * @method LengthAwarePaginator|EmployeeRehired[]|_IH_EmployeeRehired_C paginate(\Closure|int|null $perPage = null, array|string $columns = ['*'], string $pageName = 'page', int|null $page = null)
+     * @method Paginator|EmployeeRehired[]|_IH_EmployeeRehired_C simplePaginate(int|null $perPage = null, array|string $columns = ['*'], string $pageName = 'page', int|null $page = null)
+     * @method EmployeeRehired sole(array|string $columns = ['*'])
+     * @method EmployeeRehired updateOrCreate(array $attributes, array $values = [])
+     */
+    class _IH_EmployeeRehired_QB extends _BaseBuilder {}
+    
+    /**
      * @method EmployeeSignatureSetting|null getOrPut($key, $value)
      * @method EmployeeSignatureSetting|$this shift(int $count = 1)
      * @method EmployeeSignatureSetting|null firstOrFail(callable|string $key = null, $operator = null, $value = null)
@@ -506,6 +578,79 @@ namespace LaravelIdea\Helper\App\Models\Employee {
      * @method _IH_EmployeeSignatureSetting_QB active()
      */
     class _IH_EmployeeSignatureSetting_QB extends _BaseBuilder {}
+    
+    /**
+     * @method EmployeeTermination|null getOrPut($key, $value)
+     * @method EmployeeTermination|$this shift(int $count = 1)
+     * @method EmployeeTermination|null firstOrFail(callable|string $key = null, $operator = null, $value = null)
+     * @method EmployeeTermination|$this pop(int $count = 1)
+     * @method EmployeeTermination|null pull($key, \Closure $default = null)
+     * @method EmployeeTermination|null last(callable $callback = null, \Closure $default = null)
+     * @method EmployeeTermination|$this random(callable|int|null $number = null)
+     * @method EmployeeTermination|null sole(callable|string $key = null, $operator = null, $value = null)
+     * @method EmployeeTermination|null get($key, \Closure $default = null)
+     * @method EmployeeTermination|null first(callable $callback = null, \Closure $default = null)
+     * @method EmployeeTermination|null firstWhere(callable|string $key, $operator = null, $value = null)
+     * @method EmployeeTermination|null find($key, $default = null)
+     * @method EmployeeTermination[] all()
+     */
+    class _IH_EmployeeTermination_C extends _BaseCollection {
+        /**
+         * @param int $size
+         * @return EmployeeTermination[][]
+         */
+        public function chunk($size)
+        {
+            return [];
+        }
+    }
+    
+    /**
+     * @method _IH_EmployeeTermination_QB whereId($value)
+     * @method _IH_EmployeeTermination_QB whereNumber($value)
+     * @method _IH_EmployeeTermination_QB whereEmployeeId($value)
+     * @method _IH_EmployeeTermination_QB whereReasonId($value)
+     * @method _IH_EmployeeTermination_QB whereTypeId($value)
+     * @method _IH_EmployeeTermination_QB whereDescription($value)
+     * @method _IH_EmployeeTermination_QB whereFilename($value)
+     * @method _IH_EmployeeTermination_QB whereEffectiveDate($value)
+     * @method _IH_EmployeeTermination_QB whereNote($value)
+     * @method _IH_EmployeeTermination_QB whereApprovedBy($value)
+     * @method _IH_EmployeeTermination_QB whereApprovedStatus($value)
+     * @method _IH_EmployeeTermination_QB whereApprovedDate($value)
+     * @method _IH_EmployeeTermination_QB whereApprovedNote($value)
+     * @method _IH_EmployeeTermination_QB whereCreatedBy($value)
+     * @method _IH_EmployeeTermination_QB whereUpdatedBy($value)
+     * @method _IH_EmployeeTermination_QB whereCreatedAt($value)
+     * @method _IH_EmployeeTermination_QB whereUpdatedAt($value)
+     * @method EmployeeTermination baseSole(array|string $columns = ['*'])
+     * @method EmployeeTermination create(array $attributes = [])
+     * @method _IH_EmployeeTermination_C|EmployeeTermination[] cursor()
+     * @method EmployeeTermination|null|_IH_EmployeeTermination_C|EmployeeTermination[] find($id, array|string $columns = ['*'])
+     * @method _IH_EmployeeTermination_C|EmployeeTermination[] findMany(array|Arrayable $ids, array|string $columns = ['*'])
+     * @method EmployeeTermination|_IH_EmployeeTermination_C|EmployeeTermination[] findOr($id, array|\Closure|string $columns = ['*'], \Closure $callback = null)
+     * @method EmployeeTermination|_IH_EmployeeTermination_C|EmployeeTermination[] findOrFail($id, array|string $columns = ['*'])
+     * @method EmployeeTermination|_IH_EmployeeTermination_C|EmployeeTermination[] findOrNew($id, array|string $columns = ['*'])
+     * @method EmployeeTermination first(array|string $columns = ['*'])
+     * @method EmployeeTermination firstOr(array|\Closure|string $columns = ['*'], \Closure $callback = null)
+     * @method EmployeeTermination firstOrCreate(array $attributes = [], array $values = [])
+     * @method EmployeeTermination firstOrFail(array|string $columns = ['*'])
+     * @method EmployeeTermination firstOrNew(array $attributes = [], array $values = [])
+     * @method EmployeeTermination firstWhere(array|\Closure|Expression|string $column, $operator = null, $value = null, string $boolean = 'and')
+     * @method EmployeeTermination forceCreate(array $attributes)
+     * @method _IH_EmployeeTermination_C|EmployeeTermination[] fromQuery(string $query, array $bindings = [])
+     * @method _IH_EmployeeTermination_C|EmployeeTermination[] get(array|string $columns = ['*'])
+     * @method EmployeeTermination getModel()
+     * @method EmployeeTermination[] getModels(array|string $columns = ['*'])
+     * @method _IH_EmployeeTermination_C|EmployeeTermination[] hydrate(array $items)
+     * @method EmployeeTermination make(array $attributes = [])
+     * @method EmployeeTermination newModelInstance(array $attributes = [])
+     * @method LengthAwarePaginator|EmployeeTermination[]|_IH_EmployeeTermination_C paginate(\Closure|int|null $perPage = null, array|string $columns = ['*'], string $pageName = 'page', int|null $page = null)
+     * @method Paginator|EmployeeTermination[]|_IH_EmployeeTermination_C simplePaginate(int|null $perPage = null, array|string $columns = ['*'], string $pageName = 'page', int|null $page = null)
+     * @method EmployeeTermination sole(array|string $columns = ['*'])
+     * @method EmployeeTermination updateOrCreate(array $attributes, array $values = [])
+     */
+    class _IH_EmployeeTermination_QB extends _BaseBuilder {}
     
     /**
      * @method EmployeeTraining|null getOrPut($key, $value)

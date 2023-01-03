@@ -1,4 +1,4 @@
-<?php //aaad0698133a284b1f9e42fb4ded392e
+<?php //1c1d6e4221a73cbde6db971043da93b5
 /** @noinspection all */
 
 namespace App\Models\Employee {
@@ -21,8 +21,12 @@ namespace App\Models\Employee {
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeFile_QB;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeePosition_C;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeePosition_QB;
+    use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeRehired_C;
+    use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeRehired_QB;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeSignatureSetting_C;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeSignatureSetting_QB;
+    use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeTermination_C;
+    use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeTermination_QB;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeTraining_C;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeTraining_QB;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeUnitStructure_C;
@@ -73,7 +77,7 @@ namespace App\Models\Employee {
      * @method false|int increment(string $column, float|int $amount = 1, array $extra = [])
      * @method false|int decrement(string $column, float|int $amount = 1, array $extra = [])
      * @method static _IH_Employee_C|Employee[] all()
-     * @foreignLinks id,\App\Models\Setting\User,employee_id|id,\App\Models\Employee\EmployeePosition,employee_id|id,\App\Models\Attendance\Attendance,employee_id|id,\App\Models\Attendance\AttendanceWorkSchedule,employee_id|id,\App\Models\ESS\EssTimesheet,employee_id|id,\App\Models\Attendance\AttendanceLeave,employee_id|id,\App\Models\Attendance\AttendancePermission,employee_id|id,\App\Models\Attendance\AttendanceOvertime,employee_id|id,\App\Models\Attendance\AttendanceCorrection,employee_id|id,\App\Models\Employee\EmployeeSignatureSetting,employee_id|id,\App\Models\Employee\EmployeeFamily,employee_id|id,\App\Models\Employee\EmployeeEducation,employee_id|id,\App\Models\Employee\EmployeeContact,employee_id|id,\App\Models\Employee\EmployeeTraining,employee_id|id,\App\Models\Employee\EmployeeWork,employee_id|id,\App\Models\Employee\EmployeeAsset,employee_id|id,\App\Models\Employee\EmployeeFile,employee_id
+     * @foreignLinks id,\App\Models\Setting\User,employee_id|id,\App\Models\Employee\EmployeePosition,employee_id|id,\App\Models\Attendance\Attendance,employee_id|id,\App\Models\Attendance\AttendanceWorkSchedule,employee_id|id,\App\Models\ESS\EssTimesheet,employee_id|id,\App\Models\Attendance\AttendanceLeave,employee_id|id,\App\Models\Attendance\AttendancePermission,employee_id|id,\App\Models\Attendance\AttendanceOvertime,employee_id|id,\App\Models\Attendance\AttendanceCorrection,employee_id|id,\App\Models\Employee\EmployeeSignatureSetting,employee_id|id,\App\Models\Employee\EmployeeFamily,employee_id|id,\App\Models\Employee\EmployeeEducation,employee_id|id,\App\Models\Employee\EmployeeContact,employee_id|id,\App\Models\Employee\EmployeeTraining,employee_id|id,\App\Models\Employee\EmployeeWork,employee_id|id,\App\Models\Employee\EmployeeAsset,employee_id|id,\App\Models\Employee\EmployeeFile,employee_id|id,\App\Models\Employee\EmployeeTermination,employee_id|id,\App\Models\Employee\EmployeeRehired,employee_id
      * @mixin _IH_Employee_QB
      */
     class Employee extends Model {}
@@ -276,6 +280,36 @@ namespace App\Models\Employee {
     
     /**
      * @property int $id
+     * @property string $number
+     * @property int $employee_id
+     * @property Carbon $date
+     * @property string|null $description
+     * @property string|null $filename
+     * @property Carbon $effective_date
+     * @property string|null $approved_by
+     * @property string|null $approved_status
+     * @property Carbon|null $approved_date
+     * @property string|null $approved_note
+     * @property string|null $created_by
+     * @property string|null $updated_by
+     * @property Carbon|null $created_at
+     * @property Carbon|null $updated_at
+     * @method static _IH_EmployeeRehired_QB onWriteConnection()
+     * @method _IH_EmployeeRehired_QB newQuery()
+     * @method static _IH_EmployeeRehired_QB on(null|string $connection = null)
+     * @method static _IH_EmployeeRehired_QB query()
+     * @method static _IH_EmployeeRehired_QB with(array|string $relations)
+     * @method _IH_EmployeeRehired_QB newModelQuery()
+     * @method false|int increment(string $column, float|int $amount = 1, array $extra = [])
+     * @method false|int decrement(string $column, float|int $amount = 1, array $extra = [])
+     * @method static _IH_EmployeeRehired_C|EmployeeRehired[] all()
+     * @ownLinks employee_id,\App\Models\Employee\Employee,id
+     * @mixin _IH_EmployeeRehired_QB
+     */
+    class EmployeeRehired extends Model {}
+    
+    /**
+     * @property int $id
      * @property int|null $location_id
      * @property int $employee_id
      * @property string|null $description
@@ -301,6 +335,39 @@ namespace App\Models\Employee {
      * @mixin _IH_EmployeeSignatureSetting_QB
      */
     class EmployeeSignatureSetting extends Model {}
+    
+    /**
+     * @property int $id
+     * @property string $number
+     * @property int $employee_id
+     * @property int $reason_id
+     * @property int $type_id
+     * @property Carbon $date
+     * @property string|null $description
+     * @property string|null $filename
+     * @property Carbon $effective_date
+     * @property string|null $note
+     * @property string|null $approved_by
+     * @property string|null $approved_status
+     * @property Carbon|null $approved_date
+     * @property string|null $approved_note
+     * @property string|null $created_by
+     * @property string|null $updated_by
+     * @property Carbon|null $created_at
+     * @property Carbon|null $updated_at
+     * @method static _IH_EmployeeTermination_QB onWriteConnection()
+     * @method _IH_EmployeeTermination_QB newQuery()
+     * @method static _IH_EmployeeTermination_QB on(null|string $connection = null)
+     * @method static _IH_EmployeeTermination_QB query()
+     * @method static _IH_EmployeeTermination_QB with(array|string $relations)
+     * @method _IH_EmployeeTermination_QB newModelQuery()
+     * @method false|int increment(string $column, float|int $amount = 1, array $extra = [])
+     * @method false|int decrement(string $column, float|int $amount = 1, array $extra = [])
+     * @method static _IH_EmployeeTermination_C|EmployeeTermination[] all()
+     * @ownLinks employee_id,\App\Models\Employee\Employee,id
+     * @mixin _IH_EmployeeTermination_QB
+     */
+    class EmployeeTermination extends Model {}
     
     /**
      * @property int $id

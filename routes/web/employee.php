@@ -8,6 +8,7 @@ use App\Http\Controllers\Employee\EmployeeFamilyController;
 use App\Http\Controllers\Employee\EmployeeFileController;
 use App\Http\Controllers\Employee\EmployeePositionHistoryController;
 use App\Http\Controllers\Employee\EmployeeSignatureSettingController;
+use App\Http\Controllers\Employee\EmployeeTerminationController;
 use App\Http\Controllers\Employee\EmployeeTrainingController;
 use App\Http\Controllers\Employee\EmployeeUnitStructureController;
 use App\Http\Controllers\Employee\EmployeeWorkController;
@@ -143,6 +144,13 @@ Route::name('employees.')->group(function () {
     Route::get('/employees/files/data', [EmployeeFileController::class, 'data'])->name('files.data');
     Route::get('/employees/files/export', [EmployeeFileController::class, 'export'])->name('files.export');
     Route::resource('/employees/files', EmployeeFileController::class);
+
+    Route::get('/employees/terminations/data', [EmployeeTerminationController::class, 'data'])->name('terminations.data');
+    Route::get('/employees/terminations/export', [EmployeeTerminationController::class, 'export'])->name('terminations.export');
+    Route::get('/employees/terminations/employee', [EmployeeTerminationController::class, 'employee'])->name('terminations.employee');
+    Route::get('/employees/terminations/{id}/approve', [EmployeeTerminationController::class, 'approve'])->name('terminations.approve');
+    Route::patch('/employees/terminations/{id}/updateApprove', [EmployeeTerminationController::class, 'updateApprove'])->name('terminations.updateApprove');
+    Route::resource('/employees/terminations', EmployeeTerminationController::class);
 
     Route::resource('/employees/position-histories', EmployeePositionHistoryController::class);
     Route::get('/employees/position-histories/subMasters/{id}', [EmployeePositionHistoryController::class, 'subMasters'])->name('position-histories.subMasters');

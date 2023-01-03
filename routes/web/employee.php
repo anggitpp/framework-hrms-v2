@@ -7,6 +7,7 @@ use App\Http\Controllers\Employee\EmployeeEducationController;
 use App\Http\Controllers\Employee\EmployeeFamilyController;
 use App\Http\Controllers\Employee\EmployeeFileController;
 use App\Http\Controllers\Employee\EmployeePositionHistoryController;
+use App\Http\Controllers\Employee\EmployeeRehiredController;
 use App\Http\Controllers\Employee\EmployeeSignatureSettingController;
 use App\Http\Controllers\Employee\EmployeeTerminationController;
 use App\Http\Controllers\Employee\EmployeeTrainingController;
@@ -151,6 +152,13 @@ Route::name('employees.')->group(function () {
     Route::get('/employees/terminations/{id}/approve', [EmployeeTerminationController::class, 'approve'])->name('terminations.approve');
     Route::patch('/employees/terminations/{id}/updateApprove', [EmployeeTerminationController::class, 'updateApprove'])->name('terminations.updateApprove');
     Route::resource('/employees/terminations', EmployeeTerminationController::class);
+
+    Route::get('/employees/rehireds/data', [EmployeeRehiredController::class, 'data'])->name('rehireds.data');
+    Route::get('/employees/rehireds/export', [EmployeeRehiredController::class, 'export'])->name('rehireds.export');
+    Route::get('/employees/rehireds/employee', [EmployeeRehiredController::class, 'employee'])->name('rehireds.employee');
+    Route::get('/employees/rehireds/{id}/approve', [EmployeeRehiredController::class, 'approve'])->name('rehireds.approve');
+    Route::patch('/employees/rehireds/{id}/updateApprove', [EmployeeRehiredController::class, 'updateApprove'])->name('rehireds.updateApprove');
+    Route::resource('/employees/rehireds', EmployeeRehiredController::class);
 
     Route::resource('/employees/position-histories', EmployeePositionHistoryController::class);
     Route::get('/employees/position-histories/subMasters/{id}', [EmployeePositionHistoryController::class, 'subMasters'])->name('position-histories.subMasters');

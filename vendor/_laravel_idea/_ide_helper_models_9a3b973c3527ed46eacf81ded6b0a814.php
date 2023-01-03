@@ -1,4 +1,4 @@
-<?php //1c1d6e4221a73cbde6db971043da93b5
+<?php //3918a5ec463bdac8a59cdaff0df3a3e0
 /** @noinspection all */
 
 namespace App\Models\Employee {
@@ -294,6 +294,8 @@ namespace App\Models\Employee {
      * @property string|null $updated_by
      * @property Carbon|null $created_at
      * @property Carbon|null $updated_at
+     * @property Employee $employee
+     * @method BelongsTo|_IH_Employee_QB employee()
      * @method static _IH_EmployeeRehired_QB onWriteConnection()
      * @method _IH_EmployeeRehired_QB newQuery()
      * @method static _IH_EmployeeRehired_QB on(null|string $connection = null)
@@ -355,6 +357,12 @@ namespace App\Models\Employee {
      * @property string|null $updated_by
      * @property Carbon|null $created_at
      * @property Carbon|null $updated_at
+     * @property Employee $employee
+     * @method BelongsTo|_IH_Employee_QB employee()
+     * @property AppMasterData $reason
+     * @method BelongsTo|_IH_AppMasterData_QB reason()
+     * @property AppMasterData $type
+     * @method BelongsTo|_IH_AppMasterData_QB type()
      * @method static _IH_EmployeeTermination_QB onWriteConnection()
      * @method _IH_EmployeeTermination_QB newQuery()
      * @method static _IH_EmployeeTermination_QB on(null|string $connection = null)

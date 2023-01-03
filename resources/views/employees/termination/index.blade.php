@@ -50,7 +50,7 @@
                     $route = route(Str::replace('/', '.', $menu_path).'.data');
                     $datas = array("number", "employee_number", "name", "date", "reason_id", "type_id", "effective_date\ttext-center", "filename\ttext-center", "approved_status", "action\ttrue\tfalse");
                 @endphp
-                <x-views.datatables :datas="$datas" :route="$route" def-order="2"/>
+                <x-views.datatables :datas="$datas" :route="$route" def-order="3"/>
                 <x-views.delete-form/>
             </div>
         </div>

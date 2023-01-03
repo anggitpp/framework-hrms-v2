@@ -245,7 +245,12 @@ class EmployeeAssetController extends Controller
         try {
             $asset = EmployeeAsset::findOrFail($id);
 
-            if($request->get('isDelete') == 't') deleteFile($this->assetPath.$asset->filename);
+            if($request->get('isDelete') == 't'){
+                deleteFile($this->assetPath.$asset->filename);
+                $asset->update([
+                    'filename' => null,
+                ]);
+            }
             if ($request->hasFile('filename')) {
                 $resize = false;
                 $extension = $request->file('filename')->extension();

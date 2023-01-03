@@ -208,7 +208,12 @@ class EmployeeFileController extends Controller
         try {
             $file = EmployeeFile::findOrFail($id);
 
-            if($request->get('isDelete') == 't') deleteFile($this->filePath.$file->filename);
+            if($request->get('isDelete') == 't'){
+                deleteFile($this->filePath.$file->filename);
+                $file->update([
+                    'filename' => null,
+                ]);
+            }
             if ($request->hasFile('filename')) {
                 $resize = false;
                 $extension = $request->file('filename')->extension();

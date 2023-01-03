@@ -240,7 +240,12 @@ class EmployeeTrainingController extends Controller
         try {
             $training = EmployeeTraining::findOrFail($id);
 
-            if($request->get('isDelete') == 't') deleteFile($this->trainingPath.$training->filename);
+            if($request->get('isDelete') == 't'){
+                deleteFile($this->trainingPath.$training->filename);
+                $training->update([
+                    'filename' => null,
+                ]);
+            }
             if ($request->hasFile('filename')) {
                 $resize = false;
                 $extension = $request->file('filename')->extension();

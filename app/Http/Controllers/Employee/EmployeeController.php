@@ -535,7 +535,12 @@ class EmployeeController extends Controller
         $family = EmployeeFamily::find($id);
 
         try {
-            if($request->get('isDelete') == 't') deleteFile($this->familyPath.$family->filename);
+            if($request->get('isDelete') == 't'){
+                deleteFile($this->familyPath.$family->filename);
+                $family->update([
+                    'filename' => null,
+                ]);
+            }
             if ($request->hasFile('filename')) {
                 $resize = false;
                 $extension = $request->file('filename')->extension();
@@ -659,7 +664,12 @@ class EmployeeController extends Controller
         $education = EmployeeEducation::find($id);
 
         try {
-            if($request->get('isDelete') == 't') deleteFile($this->educationPath.$education->filename);
+            if($request->get('isDelete') == 't'){
+                deleteFile($this->educationPath.$education->filename);
+                $education->update([
+                    'filename' => null,
+                ]);
+            }
             if ($request->hasFile('filename')) {
                 $resize = false;
                 $extension = $request->file('filename')->extension();
@@ -998,7 +1008,12 @@ class EmployeeController extends Controller
         $training = EmployeeTraining::find($id);
 
         try {
-            if($request->get('isDelete') == 't') deleteFile($this->trainingPath.$training->filename);
+            if($request->get('isDelete') == 't'){
+                deleteFile($this->trainingPath.$training->filename);
+                $training->update([
+                    'filename' => null,
+                ]);
+            }
             if ($request->hasFile('filename')) {
                 $resize = false;
                 $extension = $request->file('filename')->extension();
@@ -1103,7 +1118,12 @@ class EmployeeController extends Controller
         $work = EmployeeWork::find($id);
 
         try {
-            if($request->get('isDelete') == 't') deleteFile($this->workPath.$work->filename);
+            if($request->get('isDelete') == 't'){
+                deleteFile($this->workPath.$work->filename);
+                $work->update([
+                    'filename' => null,
+                ]);
+            }
             if ($request->hasFile('filename')) {
                 $resize = false;
                 $extension = $request->file('filename')->extension();
@@ -1220,7 +1240,12 @@ class EmployeeController extends Controller
         $asset = EmployeeAsset::find($id);
 
         try {
-            if($request->get('isDelete') == 't') deleteFile($this->assetPath.$asset->filename);
+            if($request->get('isDelete') == 't'){
+                deleteFile($this->assetPath.$asset->filename);
+                $asset->update([
+                    'filename' => null,
+                ]);
+            }
             if ($request->hasFile('filename')) {
                 $resize = false;
                 $extension = $request->file('filename')->extension();
@@ -1322,7 +1347,12 @@ class EmployeeController extends Controller
         $file = EmployeeFile::find($id);
 
         try {
-            if($request->get('isDelete') == 't') deleteFile($this->filePath.$file->filename);
+            if($request->get('isDelete') == 't'){
+                deleteFile($this->filePath.$file->filename);
+                $file->update([
+                    'filename' => null,
+                ]);
+            }
             if ($request->hasFile('filename')) {
                 $resize = false;
                 $extension = $request->file('filename')->extension();

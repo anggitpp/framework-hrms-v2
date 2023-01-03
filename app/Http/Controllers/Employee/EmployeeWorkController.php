@@ -219,7 +219,12 @@ class EmployeeWorkController extends Controller
         try {
             $work = EmployeeWork::findOrFail($id);
 
-            if($request->get('isDelete') == 't') deleteFile($this->workPath.$work->filename);
+            if($request->get('isDelete') == 't'){
+                deleteFile($this->workPath.$work->filename);
+                $work->update([
+                    'filename' => null,
+                ]);
+            }
             if ($request->hasFile('filename')) {
                 $resize = false;
                 $extension = $request->file('filename')->extension();

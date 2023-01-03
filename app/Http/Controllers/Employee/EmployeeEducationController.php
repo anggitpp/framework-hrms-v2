@@ -221,7 +221,12 @@ class EmployeeEducationController extends Controller
         try {
             $education = EmployeeEducation::findOrFail($id);
 
-            if($request->get('isDelete') == 't') deleteFile($this->educationPath.$education->filename);
+            if($request->get('isDelete') == 't'){
+                deleteFile($this->educationPath.$education->filename);
+                $education->update([
+                    'filename' => null,
+                ]);
+            }
             if ($request->hasFile('filename')) {
                 $resize = false;
                 $extension = $request->file('filename')->extension();

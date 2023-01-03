@@ -225,7 +225,12 @@ class EmployeeFamilyController extends Controller
         try {
             $family = EmployeeFamily::findOrFail($id);
 
-            if($request->get('isDelete') == 't') deleteFile($this->familyPath.$family->filename);
+            if($request->get('isDelete') == 't'){
+                deleteFile($this->familyPath.$family->filename);
+                $family->update([
+                    'filename' => null,
+                ]);
+            }
             if ($request->hasFile('filename')) {
                 $resize = false;
                 $extension = $request->file('filename')->extension();

@@ -275,7 +275,12 @@ class EmployeeTerminationController extends Controller
         try {
             $termination = EmployeeTermination::findOrFail($id);
 
-            if($request->get('isDelete') == 't') deleteFile($this->terminationPath.$termination->filename);
+            if($request->get('isDelete') == 't'){
+                deleteFile($this->terminationPath.$termination->filename);
+                $termination->update([
+                    'filename' => null,
+                ]);
+            }
             if ($request->hasFile('filename')) {
                 $resize = false;
                 $extension = $request->file('filename')->extension();

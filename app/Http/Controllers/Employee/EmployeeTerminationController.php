@@ -243,6 +243,8 @@ class EmployeeTerminationController extends Controller
         $user = \Session::get('user');
 
         $data['termination'] = EmployeeTermination::findOrFail($id);
+        $data['termination']->employee->position->unit_id = AppMasterData::find($data['termination']->employee->position->unit_id)->name;
+        $data['termination']->employee->position->rank_id = AppMasterData::find($data['termination']->employee->position->rank_id)->name;
         $data['employees'] = Employee::select(['name', 'id', 'employee_number', DB::raw("CONCAT(employee_number, ' - ', name) as namaPegawai")])
             ->whereHas('position', function ($query) use ($user) {
                 if(!$user->hasPermissionTo('lvl3 '.$this->menu_path())) $query->where('leader_id', $user->employee_id);
@@ -250,10 +252,11 @@ class EmployeeTerminationController extends Controller
             ->orderBy('name')
             ->pluck("namaPegawai", 'id')
             ->toArray();
-        $data['categories'] = AppMasterData::whereAppMasterCategoryCode('EKAS')
+        $data['reasons'] = AppMasterData::whereAppMasterCategoryCode('EKPP')
             ->pluck('name', 'id')
             ->toArray();
-        $data['types'] = AppMasterData::whereAppMasterCategoryCode('ETAS')
+        $data['types'] = AppMasterData::whereAppMasterCategoryCode('ESP')
+            ->whereNot('id', AppParameter::whereCode('SAP')->first()->value)
             ->pluck('name', 'id')
             ->toArray();
 

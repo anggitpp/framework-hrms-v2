@@ -112,6 +112,31 @@ function deleteFile($path): bool
     return true;
 }
 
+function defaultUploadFile($model, $request, $path, $filename,  $fieldName = 'filename')
+{
+    if($request->get('isDelete') == 't'){
+        deleteFile($path.$model->$fieldName);
+        $model->update([
+            $fieldName => null,
+        ]);
+    }
+    if ($request->hasFile('filename')) {
+        $resize = false;
+        $extension = $request->file($fieldName)->extension();
+        if ($extension == 'png' || $extension == 'jpg' || $extension == 'jpeg') $resize = true;
+
+        $resUpload = uploadFile(
+            $request->file($fieldName),
+            $filename,
+            $path, $resize);
+
+        $model->update([
+            'filename' => $resUpload,
+        ]);
+    }
+}
+
+
 function generatePagination($items, $form = 'form-filter')
 {
     $pagination = $items->withQueryString()->onEachSide(0)->links();

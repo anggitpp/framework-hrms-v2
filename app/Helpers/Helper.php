@@ -112,7 +112,7 @@ function deleteFile($path): bool
     return true;
 }
 
-function defaultUploadFile($model, $request, $path, $filename,  $fieldName = 'filename')
+function defaultUploadFile($model, $request, $path, $filename,  $fieldName = 'filename'): void
 {
     if($request->get('isDelete') == 't'){
         deleteFile($path.$model->$fieldName);
@@ -137,7 +137,7 @@ function defaultUploadFile($model, $request, $path, $filename,  $fieldName = 'fi
 }
 
 
-function generatePagination($items, $form = 'form-filter')
+function generatePagination($items, $form = 'form-filter'): void
 {
     $pagination = $items->withQueryString()->onEachSide(0)->links();
     $arrNumber = array("10", "50", "100", "500", "1000");

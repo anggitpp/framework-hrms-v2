@@ -3,6 +3,7 @@
 use App\Http\Controllers\ESS\ESSAttendanceRecapController;
 use App\Http\Controllers\ESS\ESSContactController;
 use App\Http\Controllers\ESS\ESSCorrectionController;
+use App\Http\Controllers\ESS\ESSEducationController;
 use App\Http\Controllers\ESS\ESSFamilyController;
 use App\Http\Controllers\ESS\ESSLeaveController;
 use App\Http\Controllers\ESS\ESSOvertimeController;
@@ -41,6 +42,9 @@ Route::name('ess.')->group(function () {
 
     Route::get('/ess/families/data', [ESSFamilyController::class, 'data'])->name('families.data');
     Route::resource('/ess/families', ESSFamilyController::class);
+
+    Route::get('/ess/educations/data', [ESSEducationController::class, 'data'])->name('educations.data');
+    Route::resource('/ess/educations', ESSEducationController::class);
 });
 
 

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ESS\ESSAttendanceRecapController;
+use App\Http\Controllers\ESS\ESSContactController;
 use App\Http\Controllers\ESS\ESSCorrectionController;
 use App\Http\Controllers\ESS\ESSLeaveController;
 use App\Http\Controllers\ESS\ESSOvertimeController;
@@ -33,6 +34,9 @@ Route::name('ess.')->group(function () {
     Route::get('/ess/profile', [ESSProfileController::class, 'index'])->name('profile.index');
     Route::get('/ess/profile/edit', [ESSProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/ess/profile', [ESSProfileController::class, 'update'])->name('profile.update');
+
+    Route::get('/ess/contacts/data', [ESSContactController::class, 'data'])->name('contacts.data');
+    Route::resource('/ess/contacts', ESSContactController::class);
 });
 
 

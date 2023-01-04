@@ -8,6 +8,7 @@ use App\Http\Controllers\ESS\ESSFamilyController;
 use App\Http\Controllers\ESS\ESSLeaveController;
 use App\Http\Controllers\ESS\ESSOvertimeController;
 use App\Http\Controllers\ESS\ESSPermissionController;
+use App\Http\Controllers\ESS\ESSPositionController;
 use App\Http\Controllers\ESS\ESSProfileController;
 use App\Http\Controllers\ESS\EssTimesheetController;
 use Illuminate\Support\Facades\Route;
@@ -45,6 +46,9 @@ Route::name('ess.')->group(function () {
 
     Route::get('/ess/educations/data', [ESSEducationController::class, 'data'])->name('educations.data');
     Route::resource('/ess/educations', ESSEducationController::class);
+
+    Route::get('/ess/positions/data', [ESSPositionController::class, 'data'])->name('positions.data');
+    Route::get('/ess/positions', [ESSPositionController::class, 'index'])->name('positions.index');
 });
 
 

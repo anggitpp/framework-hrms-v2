@@ -15,6 +15,7 @@ use App\Http\Controllers\Attendance\AttendanceRecapController;
 use App\Http\Controllers\Attendance\AttendanceShiftController;
 use App\Http\Controllers\Attendance\AttendanceWorkScheduleController;
 use App\Http\Controllers\Attendance\AttendanceMachineController;
+use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\ESS\ESSAttendanceRecapController;
 use App\Http\Controllers\ESS\ESSCorrectionController;
 use App\Http\Controllers\ESS\ESSOvertimeController;
@@ -103,6 +104,8 @@ Route::get('/app/edit-password/{currentRoute}', [AppController::class, 'editPass
 Route::patch('/app/update-password/{currentRoute}', [AppController::class, 'updatePassword'])->name('app.update-password');
 
 Route::get('/app/update-menu', [AppController::class, 'updateMenu'])->name('app.update-menu');
+
+Route::get('/dashboard/dashboards', [DashboardController::class, 'index'])->name('dashboard.dashboards.index');
 
 Route::get('/migration/update-pin', [MigrationController::class, 'updatePin'])->name('migration.update-pin');
 

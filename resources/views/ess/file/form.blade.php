@@ -1,0 +1,17 @@
+<div class="card">
+    <form method="POST" id="form-edit" action="{{ empty($file) ? route(Str::replace('/', '.', $menu_path).'.store') : route(Str::replace('/', '.', $menu_path).'.update', $file->id) }}" enctype="multipart/form-data">
+        @csrf
+        @if(!empty($file))
+            @method('PATCH')
+        @endif
+        <x-form.modal-header title="{{ empty($file) ? __('Tambah File') : __('Edit File') }}" />
+        <div class="separator mt-2 mb-5 d-flex"></div>
+        <div class="card-body pt-0">
+            <input type="hidden" name="employee_id" value="{{ Auth::user()->employee_id }}"/>
+            <x-form.input label="Nama" name="name" value="{{ $file->name ?? '' }}" required/>
+            <x-form.textarea label="Keterangan" name="description" value="{{ $file->description ?? '' }}"/>
+            <x-form.file label="File Pendukung" name="filename" value="{{ $file->filename ?? '' }}"/>
+        </div>
+        <x-form.modal-footer />
+    </form>
+</div>

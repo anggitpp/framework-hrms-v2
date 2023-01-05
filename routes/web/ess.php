@@ -6,6 +6,7 @@ use App\Http\Controllers\ESS\ESSContactController;
 use App\Http\Controllers\ESS\ESSCorrectionController;
 use App\Http\Controllers\ESS\ESSEducationController;
 use App\Http\Controllers\ESS\ESSFamilyController;
+use App\Http\Controllers\ESS\ESSFileController;
 use App\Http\Controllers\ESS\ESSLeaveController;
 use App\Http\Controllers\ESS\ESSOvertimeController;
 use App\Http\Controllers\ESS\ESSPermissionController;
@@ -61,6 +62,9 @@ Route::name('ess.')->group(function () {
 
     Route::get('/ess/assets/data', [ESSAssetController::class, 'data'])->name('assets.data');
     Route::resource('/ess/assets', ESSAssetController::class);
+
+    Route::get('/ess/files/data', [ESSFileController::class, 'data'])->name('files.data');
+    Route::resource('/ess/files', ESSFileController::class);
 });
 
 

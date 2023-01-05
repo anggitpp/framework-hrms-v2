@@ -22,7 +22,6 @@ Route::name('attendances.')->group(function () {
     Route::resource('/attendances/location-settings', AttendanceLocationSettingController::class);
 
     Route::get('/attendances/dailies/export', [AttendanceDailyController::class, 'export'])->name('dailies.export');
-    Route::get('/attendances/dailies/checkWFH', [AttendanceDailyController::class, 'checkWFH'])->name('dailies.checkWFH');
     Route::get('/attendances/dailies/data', [AttendanceDailyController::class, 'data'])->name('dailies.data');
     Route::resource('/attendances/dailies', AttendanceDailyController::class);
 

@@ -190,11 +190,9 @@ class AttendanceDailyController extends Controller
     public function create()
     {
         $employees = Session::get('employees');
-        $types = array('1' => 'WFO', '2' => 'WFH', '3' => 'Dinas');
 
         return view('attendances.daily.form', [
             'employees' => $employees,
-            'types' => $types,
         ]);
     }
 
@@ -212,7 +210,7 @@ class AttendanceDailyController extends Controller
 
         Attendance::create([
             'employee_id' => $request->get('employee_id'),
-            'type' => $request->get('type'),
+            'type' => 1,
             'start_date' => resetDate($request->input('start_date')),
             'end_date' => resetDate($endDate),
             'start_time' => $request->get('start_time'),
@@ -233,12 +231,10 @@ class AttendanceDailyController extends Controller
     {
         $employees = Session::get('employees');
         $attendance = Attendance::findOrFail($id);
-        $types = array('1' => 'WFO', '2' => 'WFH', '3' => 'Dinas');
 
         return view('attendances.daily.form', [
             'attendance' => $attendance,
             'employees' => $employees,
-            'types' => $types,
         ]);
     }
 
@@ -255,7 +251,7 @@ class AttendanceDailyController extends Controller
 
         $attendance->update([
             'employee_id' => $request->get('employee_id'),
-            'type' => $request->get('type'),
+            'type' => 1,
             'start_date' => resetDate($request->input('start_date')),
             'end_date' => resetDate($endDate),
             'start_time' => $request->get('start_time'),
@@ -378,15 +374,5 @@ class AttendanceDailyController extends Controller
                 'subtitle' => "TANGGAL : ".$dateText,
             ]
         ), 'Data Harian.xlsx');
-    }
-
-    public function checkWFH(Request $request)
-    {
-        $employee = Employee::findOrFail($request->get('employee_id'));
-        $getSettingLocation = AttendanceLocationSetting::whereLocationId($employee->position->location_id)->first();
-
-        $isWFH = $getSettingLocation->wfh ?? 'f';
-
-        return $isWFH == 't';
     }
 }

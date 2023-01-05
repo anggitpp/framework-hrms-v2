@@ -11,6 +11,7 @@ use App\Http\Controllers\ESS\ESSPermissionController;
 use App\Http\Controllers\ESS\ESSPositionController;
 use App\Http\Controllers\ESS\ESSProfileController;
 use App\Http\Controllers\ESS\EssTimesheetController;
+use App\Http\Controllers\ESS\ESSTrainingController;
 use Illuminate\Support\Facades\Route;
 
 Route::name('ess.')->group(function () {
@@ -49,6 +50,9 @@ Route::name('ess.')->group(function () {
 
     Route::get('/ess/positions/data', [ESSPositionController::class, 'data'])->name('positions.data');
     Route::get('/ess/positions', [ESSPositionController::class, 'index'])->name('positions.index');
+
+    Route::get('/ess/trainings/data', [ESSTrainingController::class, 'data'])->name('trainings.data');
+    Route::resource('/ess/trainings', ESSTrainingController::class);
 });
 
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ESS\ESSAssetController;
 use App\Http\Controllers\ESS\ESSAttendanceRecapController;
 use App\Http\Controllers\ESS\ESSContactController;
 use App\Http\Controllers\ESS\ESSCorrectionController;
@@ -57,6 +58,9 @@ Route::name('ess.')->group(function () {
 
     Route::get('/ess/works/data', [ESSWorkController::class, 'data'])->name('works.data');
     Route::resource('/ess/works', ESSWorkController::class);
+
+    Route::get('/ess/assets/data', [ESSAssetController::class, 'data'])->name('assets.data');
+    Route::resource('/ess/assets', ESSAssetController::class);
 });
 
 

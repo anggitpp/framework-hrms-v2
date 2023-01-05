@@ -16,6 +16,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
+use Storage;
 use Str;
 use Yajra\DataTables\DataTables;
 
@@ -169,11 +170,19 @@ class ESSEducationController extends Controller
      */
     public function destroy(int $id)
     {
-        $education = EmployeeEducation::findOrFail($id);
-        $education->delete();
+        try {
+            $education = EmployeeEducation::findOrFail($id);
+            if(Storage::exists($this->educationPath.$education->filename)) Storage::delete($this->educationPath.$education->filename);
+            $education->delete();
 
-        Alert::success('Data Pendidikan berhasil dihapus');
+            Alert::success('Success', 'Data berhasil dihapus');
 
-        return redirect()->back();
+            return redirect()->back();
+        } catch (Exception $e) {
+
+            Alert::error('Error', $e->getMessage());
+
+            return redirect()->back();
+        }
     }
 }

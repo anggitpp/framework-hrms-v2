@@ -16,6 +16,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
+use Storage;
 use Str;
 use Yajra\DataTables\DataTables;
 
@@ -172,11 +173,19 @@ class ESSWorkController extends Controller
      */
     public function destroy(int $id)
     {
-        $work = EmployeeWork::findOrFail($id);
-        $work->delete();
+        try {
+            $work = EmployeeWork::findOrFail($id);
+            if(Storage::exists($this->workPath.$work->filename)) Storage::delete($this->workPath.$work->filename);
+            $work->delete();
 
-        Alert::success('Data Pekerjaan berhasil dihapus');
+            Alert::success('Success', 'Data berhasil dihapus');
 
-        return redirect()->back();
+            return redirect()->back();
+        } catch (Exception $e) {
+
+            Alert::error('Error', $e->getMessage());
+
+            return redirect()->back();
+        }
     }
 }

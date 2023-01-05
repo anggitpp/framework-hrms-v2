@@ -18,6 +18,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
+use Storage;
 use Str;
 use Yajra\DataTables\DataTables;
 
@@ -181,11 +182,19 @@ class ESSFamilyController extends Controller
      */
     public function destroy(int $id)
     {
-        $family = EmployeeFamily::findOrFail($id);
-        $family->delete();
+        try {
+            $family = EmployeeFamily::findOrFail($id);
+            if(Storage::exists($this->familyPath.$family->filename)) Storage::delete($this->familyPath.$family->filename);
+            $family->delete();
 
-        Alert::success('Data Keluarga berhasil dihapus');
+            Alert::success('Success', 'Data berhasil dihapus');
 
-        return redirect()->back();
+            return redirect()->back();
+        } catch (Exception $e) {
+
+            Alert::error('Error', $e->getMessage());
+
+            return redirect()->back();
+        }
     }
 }

@@ -16,6 +16,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
+use Storage;
 use Str;
 use Yajra\DataTables\DataTables;
 
@@ -196,11 +197,19 @@ class ESSTrainingController extends Controller
      */
     public function destroy(int $id)
     {
-        $training = EmployeeTraining::findOrFail($id);
-        $training->delete();
+        try {
+            $training = EmployeeTraining::findOrFail($id);
+            if(Storage::exists($this->trainingPath.$training->filename)) Storage::delete($this->trainingPath.$training->filename);
+            $training->delete();
 
-        Alert::success('Data Pelatihan berhasil dihapus');
+            Alert::success('Success', 'Data berhasil dihapus');
 
-        return redirect()->back();
+            return redirect()->back();
+        } catch (Exception $e) {
+
+            Alert::error('Error', $e->getMessage());
+
+            return redirect()->back();
+        }
     }
 }

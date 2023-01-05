@@ -158,11 +158,18 @@ class ESSContactController extends Controller
      */
     public function destroy(int $id)
     {
-        $contact = EmployeeContact::findOrFail($id);
-        $contact->delete();
+        try {
+            $contact = EmployeeContact::findOrFail($id);
+            $contact->delete();
 
-        Alert::success('Data Kontak berhasil dihapus');
+            Alert::success('Success', 'Data berhasil dihapus');
 
-        return redirect()->back();
+            return redirect()->back();
+        } catch (Exception $e) {
+
+            Alert::error('Error', $e->getMessage());
+
+            return redirect()->back();
+        }
     }
 }

@@ -27,7 +27,6 @@ Route::name('attendances.')->group(function () {
 
     Route::get('/attendances/monthlies', [AttendanceMonthlyController::class, 'index'])->name('monthlies.index');
     Route::post('/attendances/monthlies/data/{month}/{year}', [AttendanceMonthlyController::class, 'data'])->name('monthlies.data');
-    Route::get('/attendances/monthlies/pdf', [AttendanceMonthlyController::class, 'pdf'])->name('monthlies.pdf');
     Route::get('/attendances/monthlies/export', [AttendanceMonthlyController::class, 'export'])->name('monthlies.export');
 
     Route::get('/attendances/duration-recap', [AttendanceDurationRecapController::class, 'index'])->name('duration-recap.index');

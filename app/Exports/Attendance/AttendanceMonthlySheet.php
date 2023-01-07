@@ -55,7 +55,7 @@ class AttendanceMonthlySheet implements FromCollection, WithCustomStartCell, Wit
                     ],
                 ]);
 
-                $totalColumn = $this->data['totalDays'] * 5 + 2;
+                $totalColumn = $this->data['totalDays'] * 2 + 2;
 
                 $sheet->setCellValue("A2", Str::upper($this->data['headerTitle']));
                 $sheet->setCellValue("A3", Str::upper($this->data['headerSubtitle']));
@@ -82,13 +82,7 @@ class AttendanceMonthlySheet implements FromCollection, WithCustomStartCell, Wit
                     $sheet->setCellValue(numToAlpha($j)."6", $i);
                     $sheet->setCellValue(numToAlpha($j)."7", 'MSK');
                     $j++;
-                    $sheet->setCellValue(numToAlpha($j)."7", 'PT');
-                    $j++;
                     $sheet->setCellValue(numToAlpha($j)."7", 'PLG');
-                    $j++;
-                    $sheet->setCellValue(numToAlpha($j)."7", 'PC');
-                    $j++;
-                    $sheet->setCellValue(numToAlpha($j)."7", 'KET');
                     $j++;
                     $lastColumn = $j - 1;
                     $sheet->mergeCells(numToAlpha($firstColumn)."6:".numToAlpha($lastColumn)."6");
@@ -115,11 +109,6 @@ class AttendanceMonthlySheet implements FromCollection, WithCustomStartCell, Wit
                 $sheet->getDelegate()->getStyle("A5:".$highestColumn."7")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
                 $sheet->getDelegate()->getStyle("A5:".$highestColumn."7")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                 $sheet->getDelegate()->getStyle("A5:".$highestColumn."7")->getAlignment()->setWrapText(true);
-
-                $lastRow = count($this->data['data']) + 9;
-                $sheet->mergeCells("A".$lastRow.":".$highestColumn.$lastRow);
-                $sheet->setCellValue("A".$lastRow, "MSK : Jam absensi masuk | PLG : Jam absensi pulang | PT : Potongan jam masuk | PC : Potongan jam pulang");
-
             },
         ];
     }
@@ -133,7 +122,7 @@ class AttendanceMonthlySheet implements FromCollection, WithCustomStartCell, Wit
     {
         $cols = 3;
         $arr = array("A" => 5, "B" => "20", "C" => "40");
-        for ($i = 1; $i<= $this->data['totalDays'] * 5; $i++){
+        for ($i = 1; $i<= $this->data['totalDays'] * 2; $i++){
             $arr[numToAlpha($cols)] = 10;
             $cols++;
         }

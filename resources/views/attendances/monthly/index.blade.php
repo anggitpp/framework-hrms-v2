@@ -15,10 +15,7 @@
                 <div class="card-toolbar">
                     <div class="d-flex">
                         <x-views.filter-month-year name-month="filterMonth" value-month="{{ $filterMonth }}" name-year="filterYear" value-year="{{ $filterYear }}" event="changeFilterMonthYear();" range="5" class="me-3" />
-                        <x-views.export>
-                            <x-views.export-button id="btnExport" text="Export XLS" url="{{ $menu_path }}" class="w-100 mb-5" />
-                            <x-views.export-button id="btnExport" text="Export PDF" url="{{ $menu_path }}" class="w-100" type="pdf" />
-                        </x-views.export>
+                        <x-views.export-button id="btnExport" text="Export XLS" url="{{ $menu_path }}" class="w-100" />
                     </div>
                 </div>
             </div>
@@ -33,20 +30,17 @@
                         <th rowspan="3" class="min-w-50px text-center border-end">No</th>
                         <th rowspan="3" class="min-w-150px text-center border-end">NIP</th>
                         <th rowspan="3" class="min-w-300px text-center border-end">Nama</th>
-                        <th colspan="{{ $totalDays * 5 }}" class="min-w-{{ $totalDays * 50 }}px text-center border-end">Tanggal</th>
+                        <th colspan="{{ $totalDays * 2 }}" class="min-w-{{ $totalDays * 50 }}px text-center border-end">Tanggal</th>
                     </tr>
                     <tr class="fw-bold text-uppercase border-bottom border-gray-200">
                         @for ($i = 1; $i <= $totalDays; $i++)
-                            <th class="min-w-50px text-center border-end" colspan="5">{{ $i }}</th>
+                            <th class="min-w-50px text-center border-end" colspan="2">{{ $i }}</th>
                         @endfor
                     </tr>
                     <tr class="fw-bold text-uppercase border-bottom border-gray-200">
                         @for ($i = 1; $i <= $totalDays; $i++)
                             <th class="min-w-50px text-center border-end">MSK</th>
-                            <th class="min-w-50px text-center border-end">PT</th>
                             <th class="min-w-50px text-center border-end">PLG</th>
-                            <th class="min-w-50px text-center border-end">PC</th>
-                            <th class="min-w-50px text-center border-end">KET</th>
                         @endfor
                     </tr>
                 </thead>
@@ -58,10 +52,7 @@
                 $datas = array("employee_number\ttext-center", "name");
                 for($i = 1; $i <= $totalDays; $i++){
                     $datas[] = "in_day_$i\ttext-center\tfalse";
-                    $datas[] = "pt_day_$i\ttext-center\tfalse";
                     $datas[] = "out_day_$i\ttext-center\tfalse";
-                    $datas[] = "pc_day_$i\ttext-center\tfalse";
-                    $datas[] = "desc_day_$i\ttext-center\tfalse";
                 }
 
             @endphp

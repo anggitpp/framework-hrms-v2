@@ -87,23 +87,11 @@ class AttendanceMonthlyController extends Controller
                 $date = $filterYear.'-'.str_pad($filterMonth, 2, '0', STR_PAD_LEFT).'-' . str_pad($i, 2, '0', STR_PAD_LEFT);
 
                 $table->addColumn('in_day_' . $i, function ($row) use ($i, $arrData, $date) {
-                    return $arrData[$row->id][$date]["in"];
-                });
-
-                $table->addColumn('pt_day_' . $i, function ($row) use ($i, $arrData, $date) {
-                    return $arrData[$row->id][$date]["pt"];
+                    return $arrData[$row->id][$date]["in"] ?? '';
                 });
 
                 $table->addColumn('out_day_' . $i, function ($row) use ($i, $arrData, $date) {
-                    return $arrData[$row->id][$date]["out"];
-                });
-
-                $table->addColumn('pc_day_' . $i, function ($row) use ($i, $arrData, $date) {
-                    return $arrData[$row->id][$date]["pc"];
-                });
-
-                $table->addColumn('desc_day_' . $i, function ($row) use ($i, $arrData, $date) {
-                    return $arrData[$row->id][$date]["ket"];
+                    return $arrData[$row->id][$date]["out"] ?? '';
                 });
             }
             return $table->addIndexColumn()
@@ -112,8 +100,6 @@ class AttendanceMonthlyController extends Controller
     }
 
     private function datas($employees, $filterMonth, $filterYear){
-        $defaultShift = AttendanceShift::orderBy('id')->first();
-
         $startDate = Carbon::create($filterYear, $filterMonth, 1)->startOfMonth()->format('Y-m-d');
         $endDate = Carbon::create($filterYear, $filterMonth, 1)->endOfMonth()->format('Y-m-d');
 
@@ -152,12 +138,6 @@ class AttendanceMonthlyController extends Controller
                         } else if ($data->type == '3') {
                             $arrData[$employee->id][$date]['in'] = 'DL';
                             $arrData[$employee->id][$date]['out'] = 'DL';
-                        } else if ($data->type == '4') {
-                            $arrData[$employee->id][$date]['in'] = 'DL';
-                            $arrData[$employee->id][$date]['out'] = $data->end_time;
-                        } else if ($data->type == '5') {
-                            $arrData[$employee->id][$date]['in'] = $data->start_time;
-                            $arrData[$employee->id][$date]['out'] = 'DL';
                         } else {
                             $arrData[$employee->id][$date]['in'] = $data->start_time;
                             $arrData[$employee->id][$date]['out'] = $data->end_time;
@@ -178,63 +158,11 @@ class AttendanceMonthlyController extends Controller
                 if(!$isFuture) $data = empty($data) && $carbonDate->isWeekday() ? 'A' : $data;
                 $arrData[$employee->id][$date]["in"] = substr($data, 0, 5);
 
-                //PT
-                $startShift = $defaultShift->start;
-                if (isset($arrSchedule[$employee->id][$date])) $startShift = $arrSchedule[$employee->id][$date]->start_time;
-                $pt = '';
-                if(isset($arrData[$employee->id][$date]["in"]) && Str::contains($arrData[$employee->id][$date]["in"], ':')){
-                    if ($arrData[$employee->id][$date]["in"] > $startShift) {
-                        $diffInMinutes = Carbon::parse($arrData[$employee->id][$date]["in"])->diffInMinutes($startShift);
-
-                        if($diffInMinutes) {
-                            if ($diffInMinutes <= 30){
-                                $pt = '0,50';
-                            } elseif ($diffInMinutes <= 60){
-                                $pt = '1,00';
-                            } elseif ($diffInMinutes <= 90){
-                                $pt = '1,25';
-                            } else {
-                                $pt = '1,50';
-                            }
-                        }
-                    }
-                }
-                if(!$isFuture) $pt = empty($pt) && $carbonDate->isWeekday() ? '0,00' : $pt;
-                $arrData[$employee->id][$date]["pt"] = empty($pt) ? '0,00' : $pt;
-
                 //OUT
                 $arrData[$employee->id][$date]["out"] = $arrData[$employee->id][$date]["out"] ?? '';
                 $data = $arrData[$employee->id][$date]["out"];
                 if(!$isFuture) $data = empty($data) && $carbonDate->isWeekday() ? 'A' : $data;
                 $arrData[$employee->id][$date]["out"] = substr($data, 0, 5);
-
-                //PC
-                $endShift = $defaultShift->end;
-                if (isset($arrSchedule[$employee->id][$date])) $endShift = $arrSchedule[$employee->id][$date]->end_time;
-                $pc = '';
-                if(isset($arrData[$employee->id][$date]["out"]) && Str::contains($arrData[$employee->id][$date]["out"], ':')){
-                    if ($arrData[$employee->id][$date]["out"] < $endShift) {
-                        $diffInMinutes = Carbon::parse($arrData[$employee->id][$date]["out"])->diffInMinutes($endShift);
-
-                        if($diffInMinutes) {
-                            if ($diffInMinutes <= 30){
-                                $pc = '0,50';
-                            } elseif ($diffInMinutes <= 60){
-                                $pc = '1,00';
-                            } elseif ($diffInMinutes <= 90){
-                                $pc = '1,25';
-                            } else {
-                                $pc = '1,50';
-                            }
-                        }
-                    }
-                }
-                if(!$isFuture) $pc = empty($pc) && $carbonDate->isWeekday() ? '0,00' : $pc;
-                $arrData[$employee->id][$date]["pc"] = empty($pc) ? '0,00' : $pc;
-
-                //KET
-                $data = $arrData[$employee->id][$date]["type"] ?? '';
-                $arrData[$employee->id][$date]["ket"] = $data == '2' ? 'WFH' : '';
             }
         }
 
@@ -264,7 +192,7 @@ class AttendanceMonthlyController extends Controller
             $sql->where('t2.unit_id', $key);
             if($request->get('combo_4') && $request->get('combo_4') != 'undefined') $sql->where('t2.rank_id', $request->get('combo_4'));
             if(!$user->hasPermissionTo('lvl3 '.$this->menu_path())) $sql->where('t2.leader_id', $user->employee_id);
-            $employees = $sql->get();
+            $employees = $sql->orderBy('name')->get();
 
             $arrData = $this->datas($employees, $filterMonth, $filterYear);
 
@@ -280,10 +208,7 @@ class AttendanceMonthlyController extends Controller
                 for ($i = 1; $i <= $totalDays; $i++) {
                     $date = $filterYear . '-' . str_pad($filterMonth, 2, '0', STR_PAD_LEFT) . '-' . str_pad($i, 2, '0', STR_PAD_LEFT);
                     $data[$key][$employee->id][$i . "_in"] = $arrData[$employee->id][$date]["in"];
-                    $data[$key][$employee->id][$i . "_pt"] = $arrData[$employee->id][$date]["pt"];
                     $data[$key][$employee->id][$i . "_out"] = $arrData[$employee->id][$date]["out"];
-                    $data[$key][$employee->id][$i . "_pc"] = $arrData[$employee->id][$date]["pc"];
-                    $data[$key][$employee->id][$i . "_ket"] = $arrData[$employee->id][$date]["ket"];
                 }
             }
         }
@@ -297,155 +222,5 @@ class AttendanceMonthlyController extends Controller
                 'units' => $units,
             ]
         ), 'Data Bulanan.xlsx');
-    }
-
-    public function pdf(Request $request)
-    {
-        $user = Session::get('user');
-        $filterMonth = $request->get('filterMonth');
-        $filterYear = $request->get('filterYear');
-
-        $pdf = new FPDFTable('L', 'mm', ['250', '400']);
-        $pdf->SetAutoPageBreak(TRUE);
-        $pdf->SetTitle('REKAP ABSEN SEMUA UNIT ' . strtoupper(numToMonth($request->get('filterMonth'))) . ' ' . $request->get('filterYear'));
-
-        $units = AppMasterData::whereAppMasterCategoryCode('EMU');
-        if ($request->get('combo_3') && $request->get('combo_3') != 'undefined') $units->whereId($request->get('combo_3'));
-        $units = $units->pluck('name', 'id')->toArray();
-        foreach ($units as $k => $unit) {
-            $employees = Employee::select(['id', 'name'])
-                ->whereHas('position', function($query) use ($request, $user, $k){
-                    $query->select(['id', 'employee_id', 'position_id']);
-                    $query->where('unit_id', $k);
-                })
-                ->get();
-
-            $arrData = $this->datas($employees, $filterMonth, $filterYear);
-
-            $arrayColumn = array("1" => "1-5", "2" => "6-10", "3" => "11-15", "4" => "16-20", "5" => "21-25", "6" => "26-30");
-            foreach ($arrayColumn as $key => $value) {
-                $pdf->AddPage();
-                /** TITLE START */
-                $pdf->Image("assets/media/logos/logo-2.png", $pdf->GetX() + 90, $pdf->GetY() + 1, 20, 18);
-
-                $pdf->SetTextColor(0, 153, 0);
-                $pdf->SetXY(1, 10);
-                $pdf->SetFont('Arial', 'B', 20);
-                $pdf->Cell(400, 5, 'KEMENTERIAN AGAMA', 0, 0, 'C');
-                $pdf->SetFont('Arial', 'B', 13);
-                $pdf->SetXY(1, 18);
-                $pdf->Cell(400, 5, 'KANTOR WILAYAH PROVINSI DAERAH KHUSUS IBUKOTA JAKARTA', 0, 0, 'C');
-                $pdf->SetTextColor(0, 0, 0);
-                $pdf->SetFont('Arial', 'B', 11);
-                $pdf->SetXY(1, 24);
-                $pdf->Cell(400, 5, $unit, 0, 0, 'C');
-                $pdf->SetFont('Arial', '', 11);
-                $pdf->SetXY(1, 30);
-                $pdf->Cell(400, 5, 'BULAN LAPORAN : '.Str::upper(numToMonth($filterMonth)).' '.$filterYear, 0, 0, 'C');
-                $pdf->Ln(8);
-                /** TITLE END */
-
-                /** HEADER START */
-                $pdf->SetFont('Arial', 'B', 8);
-                $pdf->Cell(10, 10, 'No.', 1, 0, 'C');
-                $pdf->Cell(55, 10, 'Nama Pegawai', 1, 0, 'C');
-                $pdf->Cell(55, 10, 'Jabatan', 1, 0, 'C');
-                $arrText = [];
-                $arrWidthHeader = [];
-                $arrAlignsHeader = [];
-                list($firstColumn, $lastColumn) = explode("-", $value);
-                $arrWidth = [];
-                $arrAligns = [];
-                $arrTextSub = [];
-                for ($i = $firstColumn; $i <= $lastColumn; $i++) {
-                    $arrWidthHeader[] = 50;
-                    $arrAlignsHeader[] = 'C';
-                    $arrText[] = (string)$i;
-                    $arrTextSub = [];
-                    $arrWidth = [];
-                    $arrAligns = [];
-                    for ($j = 1; $j <= 5; $j++) {
-                        $arrWidth[] = 10;
-                        $arrWidth[] = 10;
-                        $arrWidth[] = 10;
-                        $arrWidth[] = 10;
-                        $arrWidth[] = 10;
-                        $arrAligns[] = 'C';
-                        $arrAligns[] = 'C';
-                        $arrAligns[] = 'C';
-                        $arrAligns[] = 'C';
-                        $arrAligns[] = 'C';
-                        $arrTextSub[] = "MSK\t";
-                        $arrTextSub[] = "PT\t";
-                        $arrTextSub[] = "PLG\t";
-                        $arrTextSub[] = "PC\t";
-                        $arrTextSub[] = "KET\t";
-                    }
-                }
-
-                $pdf->setWidths($arrWidthHeader);
-                $pdf->setAligns($arrAlignsHeader);
-                $pdf->Row($arrText);
-                $pdf->Cell(120, 0, '', 0, 0, 'C');
-                $pdf->SetWidths($arrWidth);
-                $pdf->SetAligns($arrAligns);
-                $pdf->Row($arrTextSub);
-                /* HEADER END */
-
-                /** DATA START */
-                $arrHeader = array("10", "55", "55");
-                $arrAlign = array("C", "L", "L");
-                $arrHeader = array_merge($arrHeader, $arrWidth);
-                $arrAlign = array_merge($arrAlign, $arrAligns);
-                $pdf->setWidths($arrHeader);
-                $pdf->setAligns($arrAlign);
-
-//                dd($arrData);
-
-                $pdf->SetFont('Arial', '', 7);
-                $no = 0;
-                foreach ($employees as $employee) {
-                    $no++;
-                    $positionName = $employee->position->position_id ? AppMasterData::find($employee->position->position_id)->name : '';
-                    $arrValue = [];
-                    for ($i = $firstColumn; $i <= $lastColumn; $i++) {
-                        $date = $filterYear . '-' . str_pad($filterMonth, 2, '0', STR_PAD_LEFT) . '-' . str_pad($i, 2, '0', STR_PAD_LEFT);
-                        $arrValue[] = $arrData[$employee->id][$date]["in"] . "\t";
-                        $arrValue[] = $arrData[$employee->id][$date]["pt"] . "\t";
-                        $arrValue[] = $arrData[$employee->id][$date]["out"] . "\t";
-                        $arrValue[] = $arrData[$employee->id][$date]["pc"] . "\t";
-                        $arrValue[] = $arrData[$employee->id][$date]["ket"] . "\t";
-                    }
-                    $arrEmployee = array(
-                        $no . "\t",
-                        $employee->name . "\t",
-                        $positionName . "\t",
-                    );
-                    $arrEmployee = array_merge($arrEmployee, $arrValue);
-                    $pdf->Row($arrEmployee);
-                }
-
-                $pdf->SetXY(10, 240);
-                $pdf->SetFont('Arial', 'B', 8);
-                $pdf->Cell(7, 0, 'MSK', 0, 0, 'L');
-                $pdf->SetFont('Arial', '', 8);
-                $pdf->Cell(29, 0, ': Jam absensi masuk | ', 0, 0, 'L');
-                $pdf->SetFont('Arial', 'B', 8);
-                $pdf->Cell(7, 0, 'PLG', 0, 0, 'L');
-                $pdf->SetFont('Arial', '', 8);
-                $pdf->Cell(30, 0, ': Jam absensi pulang | ', 0, 0, 'L');
-                $pdf->SetFont('Arial', 'B', 8);
-                $pdf->Cell(5, 0, 'PT', 0, 0, 'L');
-                $pdf->SetFont('Arial', '', 8);
-                $pdf->Cell(31, 0, ': Potongan jam masuk | ', 0, 0, 'L');
-                $pdf->SetFont('Arial', 'B', 8);
-                $pdf->Cell(5, 0, 'PC', 0, 0, 'L');
-                $pdf->SetFont('Arial', '', 8);
-                $pdf->Cell(30, 0, ': Potongan jam pulang', 0, 0, 'L');
-            }
-        }
-
-        $pdf->Output();
-        exit;
     }
 }

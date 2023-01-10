@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Employee;
 use App\Exports\GlobalExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Employee\EmployeeContactRequest;
+use App\Imports\Employee\ContactImport;
 use App\Models\Employee\Employee;
 use App\Models\Employee\EmployeeContact;
 use App\Models\Setting\AppMasterData;
@@ -314,5 +315,29 @@ class EmployeeContactController extends Controller
                 'title' => 'Data Kontak Darurat',
             ]
         ), 'Data Kontak Darurat.xlsx');
+    }
+
+    public function import()
+    {
+        return view('employees.contact.import');
+    }
+
+    public function processImport(Request $request)
+    {
+        try {
+            if($request->hasFile('filename')) {
+                Excel::import(new ContactImport, $request->file('filename'));
+
+                return response()->json([
+                    'success' => 'Data Kontak berhasil diimport',
+                    'url' => route(Str::replace('/', '.', $this->menu_path()) . '.index'),
+                ]);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => 'Gagal ' . $e->getMessage(),
+                'url' => route(Str::replace('/', '.', $this->menu_path()) . '.index'),
+            ]);
+        }
     }
 }

@@ -120,6 +120,8 @@ Route::name('employees.')->group(function () {
 
     Route::get('/employees/contacts/data', [EmployeeContactController::class, 'data'])->name('contacts.data');
     Route::get('/employees/contacts/export', [EmployeeContactController::class, 'export'])->name('contacts.export');
+    Route::get('/employees/contacts/import', [EmployeeContactController::class, 'import'])->name('contacts.import');
+    Route::patch('/employees/contacts/process-import', [EmployeeContactController::class, 'processImport'])->name('contacts.process-import');
     Route::resource('/employees/contacts', EmployeeContactController::class);
 
     Route::get('/employees/families/data', [EmployeeFamilyController::class, 'data'])->name('families.data');

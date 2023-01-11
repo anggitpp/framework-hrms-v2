@@ -66,15 +66,13 @@ class AttendanceMonthlyController extends Controller
             $employees = DB::table('employees as t1')->join('employee_positions as t2', function ($join){
                 $join->on('t1.id', 't2.employee_id');
                 $join->where('t2.status', 't');
-            });
+            })->select('t1.id', 't1.name', 't1.employee_number');
             if($filterRank) $employees->where('rank_id', $filterRank);
             if($filterUnit) $employees->where('unit_id', $filterUnit);
             if(!$user->hasPermissionTo('lvl3 '.$this->menu_path()))
                 $employees->where('t2.leader_id', $user->employee_id);
-            $filteredEmployees = clone $employees;
-            $filteredEmployees = $filteredEmployees->select('t1.id')->get();
 
-            $arrData = $this->datas($filteredEmployees, $filterMonth, $filterYear);
+            $arrData = $this->datas($employees->get(), $filterMonth, $filterYear);
 
             $table = DataTables::of($employees)
                 ->filter(function ($query) use ($filter) {
@@ -174,42 +172,37 @@ class AttendanceMonthlyController extends Controller
         $user = Session::get('user');
         $filterMonth = $request->get('filterMonth');
         $filterYear = $request->get('filterYear');
-        $units = AppMasterData::whereAppMasterCategoryCode('EMU');
-        if ($request->get('combo_3') && $request->get('combo_3') != 'undefined') $units->whereId($request->get('combo_3'));
-        $units = $units->pluck('name', 'id')->toArray();
 
         $no = 0;
         $data = [];
         $totalDays = Carbon::create($filterYear, $filterMonth, 1)->daysInMonth;
-        foreach ($units as $key => $value) {
-            $sql = DB::table('employees as t1')->join('employee_positions as t2', function ($join){
-                $join->on('t1.id', 't2.employee_id');
-                $join->where('t2.status', 't');
-            });
-            if(!empty($request->get('filter')))
-                $sql->where('name', 'like', '%' . $request->get('filter') . '%')
-                    ->orWhere('employee_number', 'like', '%' . $request->get('filter') . '%');
-            $sql->where('t2.unit_id', $key);
-            if($request->get('combo_4') && $request->get('combo_4') != 'undefined') $sql->where('t2.rank_id', $request->get('combo_4'));
-            if(!$user->hasPermissionTo('lvl3 '.$this->menu_path())) $sql->where('t2.leader_id', $user->employee_id);
-            $employees = $sql->orderBy('name')->get();
+        $sql = DB::table('employees as t1')->join('employee_positions as t2', function ($join){
+            $join->on('t1.id', 't2.employee_id');
+            $join->where('t2.status', 't');
+        });
+        if(!empty($request->get('filter')))
+            $sql->where('name', 'like', '%' . $request->get('filter') . '%')
+                ->orWhere('employee_number', 'like', '%' . $request->get('filter') . '%');
+        if($request->get('combo_3') && $request->get('combo_3') != 'undefined') $sql->where('t2.unit_id', $request->get('combo_3'));
+        if($request->get('combo_4') && $request->get('combo_4') != 'undefined') $sql->where('t2.rank_id', $request->get('combo_4'));
+        if(!$user->hasPermissionTo('lvl3 '.$this->menu_path())) $sql->where('t2.leader_id', $user->employee_id);
+        $employees = $sql->orderBy('name')->get();
 
-            $arrData = $this->datas($employees, $filterMonth, $filterYear);
+        $arrData = $this->datas($employees, $filterMonth, $filterYear);
 
-            foreach ($employees as $employee) {
-                $no++;
+        foreach ($employees as $employee) {
+            $no++;
 
-                $data[$key][$employee->id] = [
-                    'no' => $no,
-                    'employee_number' => $employee->employee_number . " ",
-                    'name' => $employee->name,
-                ];
+            $data[$employee->id] = [
+                'no' => $no,
+                'employee_number' => $employee->employee_number . " ",
+                'name' => $employee->name,
+            ];
 
-                for ($i = 1; $i <= $totalDays; $i++) {
-                    $date = $filterYear . '-' . str_pad($filterMonth, 2, '0', STR_PAD_LEFT) . '-' . str_pad($i, 2, '0', STR_PAD_LEFT);
-                    $data[$key][$employee->id][$i . "_in"] = $arrData[$employee->id][$date]["in"];
-                    $data[$key][$employee->id][$i . "_out"] = $arrData[$employee->id][$date]["out"];
-                }
+            for ($i = 1; $i <= $totalDays; $i++) {
+                $date = $filterYear . '-' . str_pad($filterMonth, 2, '0', STR_PAD_LEFT) . '-' . str_pad($i, 2, '0', STR_PAD_LEFT);
+                $data[$employee->id][$i . "_in"] = $arrData[$employee->id][$date]["in"];
+                $data[$employee->id][$i . "_out"] = $arrData[$employee->id][$date]["out"];
             }
         }
 
@@ -219,7 +212,6 @@ class AttendanceMonthlyController extends Controller
                 'headerTitle' => 'Data Absen Harian',
                 'headerSubtitle' => "PERIODE : ".numToMonth($request->get('filterMonth')).' '.$request->get('filterYear'),
                 'totalDays' => Carbon::create($request->get('filterYear').'-'.$request->get('filterMonth'))->daysInMonth,
-                'units' => $units,
             ]
         ), 'Data Bulanan.xlsx');
     }

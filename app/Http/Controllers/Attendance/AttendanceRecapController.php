@@ -234,10 +234,16 @@ class AttendanceRecapController extends Controller
                         }else{
                             if($data->type == '3' || $data->type == '4' || $data->type == '5') $arrData[$employee->id]['DL']++;
                             $arrData[$employee->id]['HDR']++;
+
+                            //total duration
+                            $duration = convertTimeToSeconds($data->duration);
+                            $arrData[$employee->id]['TD'] += $duration;
                         }
                     }
                 }
             }
+
+            $arrData[$employee->id]['TD'] = convertMinutesToTime($arrData[$employee->id]['TD'] / 60);
         }
 
         return $arrData;

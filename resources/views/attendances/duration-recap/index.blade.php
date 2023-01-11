@@ -52,7 +52,7 @@
                     $datas[] = "total\ttext-center\tfalse";
 
                 @endphp
-                <x-views.datatables :datas="$datas" :route="$route" def-order="2" class-default="border-end" class-first-column="ps-2" />
+                <x-views.datatables :datas="$datas" :route="$route" def-order="2" class-default="border-end" class-first-column="ps-2" method="POST" />
                 <x-views.delete-form/>
             </div>
         </div>

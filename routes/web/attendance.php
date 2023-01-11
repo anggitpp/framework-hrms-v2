@@ -30,7 +30,7 @@ Route::name('attendances.')->group(function () {
     Route::get('/attendances/monthlies/export', [AttendanceMonthlyController::class, 'export'])->name('monthlies.export');
 
     Route::get('/attendances/duration-recap', [AttendanceDurationRecapController::class, 'index'])->name('duration-recap.index');
-    Route::get('/attendances/duration-recap/data/{month}/{year}', [AttendanceDurationRecapController::class, 'data'])->name('duration-recap.data');
+    Route::post('/attendances/duration-recap/data/{month}/{year}', [AttendanceDurationRecapController::class, 'data'])->name('duration-recap.data');
     Route::get('/attendances/duration-recap/pdf', [AttendanceDurationRecapController::class, 'pdf'])->name('duration-recap.pdf');
     Route::get('/attendances/duration-recap/export', [AttendanceDurationRecapController::class, 'export'])->name('duration-recap.export');
 

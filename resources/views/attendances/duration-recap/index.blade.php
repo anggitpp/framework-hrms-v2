@@ -15,10 +15,10 @@
                 <div class="card-toolbar">
                     <div class="d-flex">
                         <x-views.filter-month-year name-month="filterMonth" value-month="{{ $filterMonth }}" name-year="filterYear" value-year="{{ $filterYear }}" event="changeFilterMonthYear();" range="5" class="me-3" />
-                        <x-views.export>
-                            <x-views.export-button id="btnExport" text="Export XLS" url="{{ $menu_path }}" class="w-100 mb-5" />
-                            <x-views.export-button id="btnExport" text="Export PDF" url="{{ $menu_path }}" class="w-100" type="pdf" />
-                        </x-views.export>
+{{--                        <x-views.export>--}}
+                            <x-views.export-button id="btnExport" text="Export XLS" url="{{ $menu_path }}" class="w-100" />
+{{--                            <x-views.export-button id="btnExport" text="Export PDF" url="{{ $menu_path }}" class="w-100" type="pdf" />--}}
+{{--                        </x-views.export>--}}
                     </div>
                 </div>
             </div>
@@ -34,6 +34,7 @@
                             <th rowspan="2" class="min-w-150px text-center border-end">NIP</th>
                             <th rowspan="2" class="min-w-300px text-center border-end">Nama</th>
                             <th colspan="{{ $totalDays }}" class="min-w-{{ $totalDays * 50 }}px text-center border-end">Tanggal</th>
+                            <th rowspan="2" class="min-w-100px text-center border-end">Total</th>
                         </tr>
                         <tr class="fw-bold text-uppercase border-bottom border-gray-200">
                             @for ($i = 1; $i <= $totalDays; $i++)
@@ -48,6 +49,7 @@
                     $route = route(str_replace('/', '.', $menu_path).'.data', [$filterMonth, $filterYear]);
                     $datas = array("employee_number\ttext-center", "name");
                     for($i = 1; $i <= $totalDays; $i++) $datas[] = "day_$i\ttext-center\tfalse";
+                    $datas[] = "total\ttext-center\tfalse";
 
                 @endphp
                 <x-views.datatables :datas="$datas" :route="$route" def-order="2" class-default="border-end" class-first-column="ps-2" />

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-    <div class="row g-5 g-xl-10 mb-xl-10">
+    <div class="row g-5 g-xl-10 mb-5 mb-xl-10">
         <div class="col-lg-12 col-xl-4 mb-5 mb-xl-0">
             <div class="card">
                 <div class="card-header border-0 pt-5">
@@ -37,6 +37,27 @@
                 </div>
                 <div class="card-body">
                     <div id="empGender" style="height: 300px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row g-5 g-xl-10 mb-xl-10">
+        <div class="col-lg-12 col-xl-12 mb-5 mb-xl-0">
+            <div class="card">
+                <div class="card-header border-0 pt-5">
+                    <h3 class="card-title align-items-start flex-column">
+                        <span class="card-label fw-bold text-dark">Rekap Absensi</span>
+                        <span class="text-gray-400 mt-1 fw-semibold fs-6">Januari 2023</span>
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div id="attendance" style="height: 300px;"></div>
+                    <div class="d-flex justify-content-center">
+                        <div class="w-20px h-20px rounded-2 me-2" style="background-color: #64E987"></div>Hadir
+                        <div class="w-20px h-20px rounded-2 ms-2 me-2" style="background-color: #FF99A9"></div>Alpha
+                        <div class="w-20px h-20px rounded-2 ms-2 me-2" style="background-color: #88CEFB"></div>Izin
+                        <div class="w-20px h-20px rounded-2 ms-2 me-2" style="background-color: #F7DB69"></div>Cuti
+                    </div>
                 </div>
             </div>
         </div>
@@ -242,10 +263,141 @@
             series.appear(1000, 100);
         }
 
+        function initAttendance(){
+            var root = am5.Root.new("attendance");
+
+            root.setThemes([
+                am5themes_Animated.new(root)
+            ]);
+
+            var chart = root.container.children.push(am5xy.XYChart.new(root, {
+                panX: false,
+                panY: false,
+                wheelX: "none",
+                wheelY: "none",
+            }));
+
+            chart.get("colors").set("colors", [
+                am5.color('#64E987'),
+                am5.color('#FF99A9'),
+                am5.color('#88CEFB'),
+                am5.color('#F7DB69'),
+            ]);
+
+            var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {
+                behavior: "none"
+            }));
+            cursor.lineY.set("visible", false);
+
+            @php
+                $currentMonth = date('m');
+                $currentYear = date('Y');
+
+                $start = Carbon\Carbon::create($currentYear, $currentMonth, 1)->startOfMonth();
+                $end = Carbon\Carbon::create($currentYear, $currentMonth, 1)->endOfMonth();
+                $range = Carbon\CarbonPeriod::create($start, $end);
+                $dates = [];
+                foreach ($range as $date) {
+                    $dates[] = $date->format('Y-m-d');
+                }
+            @endphp
+
+            let datas = [
+                    @foreach ($dates as $key => $value)
+                {
+                    date: new Date('{{ $value }}').getTime(),
+                    value: {{ $totalAttendanceByDay[$value]["1"] ?? 0 }},
+                    value2: {{ $totalAttendanceByDay[$value]["A"] ?? 0 }},
+                    value3: {{ $totalAttendanceByDay[$value]["I"] ?? 0 }},
+                    value4: {{ $totalAttendanceByDay[$value]["C"] ?? 0 }},
+                },
+                @endforeach
+            ]
+
+            var xAxis = chart.xAxes.push(am5xy.DateAxis.new(root, {
+                maxDeviation: 0.3,
+                baseInterval: {
+                    timeUnit: "day",
+                    count: 1
+                },
+                markUnitChange: false,
+                renderer: am5xy.AxisRendererX.new(root, {}),
+                tooltip: am5.Tooltip.new(root, {})
+            }));
+
+            xAxis.get("dateFormats")["day"] = "d";
+
+
+            var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+                min: 0,
+                renderer: am5xy.AxisRendererY.new(root, {})
+            }));
+
+            var series = chart.series.push(am5xy.LineSeries.new(root, {
+                name: "Series",
+                xAxis: xAxis,
+                yAxis: yAxis,
+                valueYField: "value",
+                valueXField: "date",
+                minDistance: 20,
+                tooltip: am5.Tooltip.new(root, {
+                    labelText: "{valueY}"
+                }),
+            }));
+
+            var series2 = chart.series.push(am5xy.LineSeries.new(root, {
+                name: "Series",
+                xAxis: xAxis,
+                yAxis: yAxis,
+                valueYField: "value2",
+                valueXField: "date",
+                minDistance: 20,
+                tooltip: am5.Tooltip.new(root, {
+                    labelText: "{valueY}"
+                })
+            }));
+
+            var series3 = chart.series.push(am5xy.LineSeries.new(root, {
+                name: "Series",
+                xAxis: xAxis,
+                yAxis: yAxis,
+                valueYField: "value3",
+                valueXField: "date",
+                minDistance: 20,
+                tooltip: am5.Tooltip.new(root, {
+                    labelText: "{valueY}"
+                })
+            }));
+
+            var series4 = chart.series.push(am5xy.LineSeries.new(root, {
+                name: "Series",
+                xAxis: xAxis,
+                yAxis: yAxis,
+                valueYField: "value4",
+                valueXField: "date",
+                minDistance: 20,
+                tooltip: am5.Tooltip.new(root, {
+                    labelText: "{valueY}"
+                })
+            }));
+
+            series.data.setAll(datas);
+            series2.data.setAll(datas);
+            series3.data.setAll(datas);
+            series4.data.setAll(datas);
+
+            series.appear(1000);
+            series2.appear(1000);
+            series3.appear(1000);
+            series4.appear(1000);
+            chart.appear(1000, 100);
+        }
+
         am5.ready(function () {
             initEmpCategory();
             initEmpSubmission();
             initEmpGender();
+            initAttendance();
         });
     </script>
 @endsection

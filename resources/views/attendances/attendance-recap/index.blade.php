@@ -15,10 +15,10 @@
                 <div class="card-toolbar">
                     <div class="d-flex">
                         <x-views.filter-month-year name-month="filterMonth" value-month="{{ $filterMonth }}" name-year="filterYear" value-year="{{ $filterYear }}" event="changeFilterMonthYear();" range="5" class="me-3" />
-                        <x-views.export>
-                            <x-views.export-button id="btnExport" text="Export XLS" url="{{ $menu_path }}" class="w-100 mb-5" />
-                            <x-views.export-button id="btnExport" text="Export PDF" url="{{ $menu_path }}" class="w-100" type="pdf" />
-                        </x-views.export>
+{{--                        <x-views.export>--}}
+                            <x-views.export-button id="btnExport" text="Export XLS" url="{{ $menu_path }}" class="w-100" />
+{{--                            <x-views.export-button id="btnExport" text="Export PDF" url="{{ $menu_path }}" class="w-100" type="pdf" />--}}
+{{--                        </x-views.export>--}}
                     </div>
                 </div>
             </div>
@@ -31,23 +31,14 @@
                         <th class="min-w-50px border-end">No</th>
                         <th class="min-w-150px border-end">NIP</th>
                         <th class="min-w-300px border-end">Nama</th>
-                        <th class="min-w-50px text-center border-end">PT</th>
-                        <th class="min-w-50px text-center border-end">PC</th>
-                        <th class="min-w-50px text-center border-end">TPT</th>
+                        <th class="min-w-50px text-center border-end">HK</th>
+                        <th class="min-w-50px text-center border-end">HDR</th>
                         <th class="min-w-50px text-center border-end">A</th>
                         <th class="min-w-50px text-center border-end">I</th>
                         <th class="min-w-50px text-center border-end">C</th>
                         <th class="min-w-50px text-center border-end">S</th>
-                        <th class="min-w-50px text-center border-end">IB</th>
                         <th class="min-w-50px text-center border-end">DL</th>
-                        <th class="min-w-50px text-center border-end">HEF</th>
-                        <th class="min-w-50px text-center border-end">HDR</th>
-                        <th class="min-w-50px text-center border-end">JH</th>
-                        <th class="min-w-50px text-center border-end">JA</th>
-                        <th class="min-w-50px text-center border-end">JK</th>
-                        <th class="min-w-50px text-center border-end">HK</th>
-                        <th class="min-w-50px text-center border-end">TA</th>
-                        <th class="min-w-250px text-center border-end">HUKUMAN</th>
+                        <th class="min-w-50px text-center border-end">TD</th>
                     </tr>
                 </thead>
                 <tbody class="text-gray-600 fw-semibold">

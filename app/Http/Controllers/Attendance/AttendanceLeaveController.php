@@ -140,7 +140,8 @@ class AttendanceLeaveController extends Controller
      */
     public function create()
     {
-        $masters = AttendanceLeaveMaster::pluck('name', 'id')->toArray();
+        $today = Carbon::now()->format('Y-m-d');
+        $masters = AttendanceLeaveMaster::where('start_date', '<', $today)->where('end_date', '>', $today)->pluck('name', 'id')->toArray();
         $employees = \Session::get('employees');
         $getLastNumber = AttendanceLeave::whereYear('created_at', date('Y'))
             ->orderBy('number', 'desc')
@@ -193,8 +194,9 @@ class AttendanceLeaveController extends Controller
      */
     public function edit(int $id)
     {
+        $today = Carbon::now()->format('Y-m-d');
         $leave = AttendanceLeave::with( 'employee.position', 'leaveMaster')->find($id);
-        $masters = AttendanceLeaveMaster::pluck('name', 'id')->toArray();
+        $masters = AttendanceLeaveMaster::where('start_date', '<', $today)->where('end_date', '>', $today)->pluck('name', 'id')->toArray();
         $employees = \Session::get('employees');
         $leave->employee->position->unit_id = AppMasterData::find($leave->employee->position->unit_id)->name;
         $leave->employee->position->rank_id = AppMasterData::find($leave->employee->position->rank_id)->name;

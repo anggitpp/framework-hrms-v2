@@ -2,10 +2,10 @@
 <project version="4">
   <component name="WebServers">
     <option name="servers">
-      <webServer id="7fe9b83e-b7f6-4e6a-a0f3-540abe47add9" name="komit-cpanel">
-        <fileTransfer rootFolder="/home/komit/public_html" accessType="SFTP" host="cpserver.komit.co.id" port="22" sshConfigId="4dee3aba-b185-49e0-be1d-e1accb390784" sshConfig="root@cpserver.komit.co.id:22 password">
+      <webServer id="dac22b1c-122f-436f-82b5-ae9d307b3c30" name="buildwithapp" url="http://www.buildwithapp.net">
+        <fileTransfer host="www.buildwithapp.net" port="21">
           <advancedOptions>
-            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>
         </fileTransfer>
       </webServer>

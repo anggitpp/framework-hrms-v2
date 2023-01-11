@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" serverName="komit-cpanel" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" serverName="buildwithapp" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
-      <paths name="komit-cpanel">
+      <paths name="buildwithapp">
         <serverdata>
           <mappings>
-            <mapping deploy="/sikapkanwil" local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/hrms" local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>

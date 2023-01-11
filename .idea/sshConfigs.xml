@@ -2,7 +2,7 @@
 <project version="4">
   <component name="SshConfigs">
     <configs>
-      <sshConfig authType="PASSWORD" host="cpserver.komit.co.id" id="4dee3aba-b185-49e0-be1d-e1accb390784" port="22" nameFormat="DESCRIPTIVE" username="root" useOpenSSHConfig="false" />
+      <sshConfig authType="PASSWORD" host="buildwithapp.net" id="b819e78c-4743-4d61-8664-3a7a654d5b36" port="22" nameFormat="DESCRIPTIVE" username="buildwit" useOpenSSHConfig="true" />
     </configs>
   </component>
 </project>

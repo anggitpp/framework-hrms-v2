@@ -1,66 +1,92 @@
 @extends('layouts.app')
 @section('content')
-    <div class="row g-5 g-xl-10 mb-5 mb-xl-10">
-        <div class="col-lg-12 col-xl-4 mb-5 mb-xl-0">
-            <div class="card">
-                <div class="card-header border-0 pt-5">
-                    <h3 class="card-title align-items-start flex-column">
-                        <span class="card-label fw-bold text-dark">Total Pegawai</span>
-                        <span class="text-gray-400 mt-1 fw-semibold fs-6">{{ $totalEmployee }} per hari ini</span>
-                    </h3>
+    <div class="d-flex flex-column flex-column-fluid">
+        <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
+            <div id="kt_app_toolbar_container" class="app-container container-xxl d-flex flex-stack">
+                <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
+                    <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">{{ $selected_menu->name }}</h1>
+                    <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
+                        <li class="breadcrumb-item text-muted">
+                            <a href="../../demo1/dist/index.html" class="text-muted text-hover-primary">{{ $selected_modul->name }}</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <span class="bullet bg-gray-400 w-5px h-2px"></span>
+                        </li>
+                        <li class="breadcrumb-item text-muted">{{ $selected_sub_modul->name }}</li>
+                        <li class="breadcrumb-item">
+                            <span class="bullet bg-gray-400 w-5px h-2px"></span>
+                        </li>
+                        <li class="breadcrumb-item text-muted">{{ $selected_menu->name}}</li>
+                    </ul>
                 </div>
-                <div class="card-body">
-                    <div id="empCategory" style="height: 300px;"></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-12 col-xl-4 mb-5 mb-xl-0">
-            <div class="card">
-                <div class="card-header border-0 pt-5">
-                    <h3 class="card-title align-items-start flex-column">
-                        <span class="card-label fw-bold text-dark">Total Pengajuan</span>
-                        <span class="text-gray-400 mt-1 fw-semibold fs-6">{{ $totalSubmission }} per hari ini</span>
-                    </h3>
-                </div>
-                <div class="card-body">
-                    <div id="submission" style="height: 300px;"></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-12 col-xl-4 mb-5 mb-xl-0">
-            <div class="card">
-                <div class="card-header border-0 pt-5">
-                    <h3 class="card-title align-items-start flex-column">
-                        <span class="card-label fw-bold text-dark">Data Gender</span>
-                        <span class="text-gray-400 mt-1 fw-semibold fs-6">{{ $totalEmployee }} per hari ini</span>
-                    </h3>
-                </div>
-                <div class="card-body">
-                    <div id="empGender" style="height: 300px;"></div>
+                <div class="d-flex align-items-center gap-2 gap-lg-3">
+                    <form method="GET" id="form-filter">
+                        <x-views.filter-month-year name-month="filterMonth" value-month="{{ $filterMonth }}" name-year="filterYear" class="me-5" value-year="{{ $filterYear }}" range="5" />
+                    </form>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row g-5 g-xl-10 mb-xl-10">
-        <div class="col-lg-12 col-xl-12 mb-5 mb-xl-0">
-            <div class="card">
-                <div class="card-header border-0 pt-5">
-                    <h3 class="card-title align-items-start flex-column">
-                        <span class="card-label fw-bold text-dark">Rekap Absensi</span>
-                        <span class="text-gray-400 mt-1 fw-semibold fs-6">Januari 2023</span>
-                    </h3>
+        <div id="kt_app_content" class="app-content flex-column-fluid">
+            <div id="kt_app_content_container" class="app-container container-xxl">
+                <div class="row g-5 g-xl-10 mb-5 mb-xl-10">
+                    <div class="col-lg-12 col-xl-4 mb-5 mb-xl-0">
+                        <div class="card">
+                            <div class="card-header border-0 pt-5">
+                                <h3 class="card-title align-items-start flex-column">
+                                    <span class="card-label fw-bold text-dark">Total Pegawai Aktif</span>
+                                    <span class="text-gray-400 mt-1 fw-semibold fs-6">{{ $totalEmployee }} per hari ini</span>
+                                </h3>
+                            </div>
+                            <div class="card-body">
+                                <div id="empCategory" style="height: 200px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-xl-4 mb-5 mb-xl-0">
+                        <div class="card">
+                            <div class="card-header border-0 pt-5">
+                                <h3 class="card-title align-items-start flex-column">
+                                    <span class="card-label fw-bold text-dark">Total Pengajuan</span>
+                                    <span class="text-gray-400 mt-1 fw-semibold fs-6">{{ $totalSubmission }} per {{ numToMonth($filterMonth)." ".$filterYear }}</span>
+                                </h3>
+                            </div>
+                            <div class="card-body">
+                                <div id="submission" style="height: 200px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-xl-4 mb-5 mb-xl-0">
+                        <div class="card">
+                            <div class="card-header border-0 pt-5">
+                                <h3 class="card-title align-items-start flex-column">
+                                    <span class="card-label fw-bold text-dark">Data Gender</span>
+                                    <span class="text-gray-400 mt-1 fw-semibold fs-6">{{ $totalEmployee }} per hari ini</span>
+                                </h3>
+                            </div>
+                            <div class="card-body">
+                                <div id="empGender" style="height: 200px;"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <div id="attendance" style="height: 300px;"></div>
-                    <div class="d-flex justify-content-center">
-                        <div class="w-20px h-20px rounded-2 me-2" style="background-color: #64E987"></div>Hadir
-                        <div class="w-20px h-20px rounded-2 ms-2 me-2" style="background-color: #FF99A9"></div>Alpha
-                        <div class="w-20px h-20px rounded-2 ms-2 me-2" style="background-color: #88CEFB"></div>Izin
-                        <div class="w-20px h-20px rounded-2 ms-2 me-2" style="background-color: #F7DB69"></div>Cuti
+                <div class="row g-5 g-xl-10 mb-xl-10">
+                    <div class="col-lg-12 col-xl-12 mb-5 mb-xl-0">
+                        <div class="card">
+                            <div class="card-header border-0 pt-5">
+                                <h3 class="card-title align-items-start flex-column">
+                                    <span class="card-label fw-bold text-dark">Rekap Absensi</span>
+                                    <span class="text-gray-400 mt-1 fw-semibold fs-6">{{ numToMonth($filterMonth)." ".$filterYear }}</span>
+                                </h3>
+                            </div>
+                            <div class="card-body">
+                                <div id="attendance" style="height: 300px;"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        <!--end::Content-->
     </div>
 @endsection
 @section('scripts')
@@ -70,327 +96,373 @@
     <script src="https://cdn.amcharts.com/lib/5/radar.js"></script>
     <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
     <script>
+        //trigger onchange filter month
+        $('#filterMonth').on('change', function() {
+            $('#form-filter').submit();
+        });
+
+        $('#filterYear').on('change', function() {
+            $('#form-filter').submit();
+        });
+
         function initEmpCategory(){
-            //START DASHBOARD TOTAL EMPLOYEE BY CATEGORY
-            var root = am5.Root.new("empCategory");
-            root.setThemes([
-                am5themes_Animated.new(root)
-            ]);
-            var chart = root.container.children.push(am5percent.PieChart.new(root, {
-                layout: root.verticalLayout,
-            }));
+            var element = document.getElementById('empCategory');
 
-            var series = chart.series.push(am5percent.PieSeries.new(root, {
-                alignLabels: true,
-                calculateAggregates: true,
-                valueField: "value",
-                categoryField: "category"
-            }));
+            var successColor = KTUtil.getCssVariableValue('--kt-success');
+            var primaryColor = KTUtil.getCssVariableValue('--kt-primary');
+            var dangerColor = KTUtil.getCssVariableValue('--kt-danger');
+            var infoColor = KTUtil.getCssVariableValue('--kt-info');
+            var warningColor = KTUtil.getCssVariableValue('--kt-warning');
 
-            series.slices.template.setAll({
-                strokeWidth: 3,
-                stroke: am5.color(0xffffff)
-            });
+            if (!element) {
+                return;
+            }
 
-            series.labelsContainer.set("paddingTop", 30)
-
-            series.data.setAll([
-                @php
-                    foreach ($totalEmployeeByCategories as $category => $total){
-                        echo "{value: $total, category: '$category'},";
+            var options = {
+                series: [
+                    @foreach($totalEmployeeByCategories as $key => $value)
+                        {{ $value }},
+                    @endforeach
+                ],
+                chart: {
+                    type: 'pie',
+                },
+                plotOptions: {
+                    pie: {
+                        dataLabels: {
+                            offset: -20,
+                            minAngleToShowLabel: 10
+                        },
                     }
-                @endphp
-            ]);
+                },
+                labels: [
+                    @foreach($totalEmployeeByCategories as $key => $value)
+                        '{{ $key }}',
+                    @endforeach
+                ],
+                colors: [successColor, primaryColor, dangerColor, infoColor, warningColor],
+            };
 
-            var legend = chart.children.push(am5.Legend.new(root, {
-                centerX: am5.p50,
-                x: am5.p50,
-                marginTop: 15,
-                marginBottom: 15
-            }));
+            var chart = new ApexCharts(element, options);
+            chart.render();
 
-            legend.data.setAll(series.dataItems);
-
-            series.calculatePercent = true;
-            series.slices.template.set('tooltipText', '{category}: {value}');
-            series.labels.template.setAll({
-                maxWidth: 80,
-                oversizedBehavior: "wrap"
-            });
-            legend.valueLabels.template.set("forceHidden", true);
-            series.appear(1000, 100);
             //END DASHBOARD TOTAL EMPLOYEE BY CATEGORY
         }
 
         function initEmpSubmission(){
-            //START DASHBOARD SUBMISSION
-            var root = am5.Root.new("submission");
+            var element = document.getElementById('submission');
 
-            root.setThemes([
-                am5themes_Animated.new(root)
-            ]);
+            var successColor = KTUtil.getCssVariableValue('--kt-success');
+            var primaryColor = KTUtil.getCssVariableValue('--kt-primary');
+            var dangerColor = KTUtil.getCssVariableValue('--kt-danger');
 
-            var chart = root.container.children.push(am5xy.XYChart.new(root, {
-                panX: true,
-                panY: true,
-                wheelX: "panX",
-                wheelY: "zoomX",
-                pinchZoomX:true
-            }));
+            if (!element) {
+                return;
+            }
 
-            chart.get("colors").set("colors", [
-                am5.color('#EAC7C7'),
-                am5.color('#A0C3D2'),
-                am5.color('#EAE0DA'),
-            ]);
+            var options = {
+                series: [{
+                    name: 'Sakit',
+                    data: [{{ $totalSicks ?? 0 }}]
+                }, {
+                    name: 'Cuti',
+                    data: [{{ $totalLeaves ?? 0 }}]
+                }, {
+                    name: 'Koreksi',
+                    data: [{{ $totalCorrections ?? 0 }}]
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 180
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: '80%',
+                        endingShape: 'rounded'
+                    },
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    show: true,
+                    width: 2,
+                    colors: ['transparent']
+                },
+                xaxis: {
+                    categories: ['{{ numToMonth($filterMonth)." ".$filterYear }}'],
+                    labels: {
+                        show: false
+                    },
+                },
+                yaxis: {
+                    title: {
+                        text: 'Jumlah Pengajuan'
+                    }
+                },
+                fill: {
+                    opacity: 1
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return val + " pengajuan"
+                        }
+                    }
+                },
+                colors: [successColor, primaryColor, dangerColor],
 
-            var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {}));
-            cursor.lineY.set("visible", false);
+            };
 
-            var xRenderer = am5xy.AxisRendererX.new(root, { minGridDistance: 30 });
-            xRenderer.labels.template.setAll({
-                centerY: am5.p50,
-                centerX: am5.p50,
-                paddingTop: 15
-            });
-
-            var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
-                maxDeviation: 0.3,
-                categoryField: "country",
-                renderer: xRenderer,
-                tooltip: am5.Tooltip.new(root, {})
-            }));
-
-            var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
-                maxDeviation: 0.3,
-                renderer: am5xy.AxisRendererY.new(root, {})
-            }));
-
-            var series = chart.series.push(am5xy.ColumnSeries.new(root, {
-                name: "Series 1",
-                xAxis: xAxis,
-                yAxis: yAxis,
-                valueYField: "value",
-                sequencedInterpolation: true,
-                categoryXField: "country",
-                tooltip: am5.Tooltip.new(root, {
-                    labelText:"{valueY}"
-                })
-            }));
-
-            series.columns.template.setAll({ cornerRadiusTL: 5, cornerRadiusTR: 5 });
-            series.columns.template.adapters.add("fill", function(fill, target) {
-                return chart.get("colors").getIndex(series.columns.indexOf(target));
-            });
-
-            series.columns.template.adapters.add("stroke", function(stroke, target) {
-                return chart.get("colors").getIndex(series.columns.indexOf(target));
-            });
-
-            var data = [{
-                country: "Izin",
-                value: {{ $totalPermissions }}
-            }, {
-                country: "Cuti",
-                value: {{ $totalLeaves }}
-            }, {
-                country: "Koreksi",
-                value: {{ $totalCorrections }}
-            }];
-
-            xAxis.data.setAll(data);
-            series.data.setAll(data);
-
-            series.appear(1000);
-            chart.appear(1000, 100);
+            var chart = new ApexCharts(element, options);
+            chart.render();
             //END DASHBOARD SUBMISSION
         }
 
         function initEmpGender(){
-            //START DASHBOARD GENDER
-            var root = am5.Root.new("empGender");
-            root.setThemes([
-                am5themes_Animated.new(root)
-            ]);
-            var chart = root.container.children.push(am5percent.PieChart.new(root, {
-                layout: root.verticalLayout,
-            }));
+            var element = document.getElementById('empGender');
 
-            var series = chart.series.push(am5percent.PieSeries.new(root, {
-                alignLabels: true,
-                calculateAggregates: true,
-                valueField: "value",
-                categoryField: "category"
-            }));
+            var successColor = KTUtil.getCssVariableValue('--kt-success');
+            var primaryColor = KTUtil.getCssVariableValue('--kt-primary');
 
-            series.get("colors").set("colors", [
-                am5.color('#FD8A8A'),
-                am5.color('#F1F7B5'),
-            ]);
+            if (!element) {
+                return;
+            }
 
-            series.slices.template.setAll({
-                strokeWidth: 3,
-                stroke: am5.color(0xffffff)
-            });
-
-            series.labelsContainer.set("paddingTop", 30)
-
-            series.data.setAll([
-                @php
-                    foreach ($totalEmployeeByGender as $category => $total){
-                        $category = $category == 'm' ? 'Pria' : 'Wanita';
-                        echo "{value: $total, category: '$category'},";
+            var options = {
+                series: [
+                    @foreach($totalEmployeeByGender as $key => $value)
+                        {{ $value }},
+                    @endforeach
+                ],
+                chart: {
+                    type: 'pie',
+                    height:180,
+                },
+                plotOptions: {
+                    pie: {
+                        dataLabels: {
+                            offset: -20,
+                            minAngleToShowLabel: 10
+                        },
                     }
-                @endphp
-            ]);
+                },
+                labels: [
+                    @foreach($totalEmployeeByGender as $key => $value)
+                        '{{ $key == 'm' ? 'Pria' : 'Wanita' }}',
+                    @endforeach
+                ],
+                colors: [successColor, primaryColor],
+            };
 
-            var legend = chart.children.push(am5.Legend.new(root, {
-                centerX: am5.p50,
-                x: am5.p50,
-                marginTop: 15,
-                marginBottom: 15
-            }));
-
-            legend.data.setAll(series.dataItems);
-
-            series.calculatePercent = true;
-            series.slices.template.set('tooltipText', '{category}: {value}');
-            series.labels.template.setAll({
-                maxWidth: 80,
-                oversizedBehavior: "wrap"
-            });
-            legend.valueLabels.template.set("forceHidden", true);
-            series.appear(1000, 100);
+            var chart = new ApexCharts(element, options);
+            chart.render();
         }
 
         function initAttendance(){
-            var root = am5.Root.new("attendance");
+            var element = document.getElementById('attendance');
 
-            root.setThemes([
-                am5themes_Animated.new(root)
-            ]);
+            var height = parseInt(KTUtil.css(element, 'height'));
+            var labelColor = KTUtil.getCssVariableValue('--kt-gray-500');
+            var borderColor = KTUtil.getCssVariableValue('--kt-border-dashed-color');
+            var basePresentColor = KTUtil.getCssVariableValue('--kt-success');
+            var lightPresentColor = KTUtil.getCssVariableValue('--kt-success');
+            var basePermissionColor = KTUtil.getCssVariableValue('--kt-primary');
+            var lightPermissionColor = KTUtil.getCssVariableValue('--kt-primary');
+            var baseAlphaColor = KTUtil.getCssVariableValue('--kt-danger');
+            var lightAlphaColor = KTUtil.getCssVariableValue('--kt-danger');
+            var baseLeaveColor = KTUtil.getCssVariableValue('--kt-info');
+            var lightLeaveColor = KTUtil.getCssVariableValue('--kt-info');
 
-            var chart = root.container.children.push(am5xy.XYChart.new(root, {
-                panX: false,
-                panY: false,
-                wheelX: "none",
-                wheelY: "none",
-            }));
-
-            chart.get("colors").set("colors", [
-                am5.color('#64E987'),
-                am5.color('#FF99A9'),
-                am5.color('#88CEFB'),
-                am5.color('#F7DB69'),
-            ]);
-
-            var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {
-                behavior: "none"
-            }));
-            cursor.lineY.set("visible", false);
+            if (!element) {
+                return;
+            }
 
             @php
-                $currentMonth = date('m');
-                $currentYear = date('Y');
+                $currentMonth = $filterMonth;
+                $currentYear = $filterYear;
 
                 $start = Carbon\Carbon::create($currentYear, $currentMonth, 1)->startOfMonth();
                 $end = Carbon\Carbon::create($currentYear, $currentMonth, 1)->endOfMonth();
                 $range = Carbon\CarbonPeriod::create($start, $end);
-                $dates = [];
+                $days = [];
                 foreach ($range as $date) {
-                    $dates[] = $date->format('Y-m-d');
+                    $days[] = $date->format('d');
                 }
             @endphp
 
-            let datas = [
-                    @foreach ($dates as $key => $value)
-                {
-                    date: new Date('{{ $value }}').getTime(),
-                    value: {{ $totalAttendanceByDay[$value]["1"] ?? 0 }},
-                    value2: {{ $totalAttendanceByDay[$value]["A"] ?? 0 }},
-                    value3: {{ $totalAttendanceByDay[$value]["I"] ?? 0 }},
-                    value4: {{ $totalAttendanceByDay[$value]["C"] ?? 0 }},
+            var options = {
+                series: [
+                    {
+                        name: 'Hadir',
+                        data: [
+                            @foreach($days as $key => $day)
+                                '{{ $totalAttendanceByDay['P'][$key] ?? 0 }}',
+                            @endforeach
+                        ]
+                    },
+                    {
+                        name: 'Alpha',
+                        data: [
+                            @foreach($days as $key => $day)
+                                '{{ $totalAttendanceByDay['A'][$key] ?? 0 }}',
+                            @endforeach
+                        ]
+                    },
+                    {
+                        name: 'Sakit',
+                        data: [
+                            @foreach($days as $key => $day)
+                                '{{ $totalAttendanceByDay['S'][$key] ?? 0 }}',
+                            @endforeach
+                        ]
+                    },
+                    {
+                        name: 'Cuti',
+                        data: [
+                            @foreach($days as $key => $day)
+                                '{{ $totalAttendanceByDay['C'][$key] ?? 0 }}',
+                            @endforeach
+                        ]
+                    },
+                ],
+                chart: {
+                    fontFamily: 'inherit',
+                    type: 'area',
+                    height: height,
+                    toolbar: {
+                        show: false
+                    }
                 },
-                @endforeach
-            ]
+                plotOptions: {
 
-            var xAxis = chart.xAxes.push(am5xy.DateAxis.new(root, {
-                maxDeviation: 0.3,
-                baseInterval: {
-                    timeUnit: "day",
-                    count: 1
                 },
-                markUnitChange: false,
-                renderer: am5xy.AxisRendererX.new(root, {}),
-                tooltip: am5.Tooltip.new(root, {})
-            }));
+                legend: {
+                    show: true,
+                    formatter: function(seriesName) {
+                        let total = 0;
+                        if(seriesName === 'Hadir'){
+                            total = {{ $totalRecapByMonth['P'] ?? 0 }};
+                        }else if(seriesName === 'Alpha'){
+                            total = {{ $totalRecapByMonth['A'] ?? 0 }};
+                        }else if(seriesName === 'Sakit'){
+                            total = {{ $totalRecapByMonth['S'] ?? 0 }};
+                        }else if(seriesName === 'Cuti'){
+                            total = {{ $totalRecapByMonth['C'] ?? 0 }};
+                        }
+                        return [seriesName, '('+total+')'];
+                    },
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                fill: {
+                    type: "gradient",
+                    gradient: {
+                        shadeIntensity: 1,
+                        opacityFrom: 0.4,
+                        opacityTo: 0.2,
+                        stops: [15, 120, 100]
+                    }
+                },
+                stroke: {
+                    curve: 'smooth',
+                    show: true,
+                    width: 3,
+                    colors: [basePresentColor, baseAlphaColor, basePermissionColor, baseLeaveColor]
+                },
+                xaxis: {
+                    categories: [
+                        @foreach($days as $key => $day)
+                            '{{ $day }}',
+                        @endforeach
+                    ],
+                    axisBorder: {
+                        show: false,
+                    },
+                    axisTicks: {
+                        show: false
+                    },
+                    tickAmount: 30,
+                    labels: {
+                        rotate: 0,
+                        rotateAlways: true,
+                        style: {
+                            colors: labelColor,
+                            fontSize: '12px'
+                        }
+                    },
+                    crosshairs: {
+                        position: 'front',
+                        stroke: {
+                            color: [basePresentColor, baseAlphaColor, basePermissionColor, baseLeaveColor],
+                            width: 1,
+                            dashArray: 3
+                        }
+                    },
+                    tooltip: {
+                        enabled: true,
+                        formatter: undefined,
+                        offsetY: 0,
+                        style: {
+                            fontSize: '12px'
+                        }
+                    }
+                },
+                yaxis: {
+                    tickAmount: 6,
+                    labels: {
+                        style: {
+                            colors: labelColor,
+                            fontSize: '12px'
+                        }
+                    }
+                },
+                states: {
+                    normal: {
+                        filter: {
+                            type: 'none',
+                            value: 0
+                        }
+                    },
+                    hover: {
+                        filter: {
+                            type: 'none',
+                            value: 0
+                        }
+                    },
+                    active: {
+                        allowMultipleDataPointsSelection: false,
+                        filter: {
+                            type: 'none',
+                            value: 0
+                        }
+                    }
+                },
+                tooltip: {
+                    style: {
+                        fontSize: '12px'
+                    }
+                },
+                colors: [lightPresentColor, lightAlphaColor, lightPermissionColor, lightLeaveColor],
+                grid: {
+                    borderColor: borderColor,
+                    strokeDashArray: 4,
+                    yaxis: {
+                        lines: {
+                            show: true
+                        }
+                    }
+                },
+                markers: {
+                    strokeColor: [basePresentColor, baseAlphaColor, basePermissionColor, baseLeaveColor],
+                    strokeWidth: 3
+                }
+            };
 
-            xAxis.get("dateFormats")["day"] = "d";
-
-
-            var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
-                min: 0,
-                renderer: am5xy.AxisRendererY.new(root, {})
-            }));
-
-            var series = chart.series.push(am5xy.LineSeries.new(root, {
-                name: "Series",
-                xAxis: xAxis,
-                yAxis: yAxis,
-                valueYField: "value",
-                valueXField: "date",
-                minDistance: 20,
-                tooltip: am5.Tooltip.new(root, {
-                    labelText: "{valueY}"
-                }),
-            }));
-
-            var series2 = chart.series.push(am5xy.LineSeries.new(root, {
-                name: "Series",
-                xAxis: xAxis,
-                yAxis: yAxis,
-                valueYField: "value2",
-                valueXField: "date",
-                minDistance: 20,
-                tooltip: am5.Tooltip.new(root, {
-                    labelText: "{valueY}"
-                })
-            }));
-
-            var series3 = chart.series.push(am5xy.LineSeries.new(root, {
-                name: "Series",
-                xAxis: xAxis,
-                yAxis: yAxis,
-                valueYField: "value3",
-                valueXField: "date",
-                minDistance: 20,
-                tooltip: am5.Tooltip.new(root, {
-                    labelText: "{valueY}"
-                })
-            }));
-
-            var series4 = chart.series.push(am5xy.LineSeries.new(root, {
-                name: "Series",
-                xAxis: xAxis,
-                yAxis: yAxis,
-                valueYField: "value4",
-                valueXField: "date",
-                minDistance: 20,
-                tooltip: am5.Tooltip.new(root, {
-                    labelText: "{valueY}"
-                })
-            }));
-
-            series.data.setAll(datas);
-            series2.data.setAll(datas);
-            series3.data.setAll(datas);
-            series4.data.setAll(datas);
-
-            series.appear(1000);
-            series2.appear(1000);
-            series3.appear(1000);
-            series4.appear(1000);
-            chart.appear(1000, 100);
+            var chart = new ApexCharts(element, options);
+            chart.render();
         }
 
         am5.ready(function () {

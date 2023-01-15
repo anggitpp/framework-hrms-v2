@@ -2,6 +2,7 @@
 
 namespace App\Models\Attendance;
 
+use App\Models\Employee\Employee;
 use App\Traits\Blameable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -30,4 +31,9 @@ class Attendance extends Model
         'duration',
         'description',
     ];
+
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class);
+    }
 }

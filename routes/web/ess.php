@@ -4,6 +4,7 @@ use App\Http\Controllers\ESS\ESSAssetController;
 use App\Http\Controllers\ESS\ESSAttendanceRecapController;
 use App\Http\Controllers\ESS\ESSContactController;
 use App\Http\Controllers\ESS\ESSCorrectionController;
+use App\Http\Controllers\ESS\ESSDashboardController;
 use App\Http\Controllers\ESS\ESSEducationController;
 use App\Http\Controllers\ESS\ESSFamilyController;
 use App\Http\Controllers\ESS\ESSFileController;
@@ -37,6 +38,8 @@ Route::name('ess.')->group(function () {
     Route::resource('/ess/corrections', ESSCorrectionController::class);
 
     Route::get('/ess/attendance-recap', [ESSAttendanceRecapController::class, 'index'])->name('attendance-recap.index');
+
+    Route::get('/ess/ess-dash', [ESSDashboardController::class, 'index'])->name('ess-dash.index');
 
     Route::get('/ess/profile', [ESSProfileController::class, 'index'])->name('profile.index');
     Route::get('/ess/profile/edit', [ESSProfileController::class, 'edit'])->name('profile.edit');

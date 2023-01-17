@@ -4,22 +4,7 @@
     <form method="POST" action="{{ route('settings.user-access.update', $role->id) }}">
         @csrf
         @method('PATCH')
-        <div class="card-header border-0 pt-6 justify-content-between d-flex">
-            <div class="card-title">
-                <h3 class="card-label">
-                    {{ __('List Akses') ." : $role->name" }}
-                </h3>
-            </div>
-            <div data-kt-user-table-toolbar="base">
-                <a href="#" class="btn btn-light-primary me-3" data-bs-dismiss="modal">
-                    <i class="fas fa-chart-pie"></i> Kembali
-                </a>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-print"></i>Simpan
-                </button>
-
-            </div>
-        </div>
+        <x-form.header title="List Akses {{ $role->name }}" />
         <div class="separator mt-2 mb-5 d-flex"></div>
         @php
             $no = 0;

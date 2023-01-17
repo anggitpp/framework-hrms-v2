@@ -7,11 +7,13 @@
     </div>
     <div>
         <a href="{{ url()->previous() }}" class="btn btn-light-primary me-3">
-            <i class="fas fa-chart-pie"></i> Kembali
+            <i class="fa-solid fa-arrow-left"></i> Kembali
         </a>
         @if($isCanSave)
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-print"></i>Simpan
+            <button type="button" class="btn btn-primary" id="btnSubmitForm">
+                <span class="indicator-label"><i class="fa-regular fa-floppy-disk"></i> Simpan</span>
+                <span class="indicator-progress">Please wait...
+                <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
             </button>
         @endif
     </div>

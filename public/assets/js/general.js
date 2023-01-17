@@ -85,6 +85,14 @@ $(document).on('click', '#btnExport', function(e){
     window.open(completeURL, '_blank');
 });
 
+$('#form-edit').on('click', '#btnSubmitForm', function(){
+    let btnSubmit = this;
+    btnSubmit.setAttribute('data-kt-indicator', 'on');
+    btnSubmit.disabled = true;
+    $('#form-edit').submit();
+});
+
+
 $('#modal-form').on('click', '#btnSubmit', function(){
     let btnSubmit = this;
     btnSubmit.setAttribute('data-kt-indicator', 'on');
@@ -130,11 +138,26 @@ $('#modal-form').on('click', '#btnSubmit', function(){
                 }
                 }).then(function() {
                     window.location=result.url;
+                    // downloadFile(result.download, 'Log Import Data 2022-01-17 10:00:00.log');
                 });
             }
         },
     });
 });
+
+// function downloadFile(url, fileName) {
+//     fetch(url, { method: 'get', mode: 'no-cors', referrerPolicy: 'no-referrer' })
+//         .then(res => res.blob())
+//         .then(res => {
+//             const aElement = document.createElement('a');
+//             aElement.setAttribute('download', fileName);
+//             const href = URL.createObjectURL(res);
+//             aElement.href = href;
+//             aElement.setAttribute('target', '_blank');
+//             aElement.click();
+//             URL.revokeObjectURL(href);
+//         });
+// };
 
 $('#modal-form').on('hidden.bs.modal', function () {
     $('select').select2({

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 <div class="card">
-    <form method="POST" action="{{ route('settings.user-access.update', $role->id) }}">
+    <form method="POST" id="form-edit" action="{{ route('settings.user-access.update', $role->id) }}">
         @csrf
         @method('PATCH')
         <x-form.header title="List Akses {{ $role->name }}" />

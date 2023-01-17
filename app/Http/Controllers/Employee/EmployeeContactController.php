@@ -319,7 +319,10 @@ class EmployeeContactController extends Controller
 
     public function import()
     {
-        return view('employees.contact.import');
+        return view('components.form.import-form', [
+            'menu_path' => $this->menu_path(),
+            'title' => 'Data Import Kontak Darurat',
+        ]);
     }
 
     public function processImport(Request $request)

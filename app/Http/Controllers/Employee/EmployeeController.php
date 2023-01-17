@@ -13,7 +13,11 @@ use App\Http\Requests\Employee\EmployeeFamilyRequest;
 use App\Http\Requests\Employee\EmployeeRequest;
 use App\Http\Requests\Employee\EmployeeTrainingRequest;
 use App\Http\Requests\Employee\EmployeeWorkRequest;
+use App\Imports\Employee\EmployeeImport;
+use App\Models\Attendance\Attendance;
+use App\Models\Attendance\AttendanceCorrection;
 use App\Models\Attendance\AttendanceLeave;
+use App\Models\Attendance\AttendanceOvertime;
 use App\Models\Attendance\AttendancePermission;
 use App\Models\Attendance\AttendanceShift;
 use App\Models\Attendance\AttendanceWorkSchedule;
@@ -26,6 +30,7 @@ use App\Models\Employee\EmployeeFile;
 use App\Models\Employee\EmployeePosition;
 use App\Models\Employee\EmployeeTraining;
 use App\Models\Employee\EmployeeWork;
+use App\Models\ESS\EssTimesheet;
 use App\Models\Setting\AppMasterData;
 use App\Models\Setting\AppParameter;
 use Auth;
@@ -59,6 +64,10 @@ class EmployeeController extends Controller
     public string $workPath;
     public string $assetPath;
     public string $filePath;
+    public string $leavePath;
+    public string $overtimePath;
+    public string $permissionPath;
+    public string $logPath;
     public array $genderOption;
 
     public function __construct()
@@ -72,6 +81,10 @@ class EmployeeController extends Controller
         $this->workPath = '/uploads/employee/work/';
         $this->assetPath = '/uploads/employee/asset/';
         $this->filePath = '/uploads/employee/file/';
+        $this->leavePath = '/uploads/attendance/leave/';
+        $this->overtimePath = '/uploads/attendance/overtime/';
+        $this->permissionPath = '/uploads/attendance/permission/';
+        $this->logPath = '/log/';
         $this->genderOption = ['m' => "Laki-Laki", "f" => "Perempuan"];
 
 
@@ -88,6 +101,11 @@ class EmployeeController extends Controller
      */
     public function index(Request $request): Factory|\Illuminate\Contracts\View\View|JsonResponse|Application
     {
+        $file = public_path()."/storage/log/contact-import 2023-01-10.log";
+
+
+        $this->downloadFile();
+
         $masters = [];
         $dataMaster = AppMasterData::whereIn('app_master_category_code', ['ELK', 'EP', 'EG', 'ESPK', 'ESP', 'ETP', 'EMP', 'EMU'])
             ->where('status', 't')
@@ -174,6 +192,12 @@ class EmployeeController extends Controller
             'masters' => $masters,
             'statusNonActives' => $statusNonActives,
         ]);
+    }
+
+    public function downloadFile() {
+        $path = storage_path('app/public/log/contact-import 2023-01-10.log');
+
+        return response()->download($path);
     }
 
     /**
@@ -452,6 +476,74 @@ class EmployeeController extends Controller
             $family = EmployeeFamily::where('employee_id', $id)->get();
             foreach ($family as $item) {
                 if(Storage::exists($this->familyPath.$item->photo)) Storage::delete($this->familyPath.$item->photo);
+                $item->delete();
+            }
+
+            $contact = EmployeeContact::where('employee_id', $id)->get();
+            foreach ($contact as $item) {
+                $item->delete();
+            }
+
+            $education = EmployeeEducation::where('employee_id', $id)->get();
+            foreach ($education as $item) {
+                if(Storage::exists($this->educationPath.$item->filename)) Storage::delete($this->educationPath.$item->filename);
+                $item->delete();
+            }
+
+            $training = EmployeeTraining::where('employee_id', $id)->get();
+            foreach ($training as $item) {
+                if(Storage::exists($this->trainingPath.$item->filename)) Storage::delete($this->trainingPath.$item->filename);
+                $item->delete();
+            }
+
+            $work = EmployeeWork::where('employee_id', $id)->get();
+            foreach ($work as $item) {
+                if(Storage::exists($this->workPath.$item->filename)) Storage::delete($this->workPath.$item->filename);
+                $item->delete();
+            }
+
+            $asset = EmployeeAsset::where('employee_id', $id)->get();
+            foreach ($asset as $item) {
+                if(Storage::exists($this->assetPath.$item->filename)) Storage::delete($this->assetPath.$item->filename);
+                $item->delete();
+            }
+
+            $file = EmployeeFile::where('employee_id', $id)->get();
+            foreach ($file as $item) {
+                if(Storage::exists($this->filePath.$item->filename)) Storage::delete($this->filePath.$item->filename);
+                $item->delete();
+            }
+
+            $attendance = Attendance::where('employee_id', $id)->get();
+            foreach ($attendance as $item) {
+                $item->delete();
+            }
+
+            $leave = AttendanceLeave::whereEmployeeId($id)->get();
+            foreach ($leave as $item) {
+                if(Storage::exists($this->leavePath.$item->filename)) Storage::delete($this->leavePath.$item->filename);
+                $item->delete();
+            }
+
+            $overtime = AttendanceOvertime::whereEmployeeId($id)->get();
+            foreach ($overtime as $item) {
+                if(Storage::exists($this->overtimePath.$item->filename)) Storage::delete($this->overtimePath.$item->filename);
+                $item->delete();
+            }
+
+            $permission = AttendancePermission::whereEmployeeId($id)->get();
+            foreach ($permission as $item) {
+                if(Storage::exists($this->permissionPath.$item->filename)) Storage::delete($this->permissionPath.$item->filename);
+                $item->delete();
+            }
+
+            $correction = AttendanceCorrection::whereEmployeeId($id)->get();
+            foreach ($correction as $item) {
+                $item->delete();
+            }
+
+            $timesheet = EssTimesheet::whereEmployeeId($id)->get();
+            foreach ($timesheet as $item) {
                 $item->delete();
             }
 
@@ -1434,13 +1526,12 @@ class EmployeeController extends Controller
 
         if(!$user->hasPermissionTo('lvl3 '.$this->menu_path())) $sql->where('t2.leader_id', $user->employee_id);
 
-//        if (isset($filter)) $sql->where('name', 'like', "%{$filter}%")->orWhere('employee_number', 'like', "%{$filter}%");
-//        if (isset($filterPosition)) $sql->where('position_id', $filterPosition);
-//        if (isset($filterRank)) $sql->where('rank_id', $filterRank);
-//        if (isset($filterGrade)) $sql->where('grade_id', $filterGrade);
-//        if (isset($filterLocation)) $sql->where('location_id', $filterLocation);
-//        if (isset($filterStatus)) $sql->where('status_id', $filterStatus);
-//        dd(DB::getQueryLog());
+        if (isset($filter)) $sql->where('name', 'like', "%{$filter}%")->orWhere('employee_number', 'like', "%{$filter}%");
+        if (isset($filterPosition)) $sql->where('position_id', $filterPosition);
+        if (isset($filterRank)) $sql->where('rank_id', $filterRank);
+        if (isset($filterGrade)) $sql->where('grade_id', $filterGrade);
+        if (isset($filterLocation)) $sql->where('location_id', $filterLocation);
+        if (isset($filterStatus) && $filterStatus != 'undefined') $sql->where('status_id', $filterStatus);
 
         $data = [];
         $employees = $sql->get();
@@ -1500,5 +1591,32 @@ class EmployeeController extends Controller
                 'title' => 'Data Pegawai',
             ]
         ), 'Data Pegawai.xlsx');
+    }
+
+    public function import()
+    {
+        return view('components.form.import-form', [
+            'menu_path' => $this->menu_path(),
+            'title' => 'Import Data Pegawai',
+        ]);
+    }
+
+    public function processImport(Request $request)
+    {
+        try {
+            if($request->hasFile('filename')) {
+                Excel::import(new EmployeeImport, $request->file('filename'));
+
+                return response()->json([
+                    'success' => 'Data Pegawai selesai diimport',
+                    'url' => route(Str::replace('/', '.', $this->menu_path()) . '.index'),
+                ]);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => 'Gagal ' . $e->getMessage(),
+                'url' => route(Str::replace('/', '.', $this->menu_path()) . '.index'),
+            ]);
+        }
     }
 }

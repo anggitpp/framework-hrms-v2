@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::name('employees.')->group(function () {
     Route::get('/employees/employees/export', [EmployeeController::class, 'export'])->name('employees.export');
+    Route::get('/employees/employees/import', [EmployeeController::class, 'import'])->name('employees.import');
+    Route::patch('/employees/employees/process-import', [EmployeeController::class, 'processImport'])->name('employees.process-import');
     Route::resource('/employees/employees', EmployeeController::class);
     Route::get('/employees/employees/subMasters/{id}', [EmployeeController::class, 'subMasters'])->name('employees.subMasters');
 

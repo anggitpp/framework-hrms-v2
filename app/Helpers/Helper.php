@@ -269,7 +269,7 @@ function getInitial($sentences, $length = 2)
     $acronym = '';
 
     foreach ($words as $w) {
-        $acronym .= $w[0];
+        $acronym .= $w[0] ?? '';
     }
 
     return strtoupper(substr($acronym, 0, $length));

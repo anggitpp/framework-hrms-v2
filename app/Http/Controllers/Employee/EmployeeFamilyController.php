@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Employee;
 use App\Exports\GlobalExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Employee\EmployeeFamilyRequest;
+use App\Imports\Employee\FamilyImport;
 use App\Models\Employee\Employee;
 use App\Models\Employee\EmployeeFamily;
 use App\Models\Setting\AppMasterData;
@@ -310,12 +311,7 @@ class EmployeeFamilyController extends Controller
                 $join->where('t3.status', 't');
             })
             ->select([
-                't1.id',
-                't1.employee_id',
-                't1.name',
-                't1.relationship_id',
-                't1.birth_date',
-                't1.birth_place',
+                't1.*',
                 't2.name as employee_name',
                 't2.employee_number',
             ]);
@@ -341,16 +337,19 @@ class EmployeeFamilyController extends Controller
                 $family->employee_name,
                 $family->name,
                 $relationships[$family->relationship_id] ?? '',
+                $family->identity_number,
                 $family->birth_date ? setDate($family->birth_date) : '',
                 $family->birth_place,
+                $family->gender == 'm' ? 'Laki-Laki' : 'Pria',
+                $family->description,
             ];
         }
 
-        $columns = ["no", "data pegawai" => ["nip", "nama"], "data keluarga" => ["nama", "hubungan", "tanggal lahir", "tempat lahir"]];
+        $columns = ["no", "data pegawai" => ["nip", "nama"], "data keluarga" => ["nama", "hubungan", "nomor ktp", "tanggal lahir", "tempat lahir", "gender", "keterangan"]];
 
-        $widths = [10, 20, 30, 30];
+        $widths = [10, 20, 30, 30, 20, 20, 20, 20, 20, 50];
 
-        $aligns = ['center', 'center', 'left', 'left', 'left', 'center', 'left'];
+        $aligns = ['center', 'center', 'left', 'left', 'left', 'left', 'center'];
 
         return Excel::download(new GlobalExport(
             [
@@ -361,5 +360,32 @@ class EmployeeFamilyController extends Controller
                 'title' => 'Data Keluarga',
             ]
         ), 'Data Keluarga.xlsx');
+    }
+
+    public function import()
+    {
+        return view('components.form.import-form', [
+            'menu_path' => $this->menu_path(),
+            'title' => 'Import Data Keluarga',
+        ]);
+    }
+
+    public function processImport(Request $request)
+    {
+        try {
+            if($request->hasFile('filename')) {
+                Excel::import(new FamilyImport, $request->file('filename'));
+
+                return response()->json([
+                    'success' => 'Data Keluarga selesai diimport',
+                    'url' => route(Str::replace('/', '.', $this->menu_path()) . '.index'),
+                ]);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => 'Gagal ' . $e->getMessage(),
+                'url' => route(Str::replace('/', '.', $this->menu_path()) . '.index'),
+            ]);
+        }
     }
 }

@@ -6,6 +6,7 @@ use App\Exports\GlobalExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Employee\EmployeeEducationRequest;
 use App\Http\Requests\Employee\EmployeeFamilyRequest;
+use App\Imports\Employee\EducationImport;
 use App\Models\Employee\Employee;
 use App\Models\Employee\EmployeeEducation;
 use App\Models\Employee\EmployeeFamily;
@@ -313,6 +314,9 @@ class EmployeeEducationController extends Controller
                 't1.level_id',
                 't1.start_year',
                 't1.end_year',
+                't1.city',
+                't1.score',
+                't1.description',
                 't2.name as employee_name',
                 't2.employee_number',
             ]);
@@ -336,15 +340,18 @@ class EmployeeEducationController extends Controller
                 $k + 1,
                 $education->employee_number." ",
                 $education->employee_name,
-                $education->name,
                 $levels[$education->level_id] ?? '',
+                $education->name,
                 $education->major,
                 $education->start_year,
                 $education->end_year,
+                $education->city,
+                $education->score,
+                $education->description,
             ];
         }
 
-        $columns = ["no", "data pegawai" => ["nip", "nama"], "data pendidikan" => ["tingkatan", "nama institusi", "jurusan", "mulai", "selesai"]];
+        $columns = ["no", "data pegawai" => ["nip", "nama"], "data pendidikan" => ["tingkatan", "nama institusi", "jurusan", "mulai", "selesai", "kota", "nilai", "keterangan"]];
 
         $widths = [10, 20, 30, 20, 30];
 
@@ -359,5 +366,32 @@ class EmployeeEducationController extends Controller
                 'title' => 'Data Pendidikan',
             ]
         ), 'Data Pendidikan.xlsx');
+    }
+
+    public function import()
+    {
+        return view('components.form.import-form', [
+            'menu_path' => $this->menu_path(),
+            'title' => 'Import Data Pendidikan',
+        ]);
+    }
+
+    public function processImport(Request $request)
+    {
+        try {
+            if($request->hasFile('filename')) {
+                Excel::import(new EducationImport, $request->file('filename'));
+
+                return response()->json([
+                    'success' => 'Data Pendidikan selesai diimport',
+                    'url' => route(Str::replace('/', '.', $this->menu_path()) . '.index'),
+                ]);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => 'Gagal ' . $e->getMessage(),
+                'url' => route(Str::replace('/', '.', $this->menu_path()) . '.index'),
+            ]);
+        }
     }
 }

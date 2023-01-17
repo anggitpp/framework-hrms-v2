@@ -17,8 +17,11 @@
                 <div class="card-toolbar">
                     <div class="d-flex justify-content-end">
                         <x-views.export-button id="btnExport" text="Export Data" class="me-3" url="{{ $menu_path }}" />
+                        @can('lvl1 '.$menu_path)
+                            <x-views.add-button-modal route="{{ route(Str::replace('/', '.', $menu_path).'.import') }}" class="me-3" text="Import Data" />
+                        @endcan
                         @can('add '.$menu_path)
-                            <x-views.add-button route="{{ route(str_replace('/', '.', $menu_path).'.create') }}" text="Tambah Data Pendidikan" />
+                            <x-views.add-button route="{{ route(str_replace('/', '.', $menu_path).'.create') }}" text="Tambah Data" />
                         @endcan
                     </div>
                 </div>

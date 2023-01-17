@@ -134,6 +134,8 @@ Route::name('employees.')->group(function () {
 
     Route::get('/employees/educations/data', [EmployeeEducationController::class, 'data'])->name('educations.data');
     Route::get('/employees/educations/export', [EmployeeEducationController::class, 'export'])->name('educations.export');
+    Route::get('/employees/educations/import', [EmployeeEducationController::class, 'import'])->name('educations.import');
+    Route::patch('/employees/educations/process-import', [EmployeeEducationController::class, 'processImport'])->name('educations.process-import');
     Route::resource('/employees/educations', EmployeeEducationController::class);
 
     Route::get('/employees/trainings/data', [EmployeeTrainingController::class, 'data'])->name('trainings.data');

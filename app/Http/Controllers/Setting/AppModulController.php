@@ -179,12 +179,25 @@ class AppModulController extends Controller
      */
     public function destroy(int $id)
     {
-        $modul = AppModul::findOrFail($id);
-        $modul->delete();
+        DB::beginTransaction();
+        try {
+            $modul = AppModul::findOrFail($id);
+            $modul->subModul()->delete();
+            foreach ($modul->menus as $menu) {
+                Permission::where('type', 'menu')->where('type_id', $menu->id)->delete();
+                $menu->delete();
+            }
+            $modul->delete();
 
-        Permission::where('name', $modul->target)->where('type', 'modul')->delete();
+            Permission::where('name', $modul->target)->where('type', 'modul')->delete();
 
-        Alert::success('Success', 'Data user berhasil dihapus!');
+            DB::commit();
+
+            Alert::success('Success', 'Data modul berhasil dihapus!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Alert::error('Error', $e->getMessage());
+        }
 
         return redirect()->back();
     }

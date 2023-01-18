@@ -78,8 +78,6 @@ class EmployeeImport implements ToModel, WithEvents
 
         $storage = Storage::disk("log");
 
-        \Debugbar::info($row);
-
         //IDENTITY
         $no = trim($row[0]);
         $name = trim($row[1]);

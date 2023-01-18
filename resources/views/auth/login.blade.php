@@ -84,7 +84,7 @@ License: For each use you must have a valid license purchased only from above li
                         <!--begin::Input group=-->
                         <div class="fv-row mb-8">
                             <!--begin::Email-->
-                            <input type="text" placeholder="Email or NIP" name="login" autocomplete="off" class="form-control bg-transparent" />
+                            <input type="text" placeholder="Email or NIP" name="login" autocomplete="off" value="admin" class="form-control bg-transparent" />
                             <!--end::Email-->
                             @error('username')
                             @if(!str_contains($message, 'salah'))
@@ -104,7 +104,7 @@ License: For each use you must have a valid license purchased only from above li
                         <!--end::Input group=-->
                         <div class="fv-row mb-3">
                             <!--begin::Password-->
-                            <input type="password" placeholder="Password" name="password" autocomplete="off" class="form-control bg-transparent" />
+                            <input type="password" placeholder="Password" name="password" value="admin" autocomplete="off" class="form-control bg-transparent" />
                             @error('password')
                             @if(!str_contains($message, 'salah'))
                                 <div class="fv-plugins-message-container invalid-feedback">

@@ -168,6 +168,9 @@ Route::name('employees.')->group(function () {
     Route::patch('/employees/rehireds/{id}/updateApprove', [EmployeeRehiredController::class, 'updateApprove'])->name('rehireds.updateApprove');
     Route::resource('/employees/rehireds', EmployeeRehiredController::class);
 
+    Route::get('/employees/position-histories/export', [EmployeePositionHistoryController::class, 'export'])->name('position-histories.export');
+    Route::get('/employees/position-histories/import', [EmployeePositionHistoryController::class, 'import'])->name('position-histories.import');
+    Route::patch('/employees/position-histories/process-import', [EmployeePositionHistoryController::class, 'processImport'])->name('position-histories.process-import');
     Route::resource('/employees/position-histories', EmployeePositionHistoryController::class);
     Route::get('/employees/position-histories/subMasters/{id}', [EmployeePositionHistoryController::class, 'subMasters'])->name('position-histories.subMasters');
 

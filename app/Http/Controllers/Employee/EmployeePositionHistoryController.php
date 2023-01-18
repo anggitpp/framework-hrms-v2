@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Employee;
 
+use App\Exports\GlobalExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Employee\EmployeePositionHistoryRequest;
+use App\Imports\Employee\PositionImport;
 use App\Models\Attendance\AttendanceShift;
 use App\Models\Employee\Employee;
 use App\Models\Employee\EmployeePosition;
@@ -17,7 +19,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 use RealRashid\SweetAlert\Facades\Alert;
+use Str;
 use Yajra\DataTables\DataTables;
 
 class EmployeePositionHistoryController extends Controller
@@ -244,6 +248,97 @@ class EmployeePositionHistoryController extends Controller
         }
     }
 
+    public function export(Request $request)
+    {
+        $user = \Session::get('user');
+
+        $types = AppMasterData::whereAppMasterCategoryCode('ETP')
+            ->pluck('name', 'id')
+            ->toArray();
+        $masterPositions = AppMasterData::whereAppMasterCategoryCode('EMP')
+            ->pluck('name', 'id')
+            ->toArray();
+        $locations = AppMasterData::whereAppMasterCategoryCode('ELK')
+            ->pluck('name', 'id')
+            ->toArray();
+        $ranks = AppMasterData::whereAppMasterCategoryCode('EP')
+            ->pluck('name', 'id')
+            ->toArray();
+        $grades = AppMasterData::whereAppMasterCategoryCode('EG')
+            ->pluck('name', 'id')
+            ->toArray();
+        $units = AppMasterData::whereAppMasterCategoryCode('EMU')
+            ->pluck('name', 'id')
+            ->toArray();
+        $shifts = AttendanceShift::pluck('name', 'id')->toArray();
+        $leaders = Employee::pluck('name', 'id')->toArray();
+
+        $filterPosition = $request->get('combo_1');
+        $filterRank = $request->get('combo_2');
+        $filterGrade = $request->get('combo_3');
+        $filterLocation = $request->get('combo_4');
+        $filter = $request->get('filter');
+
+        $sql = DB::table('employee_positions as t1')
+            ->join('employees as t2', 't1.employee_id', 't2.id')
+            ->select([
+                't1.*',
+                't2.name as employee_name',
+                't2.employee_number',
+            ]);
+        if($filterPosition) $sql->where('t3.position_id', $filterPosition);
+        if($filterRank) $sql->where('t3.rank_id', $filterRank);
+        if($filterGrade) $sql->where('t3.grade_id', $filterGrade);
+        if($filterLocation) $sql->where('t3.location_id', $filterLocation);
+        if($filter) $sql->where(function ($query) use ($filter) {
+            $query->where('t1.name', 'like', '%'.$filter.'%')
+                ->orWhere('t2.name', 'like', '%'.$filter.'%')
+                ->orWhere('t2.employee_number', 'like', '%'.$filter.'%');
+        });
+
+        if(!$user->hasPermissionTo('lvl3 '.$this->menu_path()))
+            $sql->where('t3.leader_id', $user->employee_id);
+
+        $data = [];
+        $positions = $sql->get();
+        foreach ($positions as $k => $position){
+            $data[] = [
+                $k + 1,
+                $position->employee_number." ",
+                $position->employee_name,
+                $types[$position->employee_type_id] ?? '',
+                $masterPositions[$position->position_id] ?? '',
+                $locations[$position->location_id] ?? '',
+                $ranks[$position->rank_id] ?? '',
+                $grades[$position->grade_id] ?? '',
+                $position->sk_number,
+                $position->sk_date ? setDate($position->sk_date) : '',
+                $position->start_date ? setDate($position->start_date) : '',
+                $position->end_date ? setDate($position->end_date) : '',
+                $units[$position->unit_id] ?? '',
+                $shifts[$position->shift_id] ?? '',
+                $leaders[$position->leader_id] ?? '',
+                $position->status == 't' ? 'Aktif' : 'Tidak Aktif',
+            ];
+        }
+
+        $columns = ["no", "data pegawai" => ["nip", "nama"], "data posisi" => ["tipe pegawai", "jabatan", "lokasi kerja", "pangkat", "grade", "nomor sk", "tanggal sk", "tanggal mulai", "tanggal selesai", "unit", "shift", "atasan langsung", "status"]];
+
+        $widths = [10, 20, 30, 20, 30];
+
+        $aligns = ['center', 'center', 'left', 'left', 'left', 'left', 'left', 'left', 'center', 'center', 'center'];
+
+        return Excel::download(new GlobalExport(
+            [
+                'columns' => $columns,
+                'widths' => $widths,
+                'aligns' => $aligns,
+                'data' => $data,
+                'title' => 'Data Riwayat Jabatan',
+            ]
+        ), 'Data Riwayat Jabatan.xlsx');
+    }
+
     public function subMasters(int $id)
     {
         return AppMasterData::where('app_master_category_code', 'EG')
@@ -251,5 +346,32 @@ class EmployeePositionHistoryController extends Controller
             ->select(['id', 'name'])
             ->orderBy('order')
             ->get();
+    }
+
+    public function import()
+    {
+        return view('components.form.import-form', [
+            'menu_path' => $this->menu_path(),
+            'title' => 'Import Data Jabatan',
+        ]);
+    }
+
+    public function processImport(Request $request)
+    {
+        try {
+            if($request->hasFile('filename')) {
+                Excel::import(new PositionImport, $request->file('filename'));
+
+                return response()->json([
+                    'success' => 'Data Riwayat Jabatan selesai diimport',
+                    'url' => route(Str::replace('/', '.', $this->menu_path()) . '.index'),
+                ]);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => 'Gagal ' . $e->getMessage(),
+                'url' => route(Str::replace('/', '.', $this->menu_path()) . '.index'),
+            ]);
+        }
     }
 }

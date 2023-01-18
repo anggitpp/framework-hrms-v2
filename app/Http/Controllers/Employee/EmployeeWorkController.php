@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Employee;
 use App\Exports\GlobalExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Employee\EmployeeWorkRequest;
+use App\Imports\Employee\WorkImport;
 use App\Models\Employee\Employee;
 use App\Models\Employee\EmployeeWork;
 use App\Models\Setting\AppMasterData;
@@ -350,7 +351,7 @@ class EmployeeWorkController extends Controller
             ];
         }
 
-        $columns = ["no", "data pegawai" => ["nip", "nama"], "data pelatihan" => ["perusahaan", "posisi", "tanggal mulai", "tanggal selesai", "kota", "tugas"]];
+        $columns = ["no", "data pegawai" => ["nip", "nama"], "data riwayat kerja" => ["perusahaan", "posisi", "tanggal mulai", "tanggal selesai", "kota", "keterangan"]];
 
         $widths = [10, 20, 30, 30, 30, 20, 20, 20, 50];
 
@@ -365,5 +366,32 @@ class EmployeeWorkController extends Controller
                 'title' => 'Data Riwayat Kerja',
             ]
         ), 'Data Riwayat Kerja.xlsx');
+    }
+
+    public function import()
+    {
+        return view('components.form.import-form', [
+            'menu_path' => $this->menu_path(),
+            'title' => 'Import Data Riwayat Kerja',
+        ]);
+    }
+
+    public function processImport(Request $request)
+    {
+        try {
+            if($request->hasFile('filename')) {
+                Excel::import(new WorkImport(), $request->file('filename'));
+
+                return response()->json([
+                    'success' => 'Data Riwayat Kerja selesai diimport',
+                    'url' => route(Str::replace('/', '.', $this->menu_path()) . '.index'),
+                ]);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => 'Gagal ' . $e->getMessage(),
+                'url' => route(Str::replace('/', '.', $this->menu_path()) . '.index'),
+            ]);
+        }
     }
 }

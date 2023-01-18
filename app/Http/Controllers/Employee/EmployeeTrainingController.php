@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Employee;
 use App\Exports\GlobalExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Employee\EmployeeTrainingRequest;
+use App\Imports\Employee\TrainingImport;
 use App\Models\Employee\Employee;
 use App\Models\Employee\EmployeeTraining;
 use App\Models\Setting\AppMasterData;
@@ -340,6 +341,7 @@ class EmployeeTrainingController extends Controller
                 't1.type_id',
                 't1.start_date',
                 't1.end_date',
+                't1.description',
                 't2.name as employee_name',
                 't2.employee_number',
             ]);
@@ -370,12 +372,13 @@ class EmployeeTrainingController extends Controller
                 $types[$training->type_id] ?? '',
                 setDate($training->start_date),
                 setDate($training->end_date),
+                $training->description,
             ];
         }
 
-        $columns = ["no", "data pegawai" => ["nip", "nama"], "data pelatihan" => ["perihal", "institusi", "no. sertifikat", "kategori", "tipe", "tanggal mulai", "tanggal selesai"]];
+        $columns = ["no", "data pegawai" => ["nip", "nama"], "data pelatihan" => ["perihal", "institusi", "no. sertifikat", "kategori", "tipe", "tanggal mulai", "tanggal selesai", "description"]];
 
-        $widths = [10, 20, 30, 30, 30, 30];
+        $widths = [10, 20, 30, 30, 30, 30, 20, 20, 20, 20, 50];
 
         $aligns = ['center', 'center', 'left', 'left', 'left', 'left', 'left', 'left', 'center', 'center'];
 
@@ -388,5 +391,32 @@ class EmployeeTrainingController extends Controller
                 'title' => 'Data Pelatihan',
             ]
         ), 'Data Pelatihan.xlsx');
+    }
+
+    public function import()
+    {
+        return view('components.form.import-form', [
+            'menu_path' => $this->menu_path(),
+            'title' => 'Import Data Pelatihan',
+        ]);
+    }
+
+    public function processImport(Request $request)
+    {
+        try {
+            if($request->hasFile('filename')) {
+                Excel::import(new TrainingImport, $request->file('filename'));
+
+                return response()->json([
+                    'success' => 'Data Pelatihan selesai diimport',
+                    'url' => route(Str::replace('/', '.', $this->menu_path()) . '.index'),
+                ]);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => 'Gagal ' . $e->getMessage(),
+                'url' => route(Str::replace('/', '.', $this->menu_path()) . '.index'),
+            ]);
+        }
     }
 }

@@ -140,6 +140,8 @@ Route::name('employees.')->group(function () {
 
     Route::get('/employees/trainings/data', [EmployeeTrainingController::class, 'data'])->name('trainings.data');
     Route::get('/employees/trainings/export', [EmployeeTrainingController::class, 'export'])->name('trainings.export');
+    Route::get('/employees/trainings/import', [EmployeeTrainingController::class, 'import'])->name('trainings.import');
+    Route::patch('/employees/trainings/process-import', [EmployeeTrainingController::class, 'processImport'])->name('trainings.process-import');
     Route::resource('/employees/trainings', EmployeeTrainingController::class);
 
     Route::get('/employees/works/data', [EmployeeWorkController::class, 'data'])->name('works.data');

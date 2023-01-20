@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Employee;
 use App\Exports\GlobalExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Employee\EmployeeAssetRequest;
+use App\Imports\Employee\AssetImport;
 use App\Models\Employee\Employee;
 use App\Models\Employee\EmployeeAsset;
 use App\Models\Setting\AppMasterData;
@@ -347,6 +348,7 @@ class EmployeeAssetController extends Controller
                 't1.start_date',
                 't1.end_date',
                 't1.status',
+                't1.description',
                 't2.name as employee_name',
                 't2.employee_number',
             ]);
@@ -378,10 +380,11 @@ class EmployeeAssetController extends Controller
                 $asset->start_date != '0000-00-00' ? setDate($asset->start_date) : '',
                 $asset->end_date != '0000-00-00' ? setDate($asset->end_date) : '',
                 $asset->status == 't' ? 'Aktif' : 'Tidak Aktif',
+                $asset->description,
             ];
         }
 
-        $columns = ["no", "data pegawai" => ["nip", "nama"], "data aset" => ["nama", "nomor", "kategori", "tipe", "tanggal", "tanggal mulai", "tanggal selesai"], "status"];
+        $columns = ["no", "data pegawai" => ["nip", "nama"], "data aset" => ["nama", "nomor", "kategori", "tipe", "tanggal", "tanggal mulai", "tanggal selesai"], "status", "keterangan"];
 
         $widths = [10, 20, 30, 30, 30, 20, 30];
 
@@ -396,5 +399,32 @@ class EmployeeAssetController extends Controller
                 'title' => 'Data Aset',
             ]
         ), 'Data Aset.xlsx');
+    }
+
+    public function import()
+    {
+        return view('components.form.import-form', [
+            'menu_path' => $this->menu_path(),
+            'title' => 'Import Data Asset',
+        ]);
+    }
+
+    public function processImport(Request $request)
+    {
+        try {
+            if($request->hasFile('filename')) {
+                Excel::import(new AssetImport, $request->file('filename'));
+
+                return response()->json([
+                    'success' => 'Data Asset selesai diimport',
+                    'url' => route(Str::replace('/', '.', $this->menu_path()) . '.index'),
+                ]);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => 'Gagal ' . $e->getMessage(),
+                'url' => route(Str::replace('/', '.', $this->menu_path()) . '.index'),
+            ]);
+        }
     }
 }

@@ -3,24 +3,14 @@
 namespace App\Http\Controllers\Payroll;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Attendance\HolidayRequest;
-use App\Http\Requests\Payroll\MasterRequest;
-use App\Models\Attendance\AttendanceHoliday;
-use App\Models\Payroll\PayrollMaster;
-use App\Models\Payroll\PayrollSetting;
-use App\Models\Setting\AppMasterData;
 use App\Services\Payroll\PayrollSettingService;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use RealRashid\SweetAlert\Facades\Alert;
 use Str;
-use Yajra\DataTables\DataTables;
 
 class PayrollSettingController extends Controller
 {

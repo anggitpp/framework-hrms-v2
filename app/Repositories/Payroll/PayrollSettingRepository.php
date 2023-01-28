@@ -44,20 +44,14 @@ class PayrollSettingRepository extends BaseRepository
 
     public function updatePayrollSetting(array $data): PayrollSetting
     {
-        \DB::enableQueryLog();
-
-        $setting = $this->updateOrCreate([
+        return $this->updateOrCreate([
             'code' => $data['code'],
             'reference_field' => $data['reference_field'],
             'reference_id' => $data['reference_id'],
         ],
-            [
-                'amount' => $data['amount'],
-            ]);
-
-        \Debugbar::info(\DB::getQueryLog());
-
-        return $setting;
+        [
+            'amount' => $data['amount'],
+        ]);
 
     }
 }

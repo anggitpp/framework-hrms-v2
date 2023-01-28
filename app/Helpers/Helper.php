@@ -5,6 +5,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Carbon;
 use Intervention\Image\Facades\Image;
+use Yajra\DataTables\DataTables;
 
 function setCurrency($value)
 {
@@ -298,4 +299,104 @@ function getParameterMenu(String $pathMenu)
         ->first()->parameter;
 }
 
+
+function menu_path()
+{
+    $arrURL = explode('/', \Request::url());//GET URL
+    $modul = !empty($arrURL[3]) ? $arrURL[3] : ''; //GET MODUL
+    $menu = !empty($arrURL[4]) ? explode('?', $arrURL[4])[0] ?? '' : ''; //GET MENU WITHOUT PARAM
+
+    return $modul.'/'.$menu;
+}
+
+/**
+ * @throws Exception
+ */
+function generateDatatable($query, $filter , $customFields = [], $isModal = false, $isShowRoute = false, $customPrefix = null, $arrCustomAction = [], $iconShow = '')
+{
+    //generate datatables with filter
+    $dataTables = DataTables::of($query);
+    if($filter) $dataTables->filter($filter);
+
+    //generate custom fields
+    foreach ($customFields as $field) {
+        if ($field['type'] == 'date') {
+            $data = function ($model) use ($field) {
+                return $model->{$field['name']} != '0000-00-00' ? setDate($model->{$field['name']}) : '';
+            };
+        } else if ($field['type'] == 'masters') {
+            $data = function ($model) use ($field) {
+                return $field['masters'][$model->{$field['name']}] ?? '';
+            };
+        } else if ($field['type'] == 'master_relationship') {
+            $field['master_field'] = $field['master_field'] ?? 'name';
+            $data = function ($model) use ($field) {
+                if($field['master_type_value'] == 'currency'){
+                    $value = setCurrency($model->{$field['masters']}->{$field['master_field']} ?? 0);
+                }else{
+                    $value = $model->{$field['masters']}->{$field['master_field']} ?? '';
+                }
+                return $value;
+            };
+        } else if ($field['type'] == 'filename') {
+            $data = function ($model) use ($field) {
+                return $model->{$field['name']} ? view('components.datatables.download', [
+                    'url' => $model->{$field['name']}
+                ]) : '';
+            };
+        } else if ($field['type'] == 'status') {
+            $data = function ($model) use ($field) {
+                return view('components.views.status', [
+                    'status' => $model->{$field['name']},
+                ]);
+            };
+        } else if ($field['type'] == 'yesorno') {
+            $data = function ($model) use ($field) {
+                return view('components.views.yes-or-no', [
+                    'value' => $model->{$field['name']},
+                ]);
+            };
+        } else if ($field['type'] == 'currency'){
+            $data = function ($model) use ($field) {
+                return setCurrency($model->{$field['name']}) ?? '';
+            };
+        } else {
+            $data = $field['value'];
+        }
+
+        if(!empty($field['isAdd'])){
+            $dataTables->addColumn($field['name'], $data);
+        }else{
+            $dataTables->editColumn($field['name'], $data);
+        }
+    }
+
+    //generate action
+    $dataTables->addColumn('action', function ($model) use ($isModal, $isShowRoute, $customPrefix) {
+        $editPrefix = $customPrefix ? 'edit-'.$customPrefix : 'edit';
+        $destroyPrefix = $customPrefix ? 'destroy-'.$customPrefix : 'destroy';
+        $showPrefix = $customPrefix ? 'show-'.$customPrefix : 'show';
+        $arrAction = [
+            'menu_path' => menu_path(),
+            'url_edit' => route(Str::replace('/', '.', menu_path()) . '.'.$editPrefix, $model->id),
+            'url_destroy' => route(Str::replace('/', '.', menu_path()) . '.'.$destroyPrefix, $model->id),
+            'isModal' => $isModal,
+        ];
+
+        if(!empty($isShowRoute)){
+            $arrAction = array_merge($arrAction, [
+                'url_show' => route(Str::replace('/', '.', menu_path()) . '.'.$showPrefix, $model->id),
+            ]);
+            if(!empty($iconShow)){
+                $arrAction = array_merge($arrAction, [
+                    'icon_show' => $iconShow,
+                ]);
+            }
+        }
+
+        return view('components.views.action', $arrAction);
+    });
+
+    return $dataTables->addIndexColumn()->make();
+}
 ?>

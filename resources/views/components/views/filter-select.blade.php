@@ -2,7 +2,7 @@
 @if($label)
     <div class="form-group mb-5">
         <label class="form-label {!! $required ? "required" : "" !!}">{{ $label }}</label>
-        <select data-kt-select2="true" data-placeholder="{{ $placeholder == '' ? '- Pilih '.$label.' -' : $placeholder }}" data-allow-clear="true" data-hide-search="true"
+        <select data-kt-select2="true" data-placeholder="{{ $placeholder == '' ? '- Pilih '.$label.' -' : $placeholder }}" data-allow-clear="true"
             @if($event)
                 onchange="{{ $event }}"
             @endif

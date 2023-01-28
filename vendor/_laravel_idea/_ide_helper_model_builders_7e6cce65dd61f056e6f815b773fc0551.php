@@ -1,9 +1,10 @@
-<?php //77ae21fade1646e7d043778e664bf5da
+<?php //ac5f172a3ca77590423dba48417d9221
 /** @noinspection all */
 
 namespace LaravelIdea\Helper\App\Models\Payroll {
 
     use App\Models\Payroll\PayrollComponent;
+    use App\Models\Payroll\PayrollFixed;
     use App\Models\Payroll\PayrollMaster;
     use App\Models\Payroll\PayrollSetting;
     use Illuminate\Contracts\Support\Arrayable;
@@ -87,6 +88,72 @@ namespace LaravelIdea\Helper\App\Models\Payroll {
      * @method PayrollComponent updateOrCreate(array $attributes, array $values = [])
      */
     class _IH_PayrollComponent_QB extends _BaseBuilder {}
+    
+    /**
+     * @method PayrollFixed|null getOrPut($key, $value)
+     * @method PayrollFixed|$this shift(int $count = 1)
+     * @method PayrollFixed|null firstOrFail(callable|string $key = null, $operator = null, $value = null)
+     * @method PayrollFixed|$this pop(int $count = 1)
+     * @method PayrollFixed|null pull($key, \Closure $default = null)
+     * @method PayrollFixed|null last(callable $callback = null, \Closure $default = null)
+     * @method PayrollFixed|$this random(callable|int|null $number = null)
+     * @method PayrollFixed|null sole(callable|string $key = null, $operator = null, $value = null)
+     * @method PayrollFixed|null get($key, \Closure $default = null)
+     * @method PayrollFixed|null first(callable $callback = null, \Closure $default = null)
+     * @method PayrollFixed|null firstWhere(callable|string $key, $operator = null, $value = null)
+     * @method PayrollFixed|null find($key, $default = null)
+     * @method PayrollFixed[] all()
+     */
+    class _IH_PayrollFixed_C extends _BaseCollection {
+        /**
+         * @param int $size
+         * @return PayrollFixed[][]
+         */
+        public function chunk($size)
+        {
+            return [];
+        }
+    }
+    
+    /**
+     * @method _IH_PayrollFixed_QB whereId($value)
+     * @method _IH_PayrollFixed_QB whereCode($value)
+     * @method _IH_PayrollFixed_QB whereName($value)
+     * @method _IH_PayrollFixed_QB whereAmount($value)
+     * @method _IH_PayrollFixed_QB whereDescription($value)
+     * @method _IH_PayrollFixed_QB whereStatus($value)
+     * @method _IH_PayrollFixed_QB whereCreatedBy($value)
+     * @method _IH_PayrollFixed_QB whereUpdatedBy($value)
+     * @method _IH_PayrollFixed_QB whereCreatedAt($value)
+     * @method _IH_PayrollFixed_QB whereUpdatedAt($value)
+     * @method PayrollFixed baseSole(array|string $columns = ['*'])
+     * @method PayrollFixed create(array $attributes = [])
+     * @method _IH_PayrollFixed_C|PayrollFixed[] cursor()
+     * @method PayrollFixed|null|_IH_PayrollFixed_C|PayrollFixed[] find($id, array|string $columns = ['*'])
+     * @method _IH_PayrollFixed_C|PayrollFixed[] findMany(array|Arrayable $ids, array|string $columns = ['*'])
+     * @method PayrollFixed|_IH_PayrollFixed_C|PayrollFixed[] findOr($id, array|\Closure|string $columns = ['*'], \Closure $callback = null)
+     * @method PayrollFixed|_IH_PayrollFixed_C|PayrollFixed[] findOrFail($id, array|string $columns = ['*'])
+     * @method PayrollFixed|_IH_PayrollFixed_C|PayrollFixed[] findOrNew($id, array|string $columns = ['*'])
+     * @method PayrollFixed first(array|string $columns = ['*'])
+     * @method PayrollFixed firstOr(array|\Closure|string $columns = ['*'], \Closure $callback = null)
+     * @method PayrollFixed firstOrCreate(array $attributes = [], array $values = [])
+     * @method PayrollFixed firstOrFail(array|string $columns = ['*'])
+     * @method PayrollFixed firstOrNew(array $attributes = [], array $values = [])
+     * @method PayrollFixed firstWhere(array|\Closure|Expression|string $column, $operator = null, $value = null, string $boolean = 'and')
+     * @method PayrollFixed forceCreate(array $attributes)
+     * @method _IH_PayrollFixed_C|PayrollFixed[] fromQuery(string $query, array $bindings = [])
+     * @method _IH_PayrollFixed_C|PayrollFixed[] get(array|string $columns = ['*'])
+     * @method PayrollFixed getModel()
+     * @method PayrollFixed[] getModels(array|string $columns = ['*'])
+     * @method _IH_PayrollFixed_C|PayrollFixed[] hydrate(array $items)
+     * @method PayrollFixed make(array $attributes = [])
+     * @method PayrollFixed newModelInstance(array $attributes = [])
+     * @method LengthAwarePaginator|PayrollFixed[]|_IH_PayrollFixed_C paginate(\Closure|int|null $perPage = null, array|string $columns = ['*'], string $pageName = 'page', int|null $page = null)
+     * @method Paginator|PayrollFixed[]|_IH_PayrollFixed_C simplePaginate(int|null $perPage = null, array|string $columns = ['*'], string $pageName = 'page', int|null $page = null)
+     * @method PayrollFixed sole(array|string $columns = ['*'])
+     * @method PayrollFixed updateOrCreate(array $attributes, array $values = [])
+     */
+    class _IH_PayrollFixed_QB extends _BaseBuilder {}
     
     /**
      * @method PayrollMaster|null getOrPut($key, $value)

@@ -1,4 +1,4 @@
-<?php //bbd55b95ba8452da520b79975cac4f5a
+<?php //05144ec1033e06931cf4a89c9d5813c3
 /** @noinspection all */
 
 namespace App\Models\Setting {
@@ -7,6 +7,7 @@ namespace App\Models\Setting {
     use Illuminate\Database\Eloquent\Model;
     use Illuminate\Database\Eloquent\Relations\BelongsTo;
     use Illuminate\Database\Eloquent\Relations\HasMany;
+    use Illuminate\Database\Eloquent\Relations\HasOne;
     use Illuminate\Database\Eloquent\Relations\MorphToMany;
     use Illuminate\Notifications\DatabaseNotification;
     use Illuminate\Notifications\DatabaseNotificationCollection;
@@ -76,7 +77,7 @@ namespace App\Models\Setting {
      * @property AppMasterData|null $parent
      * @method BelongsTo|_IH_AppMasterData_QB parent()
      * @property PayrollSetting $payrollSetting
-     * @method BelongsTo|_IH_PayrollSetting_QB payrollSetting()
+     * @method HasOne|_IH_PayrollSetting_QB payrollSetting()
      * @method static _IH_AppMasterData_QB onWriteConnection()
      * @method _IH_AppMasterData_QB newQuery()
      * @method static _IH_AppMasterData_QB on(null|string $connection = null)

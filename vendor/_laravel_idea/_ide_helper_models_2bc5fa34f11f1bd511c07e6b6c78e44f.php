@@ -1,4 +1,4 @@
-<?php //0620beb62cbf85afc9a33f16c432cc0f
+<?php //4b59f1e2fecedb55d381efd5fd03f0fe
 /** @noinspection all */
 
 namespace App\Models\Payroll {
@@ -7,6 +7,8 @@ namespace App\Models\Payroll {
     use Illuminate\Support\Carbon;
     use LaravelIdea\Helper\App\Models\Payroll\_IH_PayrollComponent_C;
     use LaravelIdea\Helper\App\Models\Payroll\_IH_PayrollComponent_QB;
+    use LaravelIdea\Helper\App\Models\Payroll\_IH_PayrollFixed_C;
+    use LaravelIdea\Helper\App\Models\Payroll\_IH_PayrollFixed_QB;
     use LaravelIdea\Helper\App\Models\Payroll\_IH_PayrollMaster_C;
     use LaravelIdea\Helper\App\Models\Payroll\_IH_PayrollMaster_QB;
     use LaravelIdea\Helper\App\Models\Payroll\_IH_PayrollSetting_C;
@@ -44,6 +46,30 @@ namespace App\Models\Payroll {
      * @mixin _IH_PayrollComponent_QB
      */
     class PayrollComponent extends Model {}
+    
+    /**
+     * @property int $id
+     * @property string $code
+     * @property string $name
+     * @property string $amount
+     * @property string|null $description
+     * @property string $status
+     * @property string|null $created_by
+     * @property string|null $updated_by
+     * @property Carbon|null $created_at
+     * @property Carbon|null $updated_at
+     * @method static _IH_PayrollFixed_QB onWriteConnection()
+     * @method _IH_PayrollFixed_QB newQuery()
+     * @method static _IH_PayrollFixed_QB on(null|string $connection = null)
+     * @method static _IH_PayrollFixed_QB query()
+     * @method static _IH_PayrollFixed_QB with(array|string $relations)
+     * @method _IH_PayrollFixed_QB newModelQuery()
+     * @method false|int increment(string $column, float|int $amount = 1, array $extra = [])
+     * @method false|int decrement(string $column, float|int $amount = 1, array $extra = [])
+     * @method static _IH_PayrollFixed_C|PayrollFixed[] all()
+     * @mixin _IH_PayrollFixed_QB
+     */
+    class PayrollFixed extends Model {}
     
     /**
      * @property int $id

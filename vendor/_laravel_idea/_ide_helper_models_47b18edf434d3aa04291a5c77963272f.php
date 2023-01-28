@@ -1,4 +1,4 @@
-<?php //c1fde2c5f6760fc5f0a1fce000125e85
+<?php //a4877ab610db0c7100035dc644f2c5c4
 /** @noinspection all */
 
 namespace App\Models\Attendance {
@@ -57,6 +57,8 @@ namespace App\Models\Attendance {
      * @property Carbon|null $created_at
      * @property Carbon|null $updated_at
      * @property int|null $type_id
+     * @property Employee $employee
+     * @method BelongsTo|_IH_Employee_QB employee()
      * @method static _IH_Attendance_QB onWriteConnection()
      * @method _IH_Attendance_QB newQuery()
      * @method static _IH_Attendance_QB on(null|string $connection = null)

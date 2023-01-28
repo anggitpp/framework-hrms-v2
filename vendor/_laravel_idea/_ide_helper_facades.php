@@ -1,4 +1,4 @@
-<?php //a4b8c174977f46fc932b210ef869907f
+<?php //4b44e8c882761a1e1c3913576a167506
 /** @noinspection all */
 
 namespace Barryvdh\Debugbar {
@@ -1168,7 +1168,7 @@ namespace Illuminate\Support\Facades {
      * @see \Illuminate\Filesystem\Filesystem::dirname
      * @method static string dirname(string $path)
      * @see \Illuminate\Support\Traits\Conditionable::when
-     * @method static \Illuminate\Support\HigherOrderWhenProxy|\Illuminate\Support\Traits\Conditionable when(\Closure|null $value = null, callable $callback = null, callable $default = null)
+     * @method static \Illuminate\Support\HigherOrderWhenProxy|\Illuminate\Support\Traits\Conditionable|mixed when(\Closure|null $value = null, callable $callback = null, callable $default = null)
      * @see \Illuminate\Filesystem\Filesystem::put
      * @method static bool|int put(string $path, string $contents, bool $lock = false)
      * @see \Illuminate\Filesystem\Filesystem::copyDirectory
@@ -1220,7 +1220,7 @@ namespace Illuminate\Support\Facades {
      * @see \Illuminate\Support\Traits\Macroable::hasMacro
      * @method static bool hasMacro(string $name)
      * @see \Illuminate\Support\Traits\Conditionable::unless
-     * @method static \Illuminate\Support\Traits\Conditionable unless(\Closure|null $value = null, callable $callback = null, callable $default = null)
+     * @method static \Illuminate\Support\Traits\Conditionable|mixed unless(\Closure|null $value = null, callable $callback = null, callable $default = null)
      * @see \Illuminate\Filesystem\Filesystem::get
      * @method static string get(string $path, bool $lock = false)
      * @see \Illuminate\Filesystem\Filesystem::missing
@@ -1903,6 +1903,16 @@ namespace Illuminate\Support\Facades {
     class Redis {}
     
     /**
+     * @see \Illuminate\Http\Request::hasValidSignature
+     * @method static bool hasValidSignature($absolute = true)
+     * @see \Illuminate\Http\Request::hasValidSignatureWhileIgnoring
+     * @method static bool hasValidSignatureWhileIgnoring($ignoreQuery = [], $absolute = true)
+     * @see \Illuminate\Http\Request::validateWithBag
+     * @method static void validateWithBag(string $errorBag, array $rules, ...$params)
+     * @see \Illuminate\Http\Request::hasValidRelativeSignature
+     * @method static bool hasValidRelativeSignature()
+     * @see \Illuminate\Http\Request::validate
+     * @method static array validate(array $rules, ...$params)
      * @see \Symfony\Component\HttpFoundation\Request::hasPreviousSession
      * @method static bool hasPreviousSession()
      * @see \Symfony\Component\HttpFoundation\Request::isMethod
@@ -1985,8 +1995,6 @@ namespace Illuminate\Support\Facades {
      * @method static bool preferSafeContent()
      * @see \Illuminate\Http\Concerns\InteractsWithContentTypes::matchesType
      * @method static bool matchesType(string $actual, string $type)
-     * @see \Illuminate\Http\Request::validate
-     * @method static array validate(array $rules, ...$params)
      * @see \Symfony\Component\HttpFoundation\Request::getTrustedProxies
      * @method static string[] getTrustedProxies()
      * @see \Symfony\Component\HttpFoundation\Request::getDefaultLocale
@@ -2112,7 +2120,7 @@ namespace Illuminate\Support\Facades {
      * @see \Illuminate\Http\Request::getRouteResolver
      * @method static \Closure getRouteResolver()
      * @see \Illuminate\Http\Concerns\InteractsWithInput::enum
-     * @method static null enum(string $key, $enumClass)
+     * @method static mixed|null enum(string $key, $enumClass)
      * @see \Illuminate\Http\Request::offsetUnset
      * @method static void offsetUnset(string $offset)
      * @see \Symfony\Component\HttpFoundation\Request::getTrustedHeaderSet
@@ -2159,8 +2167,6 @@ namespace Illuminate\Support\Facades {
      * @method static void setDefaultRequestLocale(string $locale)
      * @see \Symfony\Component\HttpFoundation\Request::setMethod
      * @method static void setMethod(string $method)
-     * @see \Illuminate\Http\Request::hasValidSignature
-     * @method static bool hasValidSignature(bool $absolute = true)
      * @see \Symfony\Component\HttpFoundation\Request::getPassword
      * @method static null|string getPassword()
      * @see \Symfony\Component\HttpFoundation\Request::getLocale
@@ -2215,8 +2221,6 @@ namespace Illuminate\Support\Facades {
      * @method static \Illuminate\Http\Request capture()
      * @see \Symfony\Component\HttpFoundation\Request::getClientIp
      * @method static null|string getClientIp()
-     * @see \Illuminate\Http\Request::validateWithBag
-     * @method static array validateWithBag(string $errorBag, array $rules, ...$params)
      * @see \Illuminate\Http\Concerns\InteractsWithInput::hasCookie
      * @method static bool hasCookie(string $key)
      * @see \Symfony\Component\HttpFoundation\Request::getUser
@@ -2263,10 +2267,6 @@ namespace Illuminate\Support\Facades {
      * @method static mixed user(null|string $guard = null)
      * @see \Symfony\Component\HttpFoundation\Request::getLanguages
      * @method static array getLanguages()
-     * @see \Illuminate\Http\Request::hasValidSignatureWhileIgnoring
-     * @method static bool hasValidSignatureWhileIgnoring($ignoreQuery = [], $absolute = true)
-     * @see \Illuminate\Http\Request::hasValidRelativeSignature
-     * @method static bool hasValidRelativeSignature()
      */
     class Request {}
     

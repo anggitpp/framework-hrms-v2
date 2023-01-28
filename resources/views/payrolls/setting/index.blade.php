@@ -25,7 +25,7 @@
                     </tbody>
                 </table>
                 @php
-                    $route = route(Str::replace('/', '.', $menu_path).'.index');
+                    $route = route(Str::replace('/', '.', $menu_path).'.data');
                     $datas = array("name", "amount\ttext-end", "action\ttrue\tfalse");
                 @endphp
                 <x-views.datatables :datas="$datas" :route="$route" def-order="1"/>

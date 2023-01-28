@@ -1,8 +1,9 @@
-<?php //75bc97e40131c6c148a3dba3150fffe5
+<?php //bbd55b95ba8452da520b79975cac4f5a
 /** @noinspection all */
 
 namespace App\Models\Setting {
 
+    use App\Models\Payroll\PayrollSetting;
     use Illuminate\Database\Eloquent\Model;
     use Illuminate\Database\Eloquent\Relations\BelongsTo;
     use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,6 +12,7 @@ namespace App\Models\Setting {
     use Illuminate\Notifications\DatabaseNotificationCollection;
     use Illuminate\Support\Carbon;
     use Laravel\Sanctum\PersonalAccessToken;
+    use LaravelIdea\Helper\App\Models\Payroll\_IH_PayrollSetting_QB;
     use LaravelIdea\Helper\App\Models\Setting\_IH_AppMasterCategory_C;
     use LaravelIdea\Helper\App\Models\Setting\_IH_AppMasterCategory_QB;
     use LaravelIdea\Helper\App\Models\Setting\_IH_AppMasterData_C;
@@ -68,6 +70,13 @@ namespace App\Models\Setting {
      * @property Carbon|null $created_at
      * @property Carbon|null $updated_at
      * @property string $app_master_category_code
+     * @property _IH_AppMasterData_C|AppMasterData[] $children
+     * @property-read int $children_count
+     * @method HasMany|_IH_AppMasterData_QB children()
+     * @property AppMasterData|null $parent
+     * @method BelongsTo|_IH_AppMasterData_QB parent()
+     * @property PayrollSetting $payrollSetting
+     * @method BelongsTo|_IH_PayrollSetting_QB payrollSetting()
      * @method static _IH_AppMasterData_QB onWriteConnection()
      * @method _IH_AppMasterData_QB newQuery()
      * @method static _IH_AppMasterData_QB on(null|string $connection = null)

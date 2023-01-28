@@ -15,7 +15,11 @@ Route::name('payrolls.')->group(function () {
     Route::get('/payrolls/deductions/data', [PayrollComponentController::class, 'data'])->name('deductions.data');
     Route::resource('/payrolls/deductions', PayrollComponentController::class);
 
+    Route::get('/payrolls/setting-ranks/data', [PayrollSettingController::class, 'data'])->name('setting-ranks.data');
     Route::resource('/payrolls/setting-ranks', PayrollSettingController::class);
+
+    Route::get('/payrolls/setting-salaries/data', [PayrollSettingController::class, 'data'])->name('setting-salaries.data');
+    Route::resource('/payrolls/setting-salaries', PayrollSettingController::class);
 
     Route::get('/payrolls/payroll-recap', [PayrollRecapController::class, 'index'])->name('payroll-recap.index');
     Route::get('/payrolls/payroll-recap/data', [PayrollRecapController::class, 'data'])->name('payroll-recap.data');

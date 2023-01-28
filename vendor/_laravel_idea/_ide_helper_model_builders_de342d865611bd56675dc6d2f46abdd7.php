@@ -1,4 +1,4 @@
-<?php //46a593698979d2735d88313a4d2a2d00
+<?php //b9929e1c73de68bc813883ba8bc15478
 /** @noinspection all */
 
 namespace LaravelIdea\Helper {
@@ -7,7 +7,7 @@ namespace LaravelIdea\Helper {
     use Illuminate\Database\ConnectionInterface;
     use Illuminate\Database\Eloquent\Builder;
     use Illuminate\Database\Query\Expression;
-
+    
     /**
      * @see \Illuminate\Database\Query\Builder::whereJsonContainsKey
      * @method $this whereJsonContainsKey(string $column, string $boolean = 'and', bool $not = false)
@@ -71,8 +71,6 @@ namespace LaravelIdea\Helper {
      * @method $this orWhereColumn(array|string $first, null|string $operator = null, null|string $second = null)
      * @see \Illuminate\Database\Query\Builder::min
      * @method mixed min(string $column)
-     * @see \Illuminate\Support\Traits\Conditionable::unless
-     * @method $this unless(\Closure|null $value = null, callable $callback = null, callable $default = null)
      * @see \Illuminate\Database\Query\Builder::whereNotIn
      * @method $this whereNotIn(string $column, $values, string $boolean = 'and')
      * @see \Illuminate\Database\Query\Builder::whereTime
@@ -187,8 +185,6 @@ namespace LaravelIdea\Helper {
      * @method $this select(array|mixed $columns = ['*'])
      * @see \Illuminate\Database\Query\Builder::addSelect
      * @method $this addSelect(array|mixed $column)
-     * @see \Illuminate\Support\Traits\Conditionable::when
-     * @method $this when(\Closure|null $value = null, callable $callback = null, callable $default = null)
      * @see \Illuminate\Database\Query\Builder::orWhereExists
      * @method $this orWhereExists(\Closure $callback, bool $not = false)
      * @see \Illuminate\Database\Query\Builder::whereJsonLength
@@ -345,7 +341,7 @@ namespace LaravelIdea\Helper {
      * @method $this dynamicWhere(string $method, array $parameters)
      */
     class _BaseBuilder extends Builder {}
-
+    
     /**
      * @method \Illuminate\Support\Collection mapWithKeys(callable $callback)
      * @method \Illuminate\Support\Collection partition(callable|string $key, null|string $operator = null, null $value = null)

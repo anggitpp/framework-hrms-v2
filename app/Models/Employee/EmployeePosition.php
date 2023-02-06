@@ -2,9 +2,11 @@
 
 namespace App\Models\Employee;
 
+use App\Models\Setting\AppMasterData;
 use App\Traits\Blameable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class EmployeePosition extends Model
 {
@@ -35,5 +37,10 @@ class EmployeePosition extends Model
     public function scopeActive($query)
     {
         return $query->where('status', 't');
+    }
+
+    public function position(): BelongsTo
+    {
+        return $this->belongsTo(AppMasterData::class);
     }
 }

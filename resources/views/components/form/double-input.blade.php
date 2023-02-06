@@ -6,11 +6,11 @@
             <input type="text"
                    id="{{ $name }}"
                    @error($name)
-                   {{ $attributes->merge(['class' => 'form-control w-100px is-invalid '.$class]) }}
+                        {{ $attributes->merge(['class' => 'form-control w-100px is-invalid '.$class]) }}
                    @else
-                       {{ $attributes->merge(['class' => 'form-control w-100px '.$class]) }}
-                       @enderror
-                       name="{{ $name }}"
+                        {{ $attributes->merge(['class' => 'form-control w-100px '.$class]) }}
+                   @enderror
+                   name="{{ $name }}"
                    value="{{ old($name, $currency ? setCurrency($value) : $value) }}"
                    placeholder="{{ $placeholder }}"
                    maxlength="{{ $maxlength }}"
@@ -27,10 +27,10 @@
             <input type="text"
                    id="{{ $name2 }}"
                    @error($name2)
-                   {{ $attributes->merge(['class' => 'form-control w-100px is-invalid '.$class]) }}
+                        {{ $attributes->merge(['class' => 'form-control w-100px is-invalid '.$class]) }}
                    @else
                        {{ $attributes->merge(['class' => 'form-control w-100px '.$class]) }}
-                       @enderror                   name="{{ $name2 }}"
+                   @enderror                   name="{{ $name2 }}"
                    value="{{ old($name2, $currency ? setCurrency($value2) : $value2) }}"
                    placeholder="{{ $placeholder }}"
                    maxlength="{{ $maxlength }}"

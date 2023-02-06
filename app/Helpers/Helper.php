@@ -299,6 +299,15 @@ function getParameterMenu(String $pathMenu)
         ->first()->parameter;
 }
 
+function getDetailMenu(String $pathMenu)
+{
+    list($modul, $menu) = explode('/', $pathMenu);
+    return DB::table('app_menus as t1')->join('app_moduls as t2', 't1.app_modul_id', '=', 't2.id')
+        ->where('t2.target', $modul)
+        ->where('t1.target', $menu)
+        ->first();
+}
+
 
 function menu_path()
 {
@@ -312,7 +321,7 @@ function menu_path()
 /**
  * @throws Exception
  */
-function generateDatatable($query, $filter , $customFields = [], $isModal = false, $isShowRoute = false, $customPrefix = null, $arrCustomAction = [], $iconShow = '')
+function generateDatatable($query, $filter , $customFields = [], $isModal = false, $isShowRoute = false, $customPrefix = null, $arrCustomAction = [], $iconShow = '', $editable = true, $deleteable = true)
 {
     //generate datatables with filter
     $dataTables = DataTables::of($query);
@@ -331,12 +340,12 @@ function generateDatatable($query, $filter , $customFields = [], $isModal = fals
         } else if ($field['type'] == 'master_relationship') {
             $field['master_field'] = $field['master_field'] ?? 'name';
             $data = function ($model) use ($field) {
-                if($field['master_type_value'] == 'currency'){
-                    $value = setCurrency($model->{$field['masters']}->{$field['master_field']} ?? 0);
-                }else{
-                    $value = $model->{$field['masters']}->{$field['master_field']} ?? '';
-                }
-                return $value;
+                return $model->{$field['masters']}->{$field['master_field']} ?? '';
+            };
+        } else if ($field['type'] == 'multiple_relationship') {
+            $field['master_field'] = $field['master_field'] ?? 'name';
+            $data = function ($model) use ($field) {
+                return $model->{$field['masters']}->{$field['second_masters']}->{$field['master_field']} ?? '';
             };
         } else if ($field['type'] == 'filename') {
             $data = function ($model) use ($field) {
@@ -356,6 +365,12 @@ function generateDatatable($query, $filter , $customFields = [], $isModal = fals
                     'value' => $model->{$field['name']},
                 ]);
             };
+        }  else if ($field['type'] == 'photo') {
+            $data = function ($model) use ($field) {
+                return view('components.views.photo', [
+                    'photo' => $model->{$field['name']},
+                ]);
+            };
         } else if ($field['type'] == 'currency'){
             $data = function ($model) use ($field) {
                 return setCurrency($model->{$field['name']}) ?? '';
@@ -372,16 +387,45 @@ function generateDatatable($query, $filter , $customFields = [], $isModal = fals
     }
 
     //generate action
-    $dataTables->addColumn('action', function ($model) use ($isModal, $isShowRoute, $customPrefix) {
+    $dataTables->addColumn('action', function ($model) use ($isModal, $isShowRoute, $customPrefix, $iconShow, $arrCustomAction, $deleteable, $editable) {
         $editPrefix = $customPrefix ? 'edit-'.$customPrefix : 'edit';
         $destroyPrefix = $customPrefix ? 'destroy-'.$customPrefix : 'destroy';
         $showPrefix = $customPrefix ? 'show-'.$customPrefix : 'show';
         $arrAction = [
             'menu_path' => menu_path(),
-            'url_edit' => route(Str::replace('/', '.', menu_path()) . '.'.$editPrefix, $model->id),
-            'url_destroy' => route(Str::replace('/', '.', menu_path()) . '.'.$destroyPrefix, $model->id),
             'isModal' => $isModal,
         ];
+
+        if($editable){
+            $arrAction = array_merge($arrAction, [
+                'url_edit' => route(Str::replace('/', '.', menu_path()) . '.'.$editPrefix, $model->id),
+            ]);
+        }
+
+        if($deleteable){
+            $arrAction = array_merge($arrAction, [
+                'url_destroy' => route(Str::replace('/', '.', menu_path()) . '.'.$destroyPrefix, $model->id),
+            ]);
+        }
+
+        if(!empty($arrCustomAction)){
+            $actions = [];
+            foreach ($arrCustomAction as $action){
+                $ids = [];
+                foreach ($action['ids'] as $id) {
+                    $ids[] = $model->{$id};
+                }
+
+                $actions[] = [
+                    'url' => route(Str::replace('/', '.', menu_path()) . '.'.$action['route'], $ids),
+                    'icon' => $action['icon'],
+                    'class-icon' => $action['class-icon'] ?? 'info',
+                    'isModal' => $action['isModal'] ?? '',
+                ];
+            }
+
+            $arrAction = array_merge($arrAction, ['customAction' => $actions]);
+        }
 
         if(!empty($isShowRoute)){
             $arrAction = array_merge($arrAction, [

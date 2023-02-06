@@ -16,7 +16,7 @@
         <i class="bi bi-pencil-fill fs-7"></i>
 
         <!--begin::Inputs-->
-        <input type="file" name="{{ $name }}" accept=".png, .jpg, .jpeg" />
+        <input type="file" name="{{ $name }}" accept=".png, .jpg, .jpeg, .ico" />
         <input type="hidden" name="{{ $name }}_remove" />
         <!--end::Inputs-->
     </label>

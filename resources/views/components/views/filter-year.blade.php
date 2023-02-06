@@ -7,7 +7,7 @@
 <div {{ $attributes->merge(['class' => 'position-relative d-flex align-items-center '.$class]) }}>
     <select name="{{ $name }}"
             data-control="select2"
-            class="form-control w-100px mx-5"
+            class="form-control w-100px me-5"
             id="{{ $name }}"
             @if($event)
                 onchange="{{ $event }}"

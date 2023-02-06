@@ -6,7 +6,7 @@
             <div class="form-check form-check-custom form-check-solid me-5"
             >
                 @php
-                    $value = $value == '' ? $key : $value;
+                    $value = empty($value) ? $key : $value;
                 @endphp
                 <input class="form-check-input" type="radio"
                        @if($event)

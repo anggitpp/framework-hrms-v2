@@ -1,16 +1,57 @@
-@props(['url_edit' => '', 'url_destroy' => '', 'url_show' => '', 'icon_show' => 'fa-solid fa-list', 'isModal' => true, 'url_slot' => '', 'icon_slot' => 'fa-solid fa-list', 'isModalSlot' => true, 'menu_path' => ''])
+@props(['url_edit' => '', 'url_destroy' => '', 'url_show' => '', 'icon_show' => 'fa-solid fa-list', 'isModal' => true, 'url_slot' => '', 'icon_slot' => 'fa-solid fa-list', 'isModalSlot' => true, 'menu_path' => '', 'customAction' => ''])
 <div class="text-center justify-content-between">
+    @if(is_array($customAction))
+        @foreach($customAction as $key => $action)
+            @if(str_contains($action['url'], 'edit'))
+                @can('edit '.$menu_path)
+                    <a
+                            @if($action['isModal'])
+                                data-url="{{ $action['url'] }}"
+                            @else
+                                href="{{ $action['url'] }}"
+                            @endif
+                            class="btn btn-icon btn-light-{{ $action['class-icon'] ?? 'info' }} w-30px h-30px me-1 {{ $action['isModal'] ? 'btn-modal' : '' }}"
+                            @if($action['isModal'])
+                                data-bs-toggle="modal"
+                            @endif
+                    >
+                        <i class="{{ $action['icon'] }}"></i>
+                    </a>
+                @endcan
+            @elseif(str_contains($action['url'], 'destroy'))
+                @can('delete '.$menu_path)
+                    <button href="{{ $action['url'] }}" id="delete" class="btn btn-icon btn-light-danger w-30px h-30px">
+                        <i class="{{ $action['icon'] }}"></i>
+                    </button>
+                @endcan
+            @else
+                <a
+                        @if($action['isModal'])
+                            data-url="{{ $action['url'] }}"
+                        @else
+                            href="{{ $action['url'] }}"
+                        @endif
+                        class="btn btn-icon btn-light-{{ $action['class-icon'] ?? 'info' }} w-30px h-30px me-1 {{ $action['isModal'] ? 'btn-modal' : '' }}"
+                        @if($action['isModal'])
+                            data-bs-toggle="modal"
+                        @endif
+                >
+                    <i class="{{ $action['icon'] }}"></i>
+                </a>
+            @endif
+        @endforeach
+    @endif
     @if($url_slot)
         <a
-            @if($isModalSlot)
-                data-url="{{ $url_slot }}"
-            @else
-                href="{{ $url_slot }}"
-            @endif
-            class="btn btn-icon btn-light-info w-30px h-30px me-1 {{ $isModalSlot ? 'btn-modal' : '' }}"
-            @if($isModalSlot)
-                data-bs-toggle="modal"
-            @endif
+                @if($isModalSlot)
+                    data-url="{{ $url_slot }}"
+                @else
+                    href="{{ $url_slot }}"
+                @endif
+                class="btn btn-icon btn-light-info w-30px h-30px me-1 {{ $isModalSlot ? 'btn-modal' : '' }}"
+                @if($isModalSlot)
+                    data-bs-toggle="modal"
+                @endif
         >
             <i class="{{ $icon_slot }}"></i>
         </a>

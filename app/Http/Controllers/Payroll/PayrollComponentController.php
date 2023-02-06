@@ -32,7 +32,7 @@ class PayrollComponentController extends Controller
     {
         $this->middleware('auth');
         $this->statusOption = defaultStatus();
-        $this->calculationTypes = array("1" => "Table", "2" => "Proses", "3" => "Fixed");
+        $this->calculationTypes = array("1" => "Table", "2" => "Proses", "3" => "Fixed", "4" => "Upload");
         $this->cutOffTypes = array("1" => "Awal - Akhir", "2" => "Custom");
 
         \View::share('statusOption', $this->statusOption);

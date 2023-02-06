@@ -13,13 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('payroll_fixeds', function (Blueprint $table) {
+        Schema::create('payroll_uploads', function (Blueprint $table) {
             $table->id();
-            $table->string('code', 10);
-            $table->string('name', 100);
+            $table->string('code', 15);
+            $table->char('month', 2);
+            $table->char('year', 4);
+            $table->foreignId('component_id');
+            $table->foreignId('employee_id');
             $table->string('amount', 20);
-            $table->text('description')->nullable();
-            $table->char('status', 1);
+            $table->string('description', 255)->nullable();
             $table->string('created_by', 20)->nullable();
             $table->string('updated_by', 20)->nullable();
             $table->timestamps();
@@ -33,6 +35,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('payroll_fixeds');
+        Schema::dropIfExists('payroll_uploads');
     }
 };

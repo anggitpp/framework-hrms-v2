@@ -113,7 +113,7 @@ function deleteFile($path): bool
     return true;
 }
 
-function defaultUploadFile($model, $request, $path, $filename,  $fieldName = 'filename'): void
+function defaultUploadFile($model, $request, $path, $filename,  $fieldName = 'filename', $resize = ''): void
 {
     if($request->get('isDelete') == 't'){
         deleteFile($path.$model->$fieldName);
@@ -121,10 +121,10 @@ function defaultUploadFile($model, $request, $path, $filename,  $fieldName = 'fi
             $fieldName => null,
         ]);
     }
-    if ($request->hasFile('filename')) {
-        $resize = false;
+    if ($request->hasFile($fieldName)) {
+        $resize = $resize ?? false;
         $extension = $request->file($fieldName)->extension();
-        if ($extension == 'png' || $extension == 'jpg' || $extension == 'jpeg') $resize = true;
+        if ($extension == 'png' || $extension == 'jpg' || $extension == 'jpeg') $resize = $resize ?? true;
 
         $resUpload = uploadFile(
             $request->file($fieldName),
@@ -132,7 +132,7 @@ function defaultUploadFile($model, $request, $path, $filename,  $fieldName = 'fi
             $path, $resize);
 
         $model->update([
-            'filename' => $resUpload,
+            $fieldName => $resUpload,
         ]);
     }
 }

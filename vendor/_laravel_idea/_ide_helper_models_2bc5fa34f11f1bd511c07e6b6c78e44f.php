@@ -1,4 +1,4 @@
-<?php //4b59f1e2fecedb55d381efd5fd03f0fe
+<?php //9ce6c2920543e67be232ccd005e752b6
 /** @noinspection all */
 
 namespace App\Models\Payroll {
@@ -13,6 +13,8 @@ namespace App\Models\Payroll {
     use LaravelIdea\Helper\App\Models\Payroll\_IH_PayrollMaster_QB;
     use LaravelIdea\Helper\App\Models\Payroll\_IH_PayrollSetting_C;
     use LaravelIdea\Helper\App\Models\Payroll\_IH_PayrollSetting_QB;
+    use LaravelIdea\Helper\App\Models\Payroll\_IH_PayrollUpload_C;
+    use LaravelIdea\Helper\App\Models\Payroll\_IH_PayrollUpload_QB;
     
     /**
      * @property int $id
@@ -116,4 +118,31 @@ namespace App\Models\Payroll {
      * @mixin _IH_PayrollSetting_QB
      */
     class PayrollSetting extends Model {}
+    
+    /**
+     * @property int $id
+     * @property string $code
+     * @property string $month
+     * @property string $year
+     * @property int $component_id
+     * @property int $employee_id
+     * @property string $amount
+     * @property string|null $description
+     * @property string|null $created_by
+     * @property string|null $updated_by
+     * @property Carbon|null $created_at
+     * @property Carbon|null $updated_at
+     * @method static _IH_PayrollUpload_QB onWriteConnection()
+     * @method _IH_PayrollUpload_QB newQuery()
+     * @method static _IH_PayrollUpload_QB on(null|string $connection = null)
+     * @method static _IH_PayrollUpload_QB query()
+     * @method static _IH_PayrollUpload_QB with(array|string $relations)
+     * @method _IH_PayrollUpload_QB newModelQuery()
+     * @method false|int increment(string $column, float|int $amount = 1, array $extra = [])
+     * @method false|int decrement(string $column, float|int $amount = 1, array $extra = [])
+     * @method static _IH_PayrollUpload_C|PayrollUpload[] all()
+     * @ownLinks employee_id,\App\Models\Employee\Employee,id
+     * @mixin _IH_PayrollUpload_QB
+     */
+    class PayrollUpload extends Model {}
 }

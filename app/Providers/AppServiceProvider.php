@@ -2,14 +2,10 @@
 
 namespace App\Providers;
 
-use App\Models\Setting\AppMenu;
-use App\Models\Setting\AppModul;
-use App\Models\Setting\AppSubModul;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Http\Request;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,19 +26,43 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
+        DB::enableQueryLog();
         //GET DATA MODULS
-        $data['moduls'] = DB::table('app_moduls')->where('status', 't')->orderBy('order')->get();
+        if(Cache::has('app_moduls')) {
+            $data['moduls'] = Cache::get('app_moduls');
+        } else {
+            $data['moduls'] = DB::table('app_moduls')->where('status', 't')->orderBy('order')->get();
+            Cache::forever('app_moduls', $data['moduls']);
+        }
 
         //GET DATA MENUS
-        $data['menus'] = DB::table('app_menus')->where('status', 't')->get();
+        if(Cache::has('app_menus')) {
+            $data['menus'] = Cache::get('app_menus');
+        } else {
+            $data['menus'] = DB::table('app_menus')->where('status', 't')->get();
+            Cache::forever('app_menus', $data['menus']);
+        }
 
         //GET DATA SUB MODULS
-        $subModuls = DB::table('app_sub_moduls')->where('status', 't')->orderBy('order')->get();
+        if(Cache::has('app_sub_moduls')) {
+            $subModuls = Cache::get('app_sub_moduls');
+        } else {
+            $subModuls = DB::table('app_sub_moduls')->where('status', 't')->orderBy('order')->get();
+            Cache::forever('app_sub_moduls', $subModuls);
+        }
 
         $listFolder = [];
         foreach ($data['moduls'] as $key => $modul) {
             //GET LIST FOLDER FOR VIEW COMPOSER
             $listFolder[] = $modul->target . '.*';
+        }
+
+        if(Cache::has('app_info')) {
+            $data['app_info'] = Cache::get('app_info');
+        } else {
+            $data['app_info'] = DB::table('app_infos')->first();
+            Cache::forever('app_info', $data['app_info']);
         }
 
         $listFolder = array_merge($listFolder, ['layouts.app']);
@@ -53,6 +73,7 @@ class AppServiceProvider extends ServiceProvider
                 $data['module_path'] = $arrURL[1];
                 $data['param'] = !empty($arrURL[2]) ? explode('?', $arrURL[2])[1] ?? '' : ''; //GET LIST PARAM
                 $data['menu_path'] = !empty($arrURL[2]) ? explode('?', $arrURL[2])[0] ?? '' : ''; //GET LIST PARAM
+
                 $data['selected_modul'] = $data['moduls']->where('target', $data['module_path'])->first();
                 $data['selected_menu'] = $data['menus']->where('target', $data['menu_path'])->where('app_modul_id', $data['selected_modul']->id)->first();
                 $data['sub_moduls'] = $subModuls->where('app_modul_id', $data['selected_modul']->id);
@@ -70,7 +91,9 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('param', $data['param']);
                 $view->with('menu_path', $data['module_path']."/".$data['menu_path']);
                 $view->with('menu_target', $data['menu_path']);
+                $view->with('app_info', $data['app_info']);
             }
         });
+
     }
 }

@@ -13,14 +13,14 @@
             </div>
             <div class="d-flex align-items-center flex-grow-1 flex-lg-grow-0">
                 <a class="d-lg-none">
-                    <img alt="Logo" src="assets/media/logos/logo-2.png" class="h-40px" />
+                    <img alt="Logo" src="storage/{{ $app_info->app_logo_small ?? '' }}" class="h-40px" />
                 </a>
             </div>
         @else
             <div class="app-container container-xxl d-flex align-items-stretch justify-content-between" id="kt_app_header_container">
                 <div class="d-flex align-items-center flex-grow-1 flex-lg-grow-0 me-lg-0">
                     <div>
-                        <img alt="Logo" src="assets/media/logos/sidebar-logo.png" class="h-60px app-header-logo-default" />
+                        <img alt="Logo" src="storage/{{ $app_info->app_logo ?? '' }}" class="h-60px app-header-logo-default" />
                     </div>
                 </div>
         @endif

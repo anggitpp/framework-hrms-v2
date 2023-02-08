@@ -3,12 +3,12 @@
     <div class="app-container container-fluid d-flex flex-column flex-md-row flex-center flex-md-stack py-3">
         <!--begin::Copyright-->
         <div class="text-dark order-2 order-md-1">
-            <span class="text-muted fw-semibold me-1">2022&copy;</span>
-            <span class="text-gray-800">Kanwil Kemenag DKI Jakarta</span>
+            <span class="text-muted fw-semibold me-1">{{ $app_info->year ?? '' }}&copy;</span>
+            <span class="text-gray-800">{{ $app_info->footer_text ?? '' }}</span>
         </div>
         <!--end::Copyright-->
         <!--begin::Menu-->
-        <span class="text-muted fw-semibold order-1">Versi 2.1</span>
+        <span class="text-muted fw-semibold order-1">Versi {{ $app_info->app_version ?? '' }}</span>
 
         <!--end::Menu-->
     </div>

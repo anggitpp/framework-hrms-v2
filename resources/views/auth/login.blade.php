@@ -13,7 +13,7 @@ License: For each use you must have a valid license purchased only from above li
 <html lang="en">
 <!--begin::Head-->
 <head><base href="../../../"/>
-    <title>SIKAP - Kanwil Kemenag DKI Jakarta</title>
+    <title>{!! $app_info->title ?? '' !!}</title>
     <meta charset="utf-8" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="The most advanced Bootstrap Admin Theme on Themeforest trusted by 100,000 beginners and professionals. Multi-demo, Dark Mode, RTL support and complete React, Angular, Vue, Asp.Net Core, Rails, Spring, Blazor, Django, Flask & Laravel versions. Grab your copy now and get life-time updates for free." />
@@ -25,7 +25,7 @@ License: For each use you must have a valid license purchased only from above li
     <meta property="og:url" content="https://keenthemes.com/metronic" />
     <meta property="og:site_name" content="Keenthemes | Metronic" />
     <link rel="canonical" href="https://preview.keenthemes.com/metronic8" />
-    <link rel="shortcut icon" href="{{ asset('assets/media/logos/favicon.ico') }}" />
+    <link rel="shortcut icon" href="storage{{ $app_info->app_icon ?? '' }}" />
     <!--begin::Fonts(mandatory for all pages)-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
     <!--end::Fonts-->
@@ -33,22 +33,22 @@ License: For each use you must have a valid license purchased only from above li
     <link href="{{ asset('assets/plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
     <!--end::Global Stylesheets Bundle-->
-    @include('layouts.style', ['primary' => '#006316', 'lightPrimary' => '#008a50', 'backgroundLightPrimary' => '#f1fff5'])
+    @include('layouts.style', ['primary' => $app_info->primary_color ?? '', 'lightPrimary' => $app_info->light_primary_color ?? '', 'backgroundLightPrimary' => $app_info->background_light_primary_color ?? ''])
     <style>
         .text-primary {
-            color: #006316 !important;
+            color: {{ $app_info->primary_color ?? '' }} !important;
         }
 
         .text-primary:hover {
-            color: #006316 !important;
+            color: {{ $app_info->primary_color ?? '' }} !important;
         }
 
         .link-primary {
-            color: #006316 !important;
+            color: {{ $app_info->primary_color ?? '' }} !important;
         }
 
         .link-primary:hover {
-            color: #006316 !important;
+            color: {{ $app_info->primary_color ?? '' }} !important;
         }
     </style>
 </head>
@@ -176,21 +176,21 @@ License: For each use you must have a valid license purchased only from above li
         </div>
         <!--end::Body-->
         <!--begin::Aside-->
-        <div class="d-flex flex-lg-row-fluid w-lg-50 bgi-size-cover bgi-position-center order-1 order-lg-2" style="background-image: url(assets/media/misc/auth-bg.png)">
+        <div class="d-flex flex-lg-row-fluid w-lg-50 bgi-size-cover bgi-position-center order-1 order-lg-2" style="background-image: url({{ isset($app_info) ? 'storage'.$app_info->login_page_background_image : '' }})">
             <!--begin::Content-->
             <div class="d-flex flex-column flex-center py-7 py-lg-15 px-5 px-md-15 w-100">
                 <!--begin::Logo-->
                 <a href="../../demo1/dist/index.html" class="mb-0 mb-lg-6">
-                    <img alt="Logo" src="assets/media/logos/logo.png" class="h-60px h-lg-75px" />
+                    <img alt="Logo" src="storage/{{ $app_info->login_page_logo ?? '' }}" class="h-60px h-lg-75px" />
                 </a>
-                <h4 class="d-none d-lg-block text-white fs-2 fw-bolder text-center mb-2">Sistem Informasi Kinerja Absen Pegawai</h4>
+                <h4 class="d-none d-lg-block text-white fs-2 fw-bolder text-center mb-2">{!! $app_info->login_page_title ?? '' !!}</h4>
                 <!--end::Logo-->
                 <!--begin::Image-->
-                <img class="d-none d-lg-block mx-auto w-275px w-md-50 w-xl-400px mb-10 mb-lg-20" src="assets/media/misc/auth-screens.png" alt="" />
+                <img class="d-none d-lg-block mx-auto w-275px w-md-50 w-xl-400px mb-10 mb-lg-20" src="storage{{ $app_info->login_page_image ?? '' }}" alt="" />
                 <!--end::Image-->
                 <!--begin::Title-->
-                <h1 class="d-none d-lg-block text-white fs-2qx fw-bolder text-center mb-2">Kantor Wilayah Kementrian Agama</h1>
-                <h1 class="d-none d-lg-block text-warning fs-2qx fw-bolder text-center mb-5">Provinsi DKI Jakarta</h1>
+                <h1 class="d-none d-lg-block text-white fs-2qx fw-bolder text-center mb-2">{!! $app_info->login_page_subtitle ?? '' !!}</h1>
+                <h1 class="d-none d-lg-block text-warning fs-2qx fw-bolder text-center mb-5">{!! $app_info->login_page_description ?? '' !!}</h1>
                 <!--end::Title-->
             </div>
             <!--end::Content-->

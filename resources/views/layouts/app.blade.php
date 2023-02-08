@@ -2,7 +2,7 @@
 <html lang="en">
 <!--begin::Head-->
 <head><base href="../../../"/>
-    <title>SIKAP - Kanwil Kemenag DKI Jakarta</title>
+    <title>{!! $app_info->title ?? '' !!}</title>
     <meta charset="utf-8" />
     <meta name="description" content="The most advanced Bootstrap Admin Theme on Themeforest trusted by 100,000 beginners and professionals. Multi-demo, Dark Mode, RTL support and complete React, Angular, Vue, Asp.Net Core, Rails, Spring, Blazor, Django, Flask & Laravel versions. Grab your copy now and get life-time updates for free." />
     <meta name="keywords" content="metronic, bootstrap, bootstrap 5, angular, VueJs, React, Asp.Net Core, Rails, Spring, Blazor, Django, Flask & Laravel starter kits, admin themes, web design, figma, web development, free templates, free admin themes, bootstrap theme, bootstrap template, bootstrap dashboard, bootstrap dak mode, bootstrap button, bootstrap datepicker, bootstrap timepicker, fullcalendar, datatables, flaticon" />
@@ -13,7 +13,7 @@
     <meta property="og:url" content="https://keenthemes.com/metronic" />
     <meta property="og:site_name" content="Keenthemes | Metronic" />
     <link rel="canonical" href="https://preview.keenthemes.com/metronic8" />
-    <link rel="shortcut icon" href="assets/media/logos/favicon.ico" />
+    <link rel="shortcut icon" href="storage{{ $app_info->app_icon ?? '' }}" />
     <!--begin::Fonts(mandatory for all pages)-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
     <!--end::Fonts-->
@@ -23,7 +23,7 @@
     <!--begin::Global Stylesheets Bundle(mandatory for all pages)-->
     <link href="{{ asset('assets/plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
-    @include('layouts.style', ['primary' => '#006316', 'lightPrimary' => '#008a50', 'backgroundLightPrimary' => '#f1fff5'])
+    @include('layouts.style', ['primary' => $app_info->primary_color ?? '', 'lightPrimary' => $app_info->light_primary_color ?? '', 'backgroundLightPrimary' => $app_info->background_light_primary_color ?? ''])
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <!--end::Global Stylesheets Bundle-->
 </head>

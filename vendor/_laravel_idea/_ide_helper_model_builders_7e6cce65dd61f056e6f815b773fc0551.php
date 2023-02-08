@@ -1,4 +1,4 @@
-<?php //ac5f172a3ca77590423dba48417d9221
+<?php //d164521fae37a6873a076d14ffb892e9
 /** @noinspection all */
 
 namespace LaravelIdea\Helper\App\Models\Payroll {
@@ -7,6 +7,7 @@ namespace LaravelIdea\Helper\App\Models\Payroll {
     use App\Models\Payroll\PayrollFixed;
     use App\Models\Payroll\PayrollMaster;
     use App\Models\Payroll\PayrollSetting;
+    use App\Models\Payroll\PayrollUpload;
     use Illuminate\Contracts\Support\Arrayable;
     use Illuminate\Database\Query\Expression;
     use Illuminate\Pagination\LengthAwarePaginator;
@@ -284,4 +285,70 @@ namespace LaravelIdea\Helper\App\Models\Payroll {
      * @method PayrollSetting updateOrCreate(array $attributes, array $values = [])
      */
     class _IH_PayrollSetting_QB extends _BaseBuilder {}
+    
+    /**
+     * @method PayrollUpload|null getOrPut($key, $value)
+     * @method PayrollUpload|$this shift(int $count = 1)
+     * @method PayrollUpload|null firstOrFail(callable|string $key = null, $operator = null, $value = null)
+     * @method PayrollUpload|$this pop(int $count = 1)
+     * @method PayrollUpload|null pull($key, \Closure $default = null)
+     * @method PayrollUpload|null last(callable $callback = null, \Closure $default = null)
+     * @method PayrollUpload|$this random(callable|int|null $number = null)
+     * @method PayrollUpload|null sole(callable|string $key = null, $operator = null, $value = null)
+     * @method PayrollUpload|null get($key, \Closure $default = null)
+     * @method PayrollUpload|null first(callable $callback = null, \Closure $default = null)
+     * @method PayrollUpload|null firstWhere(callable|string $key, $operator = null, $value = null)
+     * @method PayrollUpload|null find($key, $default = null)
+     * @method PayrollUpload[] all()
+     */
+    class _IH_PayrollUpload_C extends _BaseCollection {
+        /**
+         * @param int $size
+         * @return PayrollUpload[][]
+         */
+        public function chunk($size)
+        {
+            return [];
+        }
+    }
+    
+    /**
+     * @method _IH_PayrollUpload_QB whereId($value)
+     * @method _IH_PayrollUpload_QB whereCode($value)
+     * @method _IH_PayrollUpload_QB whereComponentId($value)
+     * @method _IH_PayrollUpload_QB whereEmployeeId($value)
+     * @method _IH_PayrollUpload_QB whereAmount($value)
+     * @method _IH_PayrollUpload_QB whereDescription($value)
+     * @method _IH_PayrollUpload_QB whereCreatedBy($value)
+     * @method _IH_PayrollUpload_QB whereUpdatedBy($value)
+     * @method _IH_PayrollUpload_QB whereCreatedAt($value)
+     * @method _IH_PayrollUpload_QB whereUpdatedAt($value)
+     * @method PayrollUpload baseSole(array|string $columns = ['*'])
+     * @method PayrollUpload create(array $attributes = [])
+     * @method _IH_PayrollUpload_C|PayrollUpload[] cursor()
+     * @method PayrollUpload|null|_IH_PayrollUpload_C|PayrollUpload[] find($id, array|string $columns = ['*'])
+     * @method _IH_PayrollUpload_C|PayrollUpload[] findMany(array|Arrayable $ids, array|string $columns = ['*'])
+     * @method PayrollUpload|_IH_PayrollUpload_C|PayrollUpload[] findOr($id, array|\Closure|string $columns = ['*'], \Closure $callback = null)
+     * @method PayrollUpload|_IH_PayrollUpload_C|PayrollUpload[] findOrFail($id, array|string $columns = ['*'])
+     * @method PayrollUpload|_IH_PayrollUpload_C|PayrollUpload[] findOrNew($id, array|string $columns = ['*'])
+     * @method PayrollUpload first(array|string $columns = ['*'])
+     * @method PayrollUpload firstOr(array|\Closure|string $columns = ['*'], \Closure $callback = null)
+     * @method PayrollUpload firstOrCreate(array $attributes = [], array $values = [])
+     * @method PayrollUpload firstOrFail(array|string $columns = ['*'])
+     * @method PayrollUpload firstOrNew(array $attributes = [], array $values = [])
+     * @method PayrollUpload firstWhere(array|\Closure|Expression|string $column, $operator = null, $value = null, string $boolean = 'and')
+     * @method PayrollUpload forceCreate(array $attributes)
+     * @method _IH_PayrollUpload_C|PayrollUpload[] fromQuery(string $query, array $bindings = [])
+     * @method _IH_PayrollUpload_C|PayrollUpload[] get(array|string $columns = ['*'])
+     * @method PayrollUpload getModel()
+     * @method PayrollUpload[] getModels(array|string $columns = ['*'])
+     * @method _IH_PayrollUpload_C|PayrollUpload[] hydrate(array $items)
+     * @method PayrollUpload make(array $attributes = [])
+     * @method PayrollUpload newModelInstance(array $attributes = [])
+     * @method LengthAwarePaginator|PayrollUpload[]|_IH_PayrollUpload_C paginate(\Closure|int|null $perPage = null, array|string $columns = ['*'], string $pageName = 'page', int|null $page = null)
+     * @method Paginator|PayrollUpload[]|_IH_PayrollUpload_C simplePaginate(int|null $perPage = null, array|string $columns = ['*'], string $pageName = 'page', int|null $page = null)
+     * @method PayrollUpload sole(array|string $columns = ['*'])
+     * @method PayrollUpload updateOrCreate(array $attributes, array $values = [])
+     */
+    class _IH_PayrollUpload_QB extends _BaseBuilder {}
 }

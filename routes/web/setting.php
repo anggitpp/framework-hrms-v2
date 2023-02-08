@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Setting\AppInfoController;
 use App\Http\Controllers\Setting\AppMasterDataController;
 use App\Http\Controllers\Setting\AppMenuController;
 use App\Http\Controllers\Setting\AppModulController;
@@ -37,4 +38,8 @@ Route::name('settings.')->group(function () {
 
     Route::get('/settings/app-parameters/data', [AppParameterController::class, 'data'])->name('app-parameters.data');
     Route::resource('/settings/app-parameters', AppParameterController::class);
+
+    Route::get('/settings/app-info', [AppInfoController::class, 'index'])->name('app-info.index');
+    Route::patch('/settings/app-info', [AppInfoController::class, 'update'])->name('app-info.update');
+    /** FRAMEWORK END */
 });

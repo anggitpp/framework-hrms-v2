@@ -71,9 +71,11 @@ Route::get('/', function () {
         $route = str_replace("view ","", str_replace("/", ".", $firstMenu->name).".index");
 
         return redirect()->route($route);
-    }
+    }else{
+        $app_info = DB::table('app_infos')->first();
 
-    return view('auth.login');
+        return view('auth.login', compact('app_info'));
+    }
 });
 
 

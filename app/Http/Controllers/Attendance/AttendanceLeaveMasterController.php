@@ -6,12 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Attendance\LeaveMasterRequest;
 use App\Models\Attendance\AttendanceLeaveMaster;
 use App\Models\Setting\AppMasterData;
+use App\Services\Attendance\AttendanceLeaveMasterService;
+use App\Services\Setting\AppMasterDataService;
+use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use RealRashid\SweetAlert\Facades\Alert;
 use Yajra\DataTables\DataTables;
 
@@ -19,12 +23,16 @@ class AttendanceLeaveMasterController extends Controller
 {
     public array $statusOption;
     public array $genderOption;
+    private AttendanceLeaveMasterService $attendanceLeaveMasterService;
+    private AppMasterDataService $appMasterDataService;
 
     public function __construct()
     {
         $this->middleware('auth');
         $this->statusOption = defaultStatus();
         $this->genderOption = array("a" => "Semua", "f" => "Perempuan", "m" => "Laki-laki");
+        $this->attendanceLeaveMasterService = new AttendanceLeaveMasterService();
+        $this->appMasterDataService = new AppMasterDataService();
 
         \View::share('statusOption', $this->statusOption);
         \View::share('genderOption', $this->genderOption);
@@ -37,41 +45,15 @@ class AttendanceLeaveMasterController extends Controller
      */
     public function index()
     {
-        return view('attendances.leave-master.index');
+        return view(Str::replace('/', '.', $this->menu_path()) . '.index');
     }
 
+    /**
+     * @throws Exception
+     */
     public function data(Request $request)
     {
-        if($request->ajax()){
-            $filter = $request->get('search')['value'];
-            return DataTables::of(AttendanceLeaveMaster::select(['id', 'name', 'balance', 'start_date', 'end_date', 'location_id', 'work_period', 'status']))
-                ->filter(function ($query) use ($filter) {
-                    if (isset($filter)) $query->where('name', 'like', "%$filter%");
-                })
-                ->addColumn('action', function ($model) {
-                    return view('components.views.action', [
-                        'menu_path' => $this->menu_path(),
-                        'url_edit' => route(str_replace('/', '.', $this->menu_path()).'.edit', $model->id),
-                        'url_destroy' => route(str_replace('/', '.', $this->menu_path()).'.destroy', $model->id),
-                    ]);
-                })
-                ->editColumn('location_id', function ($model) {
-                    return $model->location_id ? $model->location->name : 'Semua Lokasi';
-                })
-                ->addColumn('period', function ($model) {
-                    return setDate($model->start_date) . ' - ' . setDate($model->end_date);
-                })
-                ->editColumn('work_period', function ($model) {
-                    return $model->work_period.' Bulan';
-                })
-                ->addColumn('status', function ($model) {
-                    return view('components.views.status', [
-                        'status' => $model->status,
-                    ]);
-                })
-                ->addIndexColumn()
-                ->make();
-        }
+        return $this->attendanceLeaveMasterService->data($request);
     }
 
 
@@ -82,9 +64,11 @@ class AttendanceLeaveMasterController extends Controller
      */
     public function create()
     {
-        $locations = AppMasterData::whereAppMasterCategoryCode('ELK')->pluck('name', 'id')->toArray();
+        $locations = $this->appMasterDataService->getMasterForArray('ELK');
 
-        return view('attendances.leave-master.form', compact('locations'));
+        return view(Str::replace('/', '.', $this->menu_path()) . '.form', [
+            'locations' => $locations,
+        ]);
     }
 
     /**
@@ -95,36 +79,26 @@ class AttendanceLeaveMasterController extends Controller
      */
     public function store(LeaveMasterRequest $request)
     {
-        AttendanceLeaveMaster::create([
-            'name' => $request->input('name'),
-            'balance' => $request->input('balance'),
-            'start_date' => resetDate($request->input('start_date')),
-            'end_date' => resetDate($request->input('end_date')),
-            'location_id' => $request->input('location_id') ?? 0,
-            'work_period' => $request->input('work_period'),
-            'gender' => $request->input('gender'),
-            'description' => $request->input('description'),
-            'status' => $request->input('status'),
-        ]);
+        $response = $this->attendanceLeaveMasterService->saveLeaveMaster($request);
 
         return response()->json([
-            'success'=>'Data Master Cuti berhasil disimpan',
-            'url'=> route(str_replace('/', '.', $this->menu_path()).'.index')
+            'success' => $response['message'],
+            'url' => route(Str::replace('/', '.', $this->menu_path()) . '.index')
         ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return Application|Factory|View
      */
     public function edit(int $id)
     {
-        $data['locations'] = AppMasterData::whereAppMasterCategoryCode('ELK')->pluck('name', 'id')->toArray();
-        $data['master'] = AttendanceLeaveMaster::findOrFail($id);
-
-        return view('attendances.leave-master.form', $data);
+        return view(Str::replace('/', '.', $this->menu_path()) . '.form', [
+            'locations' => $this->appMasterDataService->getMasterForArray('ELK'),
+            'master' => $this->attendanceLeaveMasterService->getLeaveMasterById($id),
+        ]);
     }
 
     /**
@@ -136,37 +110,23 @@ class AttendanceLeaveMasterController extends Controller
      */
     public function update(LeaveMasterRequest $request, int $id)
     {
-        $master = AttendanceLeaveMaster::findOrFail($id);
-        $master->update([
-            'name' => $request->input('name'),
-            'balance' => $request->input('balance'),
-            'start_date' => resetDate($request->input('start_date')),
-            'end_date' => resetDate($request->input('end_date')),
-            'location_id' => $request->input('location_id') ?? 0,
-            'work_period' => $request->input('work_period'),
-            'gender' => $request->input('gender'),
-            'description' => $request->input('description'),
-            'status' => $request->input('status'),
-        ]);
+        $response = $this->attendanceLeaveMasterService->saveLeaveMaster($request, $id);
 
         return response()->json([
-            'success'=>'Data Master Cuti berhasil disimpan',
-            'url'=> route(str_replace('/', '.', $this->menu_path()).'.index')
+            'success' => $response['message'],
+            'url' => route(Str::replace('/', '.', $this->menu_path()) . '.index')
         ]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return RedirectResponse
      */
     public function destroy(int $id)
     {
-        $master = AttendanceLeaveMaster::findOrFail($id);
-        $master->delete();
-
-        Alert::success('Success', 'Data Master Cuti berhasil dihapus!');
+        $this->attendanceLeaveMasterService->deleteLeaveMaster($id);
 
         return redirect()->back();
 

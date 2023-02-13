@@ -12,7 +12,7 @@
             <div class="card-toolbar">
                 <div class="d-flex justify-content-end">
                     @can('add '.$menu_path)
-                        <x-views.add-button-modal route="{{ route(str_replace('/', '.', $menu_path).'.create') }}" text="Tambah {{ $selected_menu->name }}" />
+                        <x-views.add-button-modal size="mw-800px" route="{{ route(str_replace('/', '.', $menu_path).'.create') }}" text="Tambah {{ $selected_menu->name }}" />
                     @endcan
                 </div>
             </div>
@@ -37,12 +37,12 @@
                 </table>
                 @php
                     $route = route(str_replace('/', '.', $menu_path).'.data');
-                    $datas = array("name", "balance", "period", "location_id", "work_period", "status", "action\ttrue\tfalse");
+                    $datas = array("name", "balance", "start_date", "location_id", "work_period", "status", "action\ttrue\tfalse");
                 @endphp
                 <x-views.datatables :datas="$datas" :route="$route" def-order="3"/>
                 <x-views.delete-form/>
             </div>
         </div>
     </div>
-    <x-modal-form size="mw-750px"/>
+    <x-modal-form/>
 @endsection

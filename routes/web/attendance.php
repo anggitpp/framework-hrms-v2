@@ -42,6 +42,7 @@ Route::name('attendances.')->group(function () {
     Route::get('/attendances/shifts/data', [AttendanceShiftController::class, 'data'])->name('shifts.data');
     Route::resource('/attendances/shifts', AttendanceShiftController::class);
 
+    Route::get('/attendances/holidays/data', [AttendanceHolidayController::class, 'data'])->name('holidays.data');
     Route::resource('/attendances/holidays', AttendanceHolidayController::class);
 
     Route::resource('/attendances/machines', AttendanceMachineController::class);

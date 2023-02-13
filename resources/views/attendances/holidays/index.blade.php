@@ -38,7 +38,7 @@
                     </tbody>
                 </table>
                 @php
-                    $route = route(str_replace('/', '.', $menu_path).'.index');
+                    $route = route(str_replace('/', '.', $menu_path).'.data');
                     $datas = array("name", "start_date", "end_date", "description", "status", "action\ttrue\tfalse");
                 @endphp
                 <x-views.datatables :datas="$datas" :route="$route" def-order="3"/>

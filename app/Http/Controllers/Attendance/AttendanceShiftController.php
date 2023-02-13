@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Attendance;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Attendance\ShiftRequest;
-use App\Models\Attendance\AttendanceShift;
-use App\Models\Setting\AppMasterData;
+use App\Services\Attendance\AttendanceShiftService;
+use App\Services\Setting\AppMasterDataService;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -13,17 +13,20 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use RealRashid\SweetAlert\Facades\Alert;
-use Yajra\DataTables\DataTables;
+use Illuminate\Support\Str;
 
 class AttendanceShiftController extends Controller
 {
     public array $statusOption;
+    private AttendanceShiftService $attendanceShiftService;
+    private AppMasterDataService $appMasterDataService;
 
     public function __construct()
     {
         $this->middleware('auth');
         $this->statusOption = defaultStatus();
+        $this->attendanceShiftService = new AttendanceShiftService();
+        $this->appMasterDataService = new AppMasterDataService();
 
         \View::share('statusOption', $this->statusOption);
     }
@@ -31,44 +34,21 @@ class AttendanceShiftController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @return Application|Factory|View
+     */
+    public function index()
+    {
+        return view(Str::replace('/', '.', $this->menu_path()) . '.index');
+    }
+
+    /**
      * @param Request $request
-     * @return Application|Factory|View|JsonResponse
+     * @return JsonResponse
      * @throws Exception
      */
-    public function index(Request $request)
+    public function data(Request $request): JsonResponse
     {
-        if($request->ajax()){
-            $filter = $request->get('search')['value'];
-            return DataTables::of(AttendanceShift::select(['id', 'code', 'name', 'start', 'end', 'description', 'location_id', 'status']))
-                ->filter(function ($query) use ($filter) {
-                    if (isset($filter)) $query->where('name', 'like', "%$filter%")->orWhere('code', 'like', "%$filter%");
-                })
-                ->addColumn('action', function ($model) {
-                    return view('components.views.action', [
-                        'menu_path' => $this->menu_path(),
-                        'url_edit' => route(str_replace('/', '.', $this->menu_path()).'.edit', $model->id),
-                        'url_destroy' => route(str_replace('/', '.', $this->menu_path()).'.destroy', $model->id),
-                    ]);
-                })
-                ->editColumn('location_id', function ($model) {
-                    return $model->location_id ? $model->location->name : 'Semua Lokasi';
-                })
-                ->editColumn('start', function ($model) {
-                    return $model->start ? date('H:i', strtotime($model->start)) : '';
-                })
-                ->editColumn('end', function ($model) {
-                    return $model->end ? date('H:i', strtotime($model->end)) : '';
-                })
-                ->addColumn('status', function ($model) {
-                    return view('components.views.status', [
-                        'status' => $model->status,
-                    ]);
-                })
-                ->addIndexColumn()
-                ->make();
-        }
-
-        return view('attendances.shift.index');
+        return $this->attendanceShiftService->data($request);
     }
 
     /**
@@ -78,9 +58,11 @@ class AttendanceShiftController extends Controller
      */
     public function create()
     {
-        $locations = AppMasterData::whereAppMasterCategoryCode('ELK')->pluck('name', 'id')->toArray();
+        $locations = $this->appMasterDataService->getMasterForArray('ELK');
 
-        return view('attendances.shift.form', compact('locations'));
+        return view(Str::replace('/', '.', $this->menu_path()) . '.form', [
+            'locations' => $locations,
+        ]);
     }
 
     /**
@@ -91,35 +73,26 @@ class AttendanceShiftController extends Controller
      */
     public function store(ShiftRequest $request)
     {
-        AttendanceShift::create([
-            'name' => $request->input('name'),
-            'location_id' => $request->input('location_id'),
-            'code' => $request->input('code'),
-            'start' => $request->input('start'),
-            'end' => $request->input('end'),
-            'description' => $request->input('description'),
-            'night_shift' => $request->input('night_shift') ? 't' : 'f',
-            'status' => $request->input('status'),
-        ]);
+        $response = $this->attendanceShiftService->saveShift($request);
 
         return response()->json([
-            'success'=>'Data Shift berhasil disimpan',
-            'url'=> route(str_replace('/', '.', $this->menu_path()).'.index')
+            'success' => $response['message'],
+            'url' => route(Str::replace('/', '.', $this->menu_path()) . '.index')
         ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return Application|Factory|View
      */
     public function edit(int $id)
     {
-        $data['locations'] = AppMasterData::whereAppMasterCategoryCode('ELK')->pluck('name', 'id')->toArray();
-        $data['shift'] = AttendanceShift::findOrFail($id);
-
-        return view('attendances.shift.form', $data);
+        return view(Str::replace('/', '.', $this->menu_path()) . '.form', [
+            'locations' => $this->appMasterDataService->getMasterForArray('ELK'),
+            'shift' => $this->attendanceShiftService->getShiftById($id),
+        ]);
     }
 
     /**
@@ -131,36 +104,23 @@ class AttendanceShiftController extends Controller
      */
     public function update(ShiftRequest $request, int $id)
     {
-        $shift = AttendanceShift::findOrFail($id);
-        $shift->update([
-            'name' => $request->input('name'),
-            'location_id' => $request->input('location_id'),
-            'code' => $request->input('code'),
-            'start' => $request->input('start'),
-            'end' => $request->input('end'),
-            'description' => $request->input('description'),
-            'night_shift' => $request->input('night_shift') ? 't' : 'f',
-            'status' => $request->input('status'),
-        ]);
+        $response = $this->attendanceShiftService->saveShift($request, $id);
 
         return response()->json([
-            'success'=>'Data Shift berhasil disimpan',
-            'url'=> route(str_replace('/', '.', $this->menu_path()).'.index')
+            'success' => $response['message'],
+            'url' => route(Str::replace('/', '.', $this->menu_path()) . '.index')
         ]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return RedirectResponse
      */
     public function destroy(int $id)
     {
-        $shift = AttendanceShift::findOrFail($id);
-        $shift->delete();
-
-        Alert::success('Success', 'Data shift berhasil dihapus!');
+        $this->attendanceShiftService->deleteShift($id);
 
         return redirect()->back();
 

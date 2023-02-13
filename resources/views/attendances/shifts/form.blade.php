@@ -14,11 +14,11 @@
             <div class="row">
                 <div class="col-md-6">
                     <x-form.select label="Lokasi Kerja" name="location_id" :datas="$locations" value="{{ $shift->location_id ?? '' }}" option="- Semua Lokasi Kerja -" />
-                    <x-form.timepicker label="Jam Masuk" name="start" value="{{ $shift->start ?? '' }}" required/>
+                    <x-form.timepicker label="Jam Masuk" class="w-100" name="start" value="{{ $shift->start ?? '' }}" required/>
                 </div>
                 <div class="col-md-6">
                     <x-form.input label="Kode" placeholder="Masukkan Kode" name="code" value="{{ $shift->code ?? '' }}" required maxlength="10"/>
-                    <x-form.timepicker label="Jam Keluar" name="end" value="{{ $shift->end ?? '' }}" required/>
+                    <x-form.timepicker label="Jam Keluar" class="w-100" name="end" value="{{ $shift->end ?? '' }}" required/>
                 </div>
             </div>
             <x-form.textarea label="Keterangan" placeholder="Masukkan Keterangan" name="description" value="{{ $shift->description ?? '' }}" />

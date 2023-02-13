@@ -39,6 +39,7 @@ Route::name('attendances.')->group(function () {
     Route::get('/attendances/attendance-recap/export', [AttendanceRecapController::class, 'export'])->name('attendance-recap.export');
     Route::get('/attendances/attendance-recap/pdf', [AttendanceRecapController::class, 'pdf'])->name('attendance-recap.pdf');
 
+    Route::get('/attendances/shifts/data', [AttendanceShiftController::class, 'data'])->name('shifts.data');
     Route::resource('/attendances/shifts', AttendanceShiftController::class);
 
     Route::resource('/attendances/holidays', AttendanceHolidayController::class);

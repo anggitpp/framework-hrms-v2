@@ -2,12 +2,10 @@
 
 namespace App\Imports\Employee;
 
-use App\Models\Attendance\AttendanceShift;
-use App\Models\Employee\Employee;
-use App\Models\Employee\EmployeeFamily;
-use App\Models\Employee\EmployeePosition;
-use App\Models\Setting\AppMasterData;
-use DB;
+use App\Http\Requests\Employee\EmployeeFamilyRequest;
+use App\Services\Employee\EmployeeFamilyService;
+use App\Services\Employee\EmployeeService;
+use App\Services\Setting\AppMasterDataService;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterImport;
@@ -19,14 +17,21 @@ class FamilyImport implements ToModel, WithEvents
 {
     public array $relationships;
     public array $employees;
-
+    private EmployeeFamilyService $employeeFamilyService;
+    private EmployeeService $employeeService;
+    private AppMasterDataService $appMasterDataService;
     public string $logname;
+
     public function __construct()
     {
         $today = now()->format('Y-m-d');
         $this->logname = "family-import_$today.log";
-        $this->relationships = AppMasterData::whereAppMasterCategoryCode('EHK')->pluck('id', DB::raw('lower(name)'))->toArray();
-        $this->employees = Employee::pluck('id', 'employee_number')->toArray();
+        $this->employeeFamilyService = new EmployeeFamilyService();
+        $this->employeeService = new EmployeeService();
+        $this->appMasterDataService = new AppMasterDataService();
+
+        $this->employees = $this->employeeService->getEmployees()->pluck('employees.id', 'employee_number')->toArray();
+        $this->relationships = $this->appMasterDataService->getMasterForArray('EHK', 0, 'order', true);
     }
 
     public function registerEvents(): array
@@ -34,7 +39,7 @@ class FamilyImport implements ToModel, WithEvents
         return [
             BeforeImport::class => function () {
                 $storage = Storage::disk('log');
-                if($storage->exists($this->logname)){
+                if ($storage->exists($this->logname)) {
                     $storage->delete($this->logname);
                 }
                 $storage->put($this->logname, '');
@@ -64,7 +69,7 @@ class FamilyImport implements ToModel, WithEvents
 
         //IDENTITY
         $no = trim($row[0]);
-        $employee_id = trim($row[1]);
+        $employee_number = trim($row[1]);
         $name = trim($row[3]);
         $relationship_id = trim($row[4]);
         $identity_number = trim($row[5]);
@@ -77,43 +82,48 @@ class FamilyImport implements ToModel, WithEvents
         $errors = "";
         try {
             //EMPTY VALIDATION
-            if(empty($employee_id)) $errors.="\n\t-Kolom NIP tidak boleh kosong";
-            if(empty($name)) $errors.="\n\t-Kolom nama tidak boleh kosong";
-            if(empty($relationship_id)) $errors.="\n\t-Kolom hubungan keluarga tidak boleh kosong";
+            if (empty($employee_number)) $errors .= "\n\t-Kolom NIP tidak boleh kosong";
+            if (empty($name)) $errors .= "\n\t-Kolom nama tidak boleh kosong";
+            if (empty($relationship_id)) $errors .= "\n\t-Kolom hubungan keluarga tidak boleh kosong";
 
             //DATE VALIDATION
-            if(!empty($birth_date) && $birth_date_convert == '0000-00-00') $errors.="\n\t-Kolom tanggal lahir tidak sesuai format $birth_date_convert";
+            if (!empty($birth_date) && $birth_date_convert == '0000-00-00') $errors .= "\n\t-Kolom tanggal lahir tidak sesuai format $birth_date_convert";
 
             //MASTER VALIDATION
-            if(!empty($employee_id) && empty($this->employees[$employee_id])) $errors.="\n\t-Kolom pegawai tidak terdaftar";
-            if(!empty($relationship_id) && empty($this->relationships[strtolower($relationship_id)])) $errors.="\n\t-Kolom hubungan keluarga tidak terdaftar";
+            if (!array_key_exists($employee_number, $this->employees)) $errors .= "\n\t-Kolom pegawai tidak terdaftar";
+            if (!array_key_exists(trim(strtolower($relationship_id)), $this->relationships)) $errors .= "\n\t-Kolom hubungan tidak terdaftar";
 
             $now = now()->format("[Y-m-d H:i:s]");
-            if(!empty($errors)){
-                $storage->append($this->logname, "{$now} No. {$no} : GAGAL, {$name} TERKENA VALIDASI : ".$errors);
+            if (!empty($errors)) {
+                $storage->append($this->logname, "{$now} No. {$no} : GAGAL, {$name} TERKENA VALIDASI : " . $errors);
             } else {
-                $employee_id = $this->employees[$employee_id] ?? 0;
-                $relationship_id = $this->relationships[strtolower($relationship_id)] ?? 0;
-                $gender = $gender == 'Laki-Laki' ? 'm' : 'f';
-
-                EmployeeFamily::updateOrCreate([
-                    'employee_id' => $employee_id,
+                $arrData = [
+                    'employee_id' => $this->employees[$employee_number],
                     'name' => $name,
-                ],[
-                    'relationship_id' => $relationship_id,
+                    'relationship_id' => $this->relationships[trim(strtolower($relationship_id))],
                     'identity_number' => $identity_number,
-                    'birth_date' => $birth_date_convert,
+                    'birth_date' => $birth_date,
                     'birth_place' => $birth_place,
                     'gender' => $gender,
                     'description' => $description,
-                ]);
+                ];
 
+                $idExist = 0;
+                $checkExist = $this->employeeFamilyService->getFamilies()->select('employee_families.id')->where('employee_families.employee_id', $arrData['employee_id'])->where('employee_families.name', $arrData['name'])->first();
+                if ($checkExist) $idExist = $checkExist->id;
+
+                $request = new EmployeeFamilyRequest();
+                $request->merge($arrData);
+
+                $this->employeeFamilyService->saveFamily($request, $idExist);
+
+                $now = now()->format("[Y-m-d H:i:s]");
                 $storage->append($this->logname, "{$now} No. {$no} : SUCCESS {$no} {$name}");
             }
 
         } catch (\Throwable $th) {
             $now = now()->format("[Y-m-d H:i:s]");
-            $storage->append($this->logname, "{$now} No. {$no} : ERROR {$no} {$name} ".$th->getMessage());
+            $storage->append($this->logname, "{$now} No. {$no} : ERROR {$no} {$name} " . $th->getMessage());
         }
     }
 }

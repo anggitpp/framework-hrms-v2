@@ -2,12 +2,16 @@
 
 namespace App\Imports\Employee;
 
+use App\Http\Requests\Employee\EmployeeEducationRequest;
 use App\Models\Attendance\AttendanceShift;
 use App\Models\Employee\Employee;
 use App\Models\Employee\EmployeeEducation;
 use App\Models\Employee\EmployeeFamily;
 use App\Models\Employee\EmployeePosition;
 use App\Models\Setting\AppMasterData;
+use App\Services\Employee\EmployeeEducationService;
+use App\Services\Employee\EmployeeService;
+use App\Services\Setting\AppMasterDataService;
 use DB;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithEvents;
@@ -20,14 +24,20 @@ class EducationImport implements ToModel, WithEvents
 {
     public array $levels;
     public array $employees;
-
     public string $logname;
+    private EmployeeEducationService $employeeEducationService;
+    private EmployeeService $employeeService;
+    private AppMasterDataService $appMasterDataService;
     public function __construct()
     {
         $today = now()->format('Y-m-d');
         $this->logname = "education-import_$today.log";
-        $this->levels = AppMasterData::whereAppMasterCategoryCode('EMJP')->pluck('id', DB::raw('lower(name)'))->toArray();
-        $this->employees = Employee::pluck('id', 'employee_number')->toArray();
+        $this->employeeEducationService = new EmployeeEducationService();
+        $this->employeeService = new EmployeeService();
+        $this->appMasterDataService = new AppMasterDataService();
+
+        $this->employees = $this->employeeService->getEmployees()->pluck('employees.id', 'employee_number')->toArray();
+        $this->levels = $this->appMasterDataService->getMasterForArray('EMJP', 0, 'order', true);
     }
 
     public function registerEvents(): array
@@ -65,7 +75,7 @@ class EducationImport implements ToModel, WithEvents
 
         //IDENTITY
         $no = trim($row[0]);
-        $employee_id = trim($row[1]);
+        $employee_number = trim($row[1]);
         $level_id = trim($row[3]);
         $name = trim($row[4]);
         $major = trim($row[5]);
@@ -78,33 +88,38 @@ class EducationImport implements ToModel, WithEvents
         $errors = "";
         try {
             //EMPTY VALIDATION
-            if(empty($employee_id)) $errors.="\n\t-Kolom NIP tidak boleh kosong";
+            if(empty($employee_number)) $errors.="\n\t-Kolom NIP tidak boleh kosong";
             if(empty($name)) $errors.="\n\t-Kolom nama tidak boleh kosong";
             if(empty($level_id)) $errors.="\n\t-Kolom hubungan keluarga tidak boleh kosong";
 
             //MASTER VALIDATION
-            if(!empty($employee_id) && empty($this->employees[$employee_id])) $errors.="\n\t-Kolom pegawai tidak terdaftar";
-            if(!empty($level_id) && empty($this->levels[strtolower($level_id)])) $errors.="\n\t-Kolom tingkatan pendidikan tidak terdaftar";
+            if (!array_key_exists($employee_number, $this->employees)) $errors .= "\n\t-Kolom pegawai tidak terdaftar";
+            if (!array_key_exists(trim(strtolower($level_id)), $this->levels)) $errors .= "\n\t-Kolom tingkatan pendidikan tidak terdaftar";
 
             $now = now()->format("[Y-m-d H:i:s]");
             if(!empty($errors)){
                 $storage->append($this->logname, "{$now} No. {$no} : GAGAL, {$name} TERKENA VALIDASI : ".$errors);
             } else {
-                $employee_id = $this->employees[$employee_id] ?? 0;
-                $level_id = $this->levels[strtolower($level_id)] ?? 0;
-
-                EmployeeEducation::updateOrCreate([
-                    'employee_id' => $employee_id,
-                    'level_id' => $level_id,
-                ],[
+                $arrData = [
+                    'employee_id' => $this->employees[$employee_number],
                     'name' => $name,
+                    'level_id' => $this->levels[trim(strtolower($level_id))],
                     'major' => $major,
                     'start_year' => $start_year,
                     'end_year' => $end_year,
                     'city' => $city,
                     'score' => $score,
                     'description' => $description,
-                ]);
+                ];
+
+                $idExist = 0;
+                $checkExist = $this->employeeEducationService->getEducation()->select('employee_education.id')->where('employee_education.employee_id', $arrData['employee_id'])->where('employee_education.level_id', $arrData['level_id'])->first();
+                if ($checkExist) $idExist = $checkExist->id;
+
+                $request = new EmployeeEducationRequest();
+                $request->merge($arrData);
+
+                $this->employeeEducationService->saveEducation($request, $idExist);
 
                 $storage->append($this->logname, "{$now} No. {$no} : SUCCESS {$no} {$name}");
             }

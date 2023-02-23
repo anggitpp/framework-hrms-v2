@@ -2,14 +2,10 @@
 
 namespace App\Imports\Employee;
 
-use App\Models\Attendance\AttendanceShift;
-use App\Models\Employee\Employee;
-use App\Models\Employee\EmployeeEducation;
-use App\Models\Employee\EmployeeFamily;
-use App\Models\Employee\EmployeePosition;
-use App\Models\Employee\EmployeeTraining;
-use App\Models\Setting\AppMasterData;
-use DB;
+use App\Http\Requests\Employee\EmployeeTrainingRequest;
+use App\Services\Employee\EmployeeService;
+use App\Services\Employee\EmployeeTrainingService;
+use App\Services\Setting\AppMasterDataService;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterImport;
@@ -22,15 +18,23 @@ class TrainingImport implements ToModel, WithEvents
     public array $categories;
     public array $types;
     public array $employees;
-
     public string $logname;
+    private EmployeeTrainingService $employeeTrainingService;
+    private EmployeeService $employeeService;
+    private AppMasterDataService $appMasterDataService;
+
     public function __construct()
     {
         $today = now()->format('Y-m-d');
         $this->logname = "training-import_$today.log";
-        $this->categories = AppMasterData::whereAppMasterCategoryCode('EKPL')->pluck('id', DB::raw('lower(name)'))->toArray();
-        $this->types = AppMasterData::whereAppMasterCategoryCode('ETPL')->pluck('id', DB::raw('lower(name)'))->toArray();
-        $this->employees = Employee::pluck('id', 'employee_number')->toArray();
+
+        $this->employeeTrainingService = new EmployeeTrainingService();
+        $this->employeeService = new EmployeeService();
+        $this->appMasterDataService = new AppMasterDataService();
+
+        $this->employees = $this->employeeService->getEmployees()->pluck('employees.id', 'employee_number')->toArray();
+        $this->categories = $this->appMasterDataService->getMasterForArray('EKPL', 0, 'order', true);
+        $this->types = $this->appMasterDataService->getMasterForArray('ETPL', 0, 'order', true);
     }
 
     public function registerEvents(): array
@@ -38,7 +42,7 @@ class TrainingImport implements ToModel, WithEvents
         return [
             BeforeImport::class => function () {
                 $storage = Storage::disk('log');
-                if($storage->exists($this->logname)){
+                if ($storage->exists($this->logname)) {
                     $storage->delete($this->logname);
                 }
                 $storage->put($this->logname, '');
@@ -68,7 +72,7 @@ class TrainingImport implements ToModel, WithEvents
 
         //IDENTITY
         $no = trim($row[0]);
-        $employee_id = trim($row[1]);
+        $employee_number = trim($row[1]);
         $name = trim($row[2]);
         $subject = trim($row[3]);
         $institution = trim($row[4]);
@@ -84,48 +88,53 @@ class TrainingImport implements ToModel, WithEvents
         $errors = "";
         try {
             //EMPTY VALIDATION
-            if(empty($employee_id)) $errors.="\n\t-Kolom NIP tidak boleh kosong";
-            if(empty($subject)) $errors.="\n\t-Kolom Perihal tidak boleh kosong";
-            if(empty($institution)) $errors.="\n\t-Kolom Institusi tidak boleh kosong";
-            if(empty($start_date)) $errors.="\n\t-Kolom Tanggal Mulai tidak boleh kosong";
-            if(empty($end_date)) $errors.="\n\t-Kolom Tanggal Selesai tidak boleh kosong";
+            if (empty($employee_number)) $errors .= "\n\t-Kolom NIP tidak boleh kosong";
+            if (empty($subject)) $errors .= "\n\t-Kolom Perihal tidak boleh kosong";
+            if (empty($institution)) $errors .= "\n\t-Kolom Institusi tidak boleh kosong";
+            if (empty($start_date)) $errors .= "\n\t-Kolom Tanggal Mulai tidak boleh kosong";
+            if (empty($end_date)) $errors .= "\n\t-Kolom Tanggal Selesai tidak boleh kosong";
 
             //DATE VALIDATION
-            if(!empty($start_date) && $start_date_convert == '0000-00-00') $errors.="\n\t-Kolom tanggal mulai tidak sesuai format $start_date_convert";
-            if(!empty($end_date) && $end_date_convert == '0000-00-00') $errors.="\n\t-Kolom tanggal selesai tidak sesuai format $end_date_convert";
+            if (!empty($start_date) && $start_date_convert == '0000-00-00') $errors .= "\n\t-Kolom tanggal mulai tidak sesuai format $start_date_convert";
+            if (!empty($end_date) && $end_date_convert == '0000-00-00') $errors .= "\n\t-Kolom tanggal selesai tidak sesuai format $end_date_convert";
 
             //MASTER VALIDATION
-            if(!empty($employee_id) && empty($this->employees[$employee_id])) $errors.="\n\t-Kolom pegawai tidak terdaftar";
-            if(!empty($category_id) && empty($this->categories[strtolower($category_id)])) $errors.="\n\t-Kolom Kategori tidak terdaftar";
-            if(!empty($type_id) && empty($this->types[strtolower($type_id)])) $errors.="\n\t-Kolom Tipe tidak terdaftar";
+            if (!array_key_exists($employee_number, $this->employees)) $errors .= "\n\t-Kolom pegawai tidak terdaftar";
+            if (!array_key_exists(trim(strtolower($category_id)), $this->categories)) $errors .= "\n\t-Kolom Kategori tidak terdaftar";
+            if (!array_key_exists(trim(strtolower($type_id)), $this->types)) $errors .= "\n\t-Kolom Tipe tidak terdaftar";
 
             $now = now()->format("[Y-m-d H:i:s]");
-            if(!empty($errors)){
-                $storage->append($this->logname, "{$now} No. {$no} : GAGAL, {$name} TERKENA VALIDASI : ".$errors);
+            if (!empty($errors)) {
+                $storage->append($this->logname, "{$now} No. {$no} : GAGAL, {$name} TERKENA VALIDASI : " . $errors);
             } else {
-                $employee_id = $this->employees[$employee_id] ?? 0;
-                $category_id = $this->categories[strtolower($category_id)] ?? 0;
-                $type_id = $this->types[strtolower($type_id)] ?? 0;
-
-                EmployeeTraining::updateOrCreate([
-                    'employee_id' => $employee_id,
+                $arrData = [
+                    'employee_id' => $this->employees[$employee_number],
                     'subject' => $subject,
-                ],[
                     'institution' => $institution,
                     'certificate_number' => $certificate_number,
-                    'category_id' => $category_id,
-                    'type_id' => $type_id,
-                    'start_date' => $start_date_convert,
-                    'end_date' => $end_date_convert,
+                    'category_id' => $this->categories[trim(strtolower($category_id))],
+                    'type_id' => $this->types[trim(strtolower($type_id))],
+                    'start_date' => $start_date,
+                    'end_date' => $end_date,
                     'description' => $description,
-                ]);
+                ];
 
+                $idExist = 0;
+                $checkExist = $this->employeeTrainingService->getTrainings()->select('employee_trainings.id')->where('employee_trainings.employee_id', $arrData['employee_id'])->where('employee_trainings.subject', $arrData['subject'])->first();
+                if ($checkExist) $idExist = $checkExist->id;
+
+                $request = new EmployeeTrainingRequest();
+                $request->merge($arrData);
+
+                $this->employeeTrainingService->saveTraining($request, $idExist);
+
+                $now = now()->format("[Y-m-d H:i:s]");
                 $storage->append($this->logname, "{$now} No. {$no} : SUCCESS {$no} {$name}");
             }
 
         } catch (\Throwable $th) {
             $now = now()->format("[Y-m-d H:i:s]");
-            $storage->append($this->logname, "{$now} No. {$no} : ERROR {$no} {$name} ".$th->getMessage());
+            $storage->append($this->logname, "{$now} No. {$no} : ERROR {$no} {$name} " . $th->getMessage());
         }
     }
 }

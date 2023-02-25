@@ -41,9 +41,9 @@ class BaseRepository
         return $model;
     }
 
-    public function updateOrCreate(array $data, array $updateData)
+    public function updateOrCreate(array $data, array $condition)
     {
-        return $this->model->updateOrCreate($data, $updateData);
+        return $this->model->updateOrCreate($condition, $data);
     }
 
     public function destroy(int $id): void

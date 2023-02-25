@@ -1,4 +1,4 @@
-<?php //57b723c7fff835152aefd65640f56d23
+<?php //e1e576490d0d3cecb10a115f04e44281
 /** @noinspection all */
 
 namespace App\Models\Employee {
@@ -77,7 +77,7 @@ namespace App\Models\Employee {
      * @method false|int increment(string $column, float|int $amount = 1, array $extra = [])
      * @method false|int decrement(string $column, float|int $amount = 1, array $extra = [])
      * @method static _IH_Employee_C|Employee[] all()
-     * @foreignLinks id,\App\Models\Setting\User,employee_id|id,\App\Models\Employee\EmployeePosition,employee_id|id,\App\Models\Attendance\Attendance,employee_id|id,\App\Models\Attendance\AttendanceWorkSchedule,employee_id|id,\App\Models\ESS\EssTimesheet,employee_id|id,\App\Models\Attendance\AttendanceLeave,employee_id|id,\App\Models\Attendance\AttendancePermission,employee_id|id,\App\Models\Attendance\AttendanceOvertime,employee_id|id,\App\Models\Attendance\AttendanceCorrection,employee_id|id,\App\Models\Employee\EmployeeSignatureSetting,employee_id|id,\App\Models\Employee\EmployeeFamily,employee_id|id,\App\Models\Employee\EmployeeEducation,employee_id|id,\App\Models\Employee\EmployeeContact,employee_id|id,\App\Models\Employee\EmployeeTraining,employee_id|id,\App\Models\Employee\EmployeeWork,employee_id|id,\App\Models\Employee\EmployeeAsset,employee_id|id,\App\Models\Employee\EmployeeFile,employee_id|id,\App\Models\Employee\EmployeeTermination,employee_id|id,\App\Models\Employee\EmployeeRehired,employee_id|id,\App\Models\Payroll\PayrollUpload,employee_id
+     * @foreignLinks id,\App\Models\Setting\User,employee_id|id,\App\Models\Employee\EmployeePosition,employee_id|id,\App\Models\Attendance\Attendance,employee_id|id,\App\Models\Attendance\AttendanceWorkSchedule,employee_id|id,\App\Models\ESS\EssTimesheet,employee_id|id,\App\Models\Attendance\AttendanceLeave,employee_id|id,\App\Models\Attendance\AttendancePermission,employee_id|id,\App\Models\Attendance\AttendanceOvertime,employee_id|id,\App\Models\Attendance\AttendanceCorrection,employee_id|id,\App\Models\Employee\EmployeeSignatureSetting,employee_id|id,\App\Models\Employee\EmployeeFamily,employee_id|id,\App\Models\Employee\EmployeeEducation,employee_id|id,\App\Models\Employee\EmployeeContact,employee_id|id,\App\Models\Employee\EmployeeTraining,employee_id|id,\App\Models\Employee\EmployeeWork,employee_id|id,\App\Models\Employee\EmployeeAsset,employee_id|id,\App\Models\Employee\EmployeeFile,employee_id|id,\App\Models\Employee\EmployeeTermination,employee_id|id,\App\Models\Employee\EmployeeRehired,employee_id|id,\App\Models\Payroll\PayrollUpload,employee_id|id,\App\Models\Payroll\PayrollComponentProcessDetail,employee_id
      * @mixin _IH_Employee_QB
      */
     class Employee extends Model {}
@@ -264,6 +264,8 @@ namespace App\Models\Employee {
      * @property int|null $leader_id
      * @property Employee $employee
      * @method BelongsTo|_IH_Employee_QB employee()
+     * @property AppMasterData $position
+     * @method BelongsTo|_IH_AppMasterData_QB position()
      * @method static _IH_EmployeePosition_QB onWriteConnection()
      * @method _IH_EmployeePosition_QB newQuery()
      * @method static _IH_EmployeePosition_QB on(null|string $connection = null)

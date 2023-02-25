@@ -1,8 +1,9 @@
-<?php //525ee235746c0d986f933eca47a295fd
+<?php //2658329c06b79404a7a33894e6099f62
 /** @noinspection all */
 
 namespace LaravelIdea\Helper\App\Models\Setting {
 
+    use App\Models\Setting\AppInfo;
     use App\Models\Setting\AppMasterCategory;
     use App\Models\Setting\AppMasterData;
     use App\Models\Setting\AppMenu;
@@ -19,6 +20,80 @@ namespace LaravelIdea\Helper\App\Models\Setting {
     use LaravelIdea\Helper\_BaseCollection;
     use Spatie\Permission\Contracts\Permission;
     use Spatie\Permission\Contracts\Role;
+    
+    /**
+     * @method AppInfo|null getOrPut($key, $value)
+     * @method AppInfo|$this shift(int $count = 1)
+     * @method AppInfo|null firstOrFail(callable|string $key = null, $operator = null, $value = null)
+     * @method AppInfo|$this pop(int $count = 1)
+     * @method AppInfo|null pull($key, \Closure $default = null)
+     * @method AppInfo|null last(callable $callback = null, \Closure $default = null)
+     * @method AppInfo|$this random(callable|int|null $number = null)
+     * @method AppInfo|null sole(callable|string $key = null, $operator = null, $value = null)
+     * @method AppInfo|null get($key, \Closure $default = null)
+     * @method AppInfo|null first(callable $callback = null, \Closure $default = null)
+     * @method AppInfo|null firstWhere(callable|string $key, $operator = null, $value = null)
+     * @method AppInfo|null find($key, $default = null)
+     * @method AppInfo[] all()
+     */
+    class _IH_AppInfo_C extends _BaseCollection {
+        /**
+         * @param int $size
+         * @return AppInfo[][]
+         */
+        public function chunk($size)
+        {
+            return [];
+        }
+    }
+    
+    /**
+     * @method _IH_AppInfo_QB whereId($value)
+     * @method _IH_AppInfo_QB whereTitle($value)
+     * @method _IH_AppInfo_QB wherePrimaryColor($value)
+     * @method _IH_AppInfo_QB whereLightPrimaryColor($value)
+     * @method _IH_AppInfo_QB whereBackgroundLightPrimaryColor($value)
+     * @method _IH_AppInfo_QB whereLoginPageTitle($value)
+     * @method _IH_AppInfo_QB whereLoginPageSubtitle($value)
+     * @method _IH_AppInfo_QB whereLoginPageDescription($value)
+     * @method _IH_AppInfo_QB whereLoginPageLogo($value)
+     * @method _IH_AppInfo_QB whereLoginPageBackgroundImage($value)
+     * @method _IH_AppInfo_QB whereLoginPageImage($value)
+     * @method _IH_AppInfo_QB whereFooterText($value)
+     * @method _IH_AppInfo_QB whereAppVersion($value)
+     * @method _IH_AppInfo_QB whereAppLogo($value)
+     * @method _IH_AppInfo_QB whereAppLogoSmall($value)
+     * @method _IH_AppInfo_QB whereAppIcon($value)
+     * @method _IH_AppInfo_QB whereCreatedAt($value)
+     * @method _IH_AppInfo_QB whereUpdatedAt($value)
+     * @method AppInfo baseSole(array|string $columns = ['*'])
+     * @method AppInfo create(array $attributes = [])
+     * @method _IH_AppInfo_C|AppInfo[] cursor()
+     * @method AppInfo|null|_IH_AppInfo_C|AppInfo[] find($id, array|string $columns = ['*'])
+     * @method _IH_AppInfo_C|AppInfo[] findMany(array|Arrayable $ids, array|string $columns = ['*'])
+     * @method AppInfo|_IH_AppInfo_C|AppInfo[] findOr($id, array|\Closure|string $columns = ['*'], \Closure $callback = null)
+     * @method AppInfo|_IH_AppInfo_C|AppInfo[] findOrFail($id, array|string $columns = ['*'])
+     * @method AppInfo|_IH_AppInfo_C|AppInfo[] findOrNew($id, array|string $columns = ['*'])
+     * @method AppInfo first(array|string $columns = ['*'])
+     * @method AppInfo firstOr(array|\Closure|string $columns = ['*'], \Closure $callback = null)
+     * @method AppInfo firstOrCreate(array $attributes = [], array $values = [])
+     * @method AppInfo firstOrFail(array|string $columns = ['*'])
+     * @method AppInfo firstOrNew(array $attributes = [], array $values = [])
+     * @method AppInfo firstWhere(array|\Closure|Expression|string $column, $operator = null, $value = null, string $boolean = 'and')
+     * @method AppInfo forceCreate(array $attributes)
+     * @method _IH_AppInfo_C|AppInfo[] fromQuery(string $query, array $bindings = [])
+     * @method _IH_AppInfo_C|AppInfo[] get(array|string $columns = ['*'])
+     * @method AppInfo getModel()
+     * @method AppInfo[] getModels(array|string $columns = ['*'])
+     * @method _IH_AppInfo_C|AppInfo[] hydrate(array $items)
+     * @method AppInfo make(array $attributes = [])
+     * @method AppInfo newModelInstance(array $attributes = [])
+     * @method LengthAwarePaginator|AppInfo[]|_IH_AppInfo_C paginate(\Closure|int|null $perPage = null, array|string $columns = ['*'], string $pageName = 'page', int|null $page = null)
+     * @method Paginator|AppInfo[]|_IH_AppInfo_C simplePaginate(int|null $perPage = null, array|string $columns = ['*'], string $pageName = 'page', int|null $page = null)
+     * @method AppInfo sole(array|string $columns = ['*'])
+     * @method AppInfo updateOrCreate(array $attributes, array $values = [])
+     */
+    class _IH_AppInfo_QB extends _BaseBuilder {}
     
     /**
      * @method AppMasterCategory|null getOrPut($key, $value)

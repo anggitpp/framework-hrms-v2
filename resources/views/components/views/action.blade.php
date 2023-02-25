@@ -11,6 +11,7 @@
                                 href="{{ $action['url'] }}"
                             @endif
                             class="btn btn-icon btn-light-{{ $action['class-icon'] ?? 'info' }} w-30px h-30px me-1 {{ $action['isModal'] ? 'btn-modal' : '' }}"
+                            title="Edit Data"
                             @if($action['isModal'])
                                 data-bs-toggle="modal"
                             @endif
@@ -20,7 +21,7 @@
                 @endcan
             @elseif(str_contains($action['url'], 'destroy'))
                 @can('delete '.$menu_path)
-                    <button href="{{ $action['url'] }}" id="delete" class="btn btn-icon btn-light-danger w-30px h-30px">
+                    <button href="{{ $action['url'] }}" id="delete" class="btn btn-icon btn-light-danger w-30px h-30px" title="Delete Data">
                         <i class="{{ $action['icon'] }}"></i>
                     </button>
                 @endcan
@@ -35,6 +36,7 @@
                         @if($action['isModal'])
                             data-bs-toggle="modal"
                         @endif
+                        title="{{ $action['title'] }}"
                 >
                     <i class="{{ $action['icon'] }}"></i>
                 </a>
@@ -57,18 +59,18 @@
         </a>
     @endif
     @if($url_show)
-        <a href="{{ $url_show }}" class="btn btn-icon btn-light-info w-30px h-30px me-1">
+        <a href="{{ $url_show }}" class="btn btn-icon btn-light-info w-30px h-30px me-1" title="List Data">
             <i class="{{ $icon_show }}"></i>
         </a>
     @endif
     @if($url_edit)
         @can('edit '.$menu_path)
             @if($isModal)
-                <a data-bs-toggle="modal" class="btn btn-icon btn-light-primary w-30px h-30px me-1 btn-modal" data-url="{{ $url_edit }}">
+                <a data-bs-toggle="modal" title="Edit Data" class="btn btn-icon btn-light-primary w-30px h-30px me-1 btn-modal" data-url="{{ $url_edit }}">
                     <i class="fa-solid fa-pen"></i>
                 </a>
             @else
-                <a href="{{ $url_edit }}" class="btn btn-icon btn-light-primary w-30px h-30px me-1">
+                <a href="{{ $url_edit }}" title="Edit Data" class="btn btn-icon btn-light-primary w-30px h-30px me-1">
                     <i class="fa-solid fa-pen"></i>
                 </a>
             @endif
@@ -76,7 +78,7 @@
     @endif
     @if($url_destroy)
         @can('delete '.$menu_path)
-            <button href="{{ $url_destroy }}" id="delete" class="btn btn-icon btn-light-danger w-30px h-30px">
+            <button href="{{ $url_destroy }}" id="delete" class="btn btn-icon btn-light-danger w-30px h-30px" title="Delete Data">
                 <i class="fa-solid fa-trash"></i>
             </button>
         @endcan

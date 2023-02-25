@@ -1,4 +1,4 @@
-<?php //05144ec1033e06931cf4a89c9d5813c3
+<?php //63dbdae69944f6c4fa8b5361305a1af5
 /** @noinspection all */
 
 namespace App\Models\Setting {
@@ -14,6 +14,8 @@ namespace App\Models\Setting {
     use Illuminate\Support\Carbon;
     use Laravel\Sanctum\PersonalAccessToken;
     use LaravelIdea\Helper\App\Models\Payroll\_IH_PayrollSetting_QB;
+    use LaravelIdea\Helper\App\Models\Setting\_IH_AppInfo_C;
+    use LaravelIdea\Helper\App\Models\Setting\_IH_AppInfo_QB;
     use LaravelIdea\Helper\App\Models\Setting\_IH_AppMasterCategory_C;
     use LaravelIdea\Helper\App\Models\Setting\_IH_AppMasterCategory_QB;
     use LaravelIdea\Helper\App\Models\Setting\_IH_AppMasterData_C;
@@ -37,6 +39,39 @@ namespace App\Models\Setting {
     use LaravelIdea\Helper\Spatie\Permission\Models\_IH_Role_QB;
     use Spatie\Permission\Models\Permission;
     use Spatie\Permission\Models\Role;
+    
+    /**
+     * @property int $id
+     * @property string $title
+     * @property string $primary_color
+     * @property string $light_primary_color
+     * @property string $background_light_primary_color
+     * @property string|null $login_page_title
+     * @property string|null $login_page_subtitle
+     * @property string|null $login_page_description
+     * @property string|null $login_page_logo
+     * @property string|null $login_page_background_image
+     * @property string|null $login_page_image
+     * @property string|null $footer_text
+     * @property string $year
+     * @property string $app_version
+     * @property string|null $app_logo
+     * @property string|null $app_logo_small
+     * @property string|null $app_icon
+     * @property Carbon|null $created_at
+     * @property Carbon|null $updated_at
+     * @method static _IH_AppInfo_QB onWriteConnection()
+     * @method _IH_AppInfo_QB newQuery()
+     * @method static _IH_AppInfo_QB on(null|string $connection = null)
+     * @method static _IH_AppInfo_QB query()
+     * @method static _IH_AppInfo_QB with(array|string $relations)
+     * @method _IH_AppInfo_QB newModelQuery()
+     * @method false|int increment(string $column, float|int $amount = 1, array $extra = [])
+     * @method false|int decrement(string $column, float|int $amount = 1, array $extra = [])
+     * @method static _IH_AppInfo_C|AppInfo[] all()
+     * @mixin _IH_AppInfo_QB
+     */
+    class AppInfo extends Model {}
     
     /**
      * @property int $id

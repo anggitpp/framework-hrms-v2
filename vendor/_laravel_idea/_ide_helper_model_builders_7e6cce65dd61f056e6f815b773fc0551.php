@@ -1,9 +1,11 @@
-<?php //d164521fae37a6873a076d14ffb892e9
+<?php //3f547efab0d785d1e3ef4a4acfe3d20c
 /** @noinspection all */
 
 namespace LaravelIdea\Helper\App\Models\Payroll {
 
     use App\Models\Payroll\PayrollComponent;
+    use App\Models\Payroll\PayrollComponentProcess;
+    use App\Models\Payroll\PayrollComponentProcessDetail;
     use App\Models\Payroll\PayrollFixed;
     use App\Models\Payroll\PayrollMaster;
     use App\Models\Payroll\PayrollSetting;
@@ -14,6 +16,143 @@ namespace LaravelIdea\Helper\App\Models\Payroll {
     use Illuminate\Pagination\Paginator;
     use LaravelIdea\Helper\_BaseBuilder;
     use LaravelIdea\Helper\_BaseCollection;
+    
+    /**
+     * @method PayrollComponentProcessDetail|null getOrPut($key, $value)
+     * @method PayrollComponentProcessDetail|$this shift(int $count = 1)
+     * @method PayrollComponentProcessDetail|null firstOrFail(callable|string $key = null, $operator = null, $value = null)
+     * @method PayrollComponentProcessDetail|$this pop(int $count = 1)
+     * @method PayrollComponentProcessDetail|null pull($key, \Closure $default = null)
+     * @method PayrollComponentProcessDetail|null last(callable $callback = null, \Closure $default = null)
+     * @method PayrollComponentProcessDetail|$this random(callable|int|null $number = null)
+     * @method PayrollComponentProcessDetail|null sole(callable|string $key = null, $operator = null, $value = null)
+     * @method PayrollComponentProcessDetail|null get($key, \Closure $default = null)
+     * @method PayrollComponentProcessDetail|null first(callable $callback = null, \Closure $default = null)
+     * @method PayrollComponentProcessDetail|null firstWhere(callable|string $key, $operator = null, $value = null)
+     * @method PayrollComponentProcessDetail|null find($key, $default = null)
+     * @method PayrollComponentProcessDetail[] all()
+     */
+    class _IH_PayrollComponentProcessDetail_C extends _BaseCollection {
+        /**
+         * @param int $size
+         * @return PayrollComponentProcessDetail[][]
+         */
+        public function chunk($size)
+        {
+            return [];
+        }
+    }
+    
+    /**
+     * @method _IH_PayrollComponentProcessDetail_QB whereId($value)
+     * @method _IH_PayrollComponentProcessDetail_QB wherePayrollComponentProcessId($value)
+     * @method _IH_PayrollComponentProcessDetail_QB whereEmployeeId($value)
+     * @method _IH_PayrollComponentProcessDetail_QB whereAmount($value)
+     * @method _IH_PayrollComponentProcessDetail_QB whereNote($value)
+     * @method _IH_PayrollComponentProcessDetail_QB whereCreatedBy($value)
+     * @method _IH_PayrollComponentProcessDetail_QB whereUpdatedBy($value)
+     * @method _IH_PayrollComponentProcessDetail_QB whereCreatedAt($value)
+     * @method _IH_PayrollComponentProcessDetail_QB whereUpdatedAt($value)
+     * @method PayrollComponentProcessDetail baseSole(array|string $columns = ['*'])
+     * @method PayrollComponentProcessDetail create(array $attributes = [])
+     * @method _IH_PayrollComponentProcessDetail_C|PayrollComponentProcessDetail[] cursor()
+     * @method PayrollComponentProcessDetail|null|_IH_PayrollComponentProcessDetail_C|PayrollComponentProcessDetail[] find($id, array|string $columns = ['*'])
+     * @method _IH_PayrollComponentProcessDetail_C|PayrollComponentProcessDetail[] findMany(array|Arrayable $ids, array|string $columns = ['*'])
+     * @method PayrollComponentProcessDetail|_IH_PayrollComponentProcessDetail_C|PayrollComponentProcessDetail[] findOr($id, array|\Closure|string $columns = ['*'], \Closure $callback = null)
+     * @method PayrollComponentProcessDetail|_IH_PayrollComponentProcessDetail_C|PayrollComponentProcessDetail[] findOrFail($id, array|string $columns = ['*'])
+     * @method PayrollComponentProcessDetail|_IH_PayrollComponentProcessDetail_C|PayrollComponentProcessDetail[] findOrNew($id, array|string $columns = ['*'])
+     * @method PayrollComponentProcessDetail first(array|string $columns = ['*'])
+     * @method PayrollComponentProcessDetail firstOr(array|\Closure|string $columns = ['*'], \Closure $callback = null)
+     * @method PayrollComponentProcessDetail firstOrCreate(array $attributes = [], array $values = [])
+     * @method PayrollComponentProcessDetail firstOrFail(array|string $columns = ['*'])
+     * @method PayrollComponentProcessDetail firstOrNew(array $attributes = [], array $values = [])
+     * @method PayrollComponentProcessDetail firstWhere(array|\Closure|Expression|string $column, $operator = null, $value = null, string $boolean = 'and')
+     * @method PayrollComponentProcessDetail forceCreate(array $attributes)
+     * @method _IH_PayrollComponentProcessDetail_C|PayrollComponentProcessDetail[] fromQuery(string $query, array $bindings = [])
+     * @method _IH_PayrollComponentProcessDetail_C|PayrollComponentProcessDetail[] get(array|string $columns = ['*'])
+     * @method PayrollComponentProcessDetail getModel()
+     * @method PayrollComponentProcessDetail[] getModels(array|string $columns = ['*'])
+     * @method _IH_PayrollComponentProcessDetail_C|PayrollComponentProcessDetail[] hydrate(array $items)
+     * @method PayrollComponentProcessDetail make(array $attributes = [])
+     * @method PayrollComponentProcessDetail newModelInstance(array $attributes = [])
+     * @method LengthAwarePaginator|PayrollComponentProcessDetail[]|_IH_PayrollComponentProcessDetail_C paginate(\Closure|int|null $perPage = null, array|string $columns = ['*'], string $pageName = 'page', int|null $page = null)
+     * @method Paginator|PayrollComponentProcessDetail[]|_IH_PayrollComponentProcessDetail_C simplePaginate(int|null $perPage = null, array|string $columns = ['*'], string $pageName = 'page', int|null $page = null)
+     * @method PayrollComponentProcessDetail sole(array|string $columns = ['*'])
+     * @method PayrollComponentProcessDetail updateOrCreate(array $attributes, array $values = [])
+     */
+    class _IH_PayrollComponentProcessDetail_QB extends _BaseBuilder {}
+    
+    /**
+     * @method PayrollComponentProcess|null getOrPut($key, $value)
+     * @method PayrollComponentProcess|$this shift(int $count = 1)
+     * @method PayrollComponentProcess|null firstOrFail(callable|string $key = null, $operator = null, $value = null)
+     * @method PayrollComponentProcess|$this pop(int $count = 1)
+     * @method PayrollComponentProcess|null pull($key, \Closure $default = null)
+     * @method PayrollComponentProcess|null last(callable $callback = null, \Closure $default = null)
+     * @method PayrollComponentProcess|$this random(callable|int|null $number = null)
+     * @method PayrollComponentProcess|null sole(callable|string $key = null, $operator = null, $value = null)
+     * @method PayrollComponentProcess|null get($key, \Closure $default = null)
+     * @method PayrollComponentProcess|null first(callable $callback = null, \Closure $default = null)
+     * @method PayrollComponentProcess|null firstWhere(callable|string $key, $operator = null, $value = null)
+     * @method PayrollComponentProcess|null find($key, $default = null)
+     * @method PayrollComponentProcess[] all()
+     */
+    class _IH_PayrollComponentProcess_C extends _BaseCollection {
+        /**
+         * @param int $size
+         * @return PayrollComponentProcess[][]
+         */
+        public function chunk($size)
+        {
+            return [];
+        }
+    }
+    
+    /**
+     * @method _IH_PayrollComponentProcess_QB whereId($value)
+     * @method _IH_PayrollComponentProcess_QB wherePayrollMasterId($value)
+     * @method _IH_PayrollComponentProcess_QB whereLocationId($value)
+     * @method _IH_PayrollComponentProcess_QB whereCode($value)
+     * @method _IH_PayrollComponentProcess_QB whereComponentId($value)
+     * @method _IH_PayrollComponentProcess_QB whereTotalAmount($value)
+     * @method _IH_PayrollComponentProcess_QB whereTotalEmployee($value)
+     * @method _IH_PayrollComponentProcess_QB whereStatus($value)
+     * @method _IH_PayrollComponentProcess_QB whereApprovedStatus($value)
+     * @method _IH_PayrollComponentProcess_QB whereApprovedBy($value)
+     * @method _IH_PayrollComponentProcess_QB whereApprovedAt($value)
+     * @method _IH_PayrollComponentProcess_QB whereApprovedNote($value)
+     * @method _IH_PayrollComponentProcess_QB whereCreatedBy($value)
+     * @method _IH_PayrollComponentProcess_QB whereUpdatedBy($value)
+     * @method _IH_PayrollComponentProcess_QB whereCreatedAt($value)
+     * @method _IH_PayrollComponentProcess_QB whereUpdatedAt($value)
+     * @method PayrollComponentProcess baseSole(array|string $columns = ['*'])
+     * @method PayrollComponentProcess create(array $attributes = [])
+     * @method _IH_PayrollComponentProcess_C|PayrollComponentProcess[] cursor()
+     * @method PayrollComponentProcess|null|_IH_PayrollComponentProcess_C|PayrollComponentProcess[] find($id, array|string $columns = ['*'])
+     * @method _IH_PayrollComponentProcess_C|PayrollComponentProcess[] findMany(array|Arrayable $ids, array|string $columns = ['*'])
+     * @method PayrollComponentProcess|_IH_PayrollComponentProcess_C|PayrollComponentProcess[] findOr($id, array|\Closure|string $columns = ['*'], \Closure $callback = null)
+     * @method PayrollComponentProcess|_IH_PayrollComponentProcess_C|PayrollComponentProcess[] findOrFail($id, array|string $columns = ['*'])
+     * @method PayrollComponentProcess|_IH_PayrollComponentProcess_C|PayrollComponentProcess[] findOrNew($id, array|string $columns = ['*'])
+     * @method PayrollComponentProcess first(array|string $columns = ['*'])
+     * @method PayrollComponentProcess firstOr(array|\Closure|string $columns = ['*'], \Closure $callback = null)
+     * @method PayrollComponentProcess firstOrCreate(array $attributes = [], array $values = [])
+     * @method PayrollComponentProcess firstOrFail(array|string $columns = ['*'])
+     * @method PayrollComponentProcess firstOrNew(array $attributes = [], array $values = [])
+     * @method PayrollComponentProcess firstWhere(array|\Closure|Expression|string $column, $operator = null, $value = null, string $boolean = 'and')
+     * @method PayrollComponentProcess forceCreate(array $attributes)
+     * @method _IH_PayrollComponentProcess_C|PayrollComponentProcess[] fromQuery(string $query, array $bindings = [])
+     * @method _IH_PayrollComponentProcess_C|PayrollComponentProcess[] get(array|string $columns = ['*'])
+     * @method PayrollComponentProcess getModel()
+     * @method PayrollComponentProcess[] getModels(array|string $columns = ['*'])
+     * @method _IH_PayrollComponentProcess_C|PayrollComponentProcess[] hydrate(array $items)
+     * @method PayrollComponentProcess make(array $attributes = [])
+     * @method PayrollComponentProcess newModelInstance(array $attributes = [])
+     * @method LengthAwarePaginator|PayrollComponentProcess[]|_IH_PayrollComponentProcess_C paginate(\Closure|int|null $perPage = null, array|string $columns = ['*'], string $pageName = 'page', int|null $page = null)
+     * @method Paginator|PayrollComponentProcess[]|_IH_PayrollComponentProcess_C simplePaginate(int|null $perPage = null, array|string $columns = ['*'], string $pageName = 'page', int|null $page = null)
+     * @method PayrollComponentProcess sole(array|string $columns = ['*'])
+     * @method PayrollComponentProcess updateOrCreate(array $attributes, array $values = [])
+     */
+    class _IH_PayrollComponentProcess_QB extends _BaseBuilder {}
     
     /**
      * @method PayrollComponent|null getOrPut($key, $value)
@@ -117,16 +256,6 @@ namespace LaravelIdea\Helper\App\Models\Payroll {
     }
     
     /**
-     * @method _IH_PayrollFixed_QB whereId($value)
-     * @method _IH_PayrollFixed_QB whereCode($value)
-     * @method _IH_PayrollFixed_QB whereName($value)
-     * @method _IH_PayrollFixed_QB whereAmount($value)
-     * @method _IH_PayrollFixed_QB whereDescription($value)
-     * @method _IH_PayrollFixed_QB whereStatus($value)
-     * @method _IH_PayrollFixed_QB whereCreatedBy($value)
-     * @method _IH_PayrollFixed_QB whereUpdatedBy($value)
-     * @method _IH_PayrollFixed_QB whereCreatedAt($value)
-     * @method _IH_PayrollFixed_QB whereUpdatedAt($value)
      * @method PayrollFixed baseSole(array|string $columns = ['*'])
      * @method PayrollFixed create(array $attributes = [])
      * @method _IH_PayrollFixed_C|PayrollFixed[] cursor()

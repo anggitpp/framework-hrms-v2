@@ -1,10 +1,15 @@
 <?php
 
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Carbon;
 use Intervention\Image\Facades\Image;
+use Maatwebsite\Excel\Facades\Excel;
+use RealRashid\SweetAlert\Facades\Alert;
+use Yajra\DataTables\DataTableAbstract;
 use Yajra\DataTables\DataTables;
 
 function setCurrency($value)
@@ -299,16 +304,6 @@ function getParameterMenu(String $pathMenu)
         ->first()->parameter;
 }
 
-function getDetailMenu(String $pathMenu)
-{
-    list($modul, $menu) = explode('/', $pathMenu);
-    return DB::table('app_menus as t1')->join('app_moduls as t2', 't1.app_modul_id', '=', 't2.id')
-        ->where('t2.target', $modul)
-        ->where('t1.target', $menu)
-        ->first();
-}
-
-
 function menu_path()
 {
     $arrURL = explode('/', \Request::url());//GET URL
@@ -331,7 +326,11 @@ function generateDatatable($query, $filter , $customFields = [], $isModal = fals
     foreach ($customFields as $field) {
         if ($field['type'] == 'date') {
             $data = function ($model) use ($field) {
-                return $model->{$field['name']} != '0000-00-00' ? setDate($model->{$field['name']}) : '';
+                return $model->{$field['name']} != '0000-00-00' && $model->{$field['name']} != null ? setDate($model->{$field['name']}) : '';
+            };
+        } else if ($field['type'] == 'time') {
+            $data = function ($model) use ($field) {
+                return substr($model->{$field['name']} ?? '', 0, 5);
             };
         } else if ($field['type'] == 'masters') {
             $data = function ($model) use ($field) {
@@ -340,7 +339,7 @@ function generateDatatable($query, $filter , $customFields = [], $isModal = fals
         } else if ($field['type'] == 'master_relationship') {
             $field['master_field'] = $field['master_field'] ?? 'name';
             $data = function ($model) use ($field) {
-                return $model->{$field['masters']}->{$field['master_field']} ?? '';
+                return $model->{$field['masters']}->{$field['master_field']} ?? $field['null_value'] ?? '';
             };
         } else if ($field['type'] == 'multiple_relationship') {
             $field['master_field'] = $field['master_field'] ?? 'name';
@@ -365,11 +364,15 @@ function generateDatatable($query, $filter , $customFields = [], $isModal = fals
                     'value' => $model->{$field['name']},
                 ]);
             };
-        }  else if ($field['type'] == 'photo') {
+        } else if ($field['type'] == 'photo') {
             $data = function ($model) use ($field) {
                 return view('components.views.photo', [
                     'photo' => $model->{$field['name']},
                 ]);
+            };
+        } else if ($field['type'] == 'gender') {
+            $data = function ($model) use ($field) {
+                return $model->{$field['name']} == 'M' ? 'Laki-laki' : 'Perempuan';
             };
         } else if ($field['type'] == 'currency'){
             $data = function ($model) use ($field) {
@@ -421,6 +424,7 @@ function generateDatatable($query, $filter , $customFields = [], $isModal = fals
                     'icon' => $action['icon'],
                     'class-icon' => $action['class-icon'] ?? 'info',
                     'isModal' => $action['isModal'] ?? '',
+                    'title' => $action['title'] ?? '',
                 ];
             }
 
@@ -443,4 +447,83 @@ function generateDatatable($query, $filter , $customFields = [], $isModal = fals
 
     return $dataTables->addIndexColumn()->make();
 }
+
+
+
+function submitDataHelper($function, bool $isModal = false, string $route = 'index', array $param = []): JsonResponse|RedirectResponse
+{
+    DB::beginTransaction();
+    try {
+        $function;
+
+        DB::commit();
+        $status = 'success';
+        $message = 'Data berhasil disimpan';
+    } catch (Exception $e) {
+        DB::rollBack();
+        $status = 'error';
+        $message = 'Error: ' . $e->getMessage();
+    }
+
+    if($isModal){
+        return response()->json([
+            'success' => $message,
+            'url' => route(Str::replace('/', '.', menu_path()) . '.'.$route, $param)
+        ]);
+    }else{
+        if($status == 'success'){
+            Alert::success('Success', $message);
+        }else{
+            Alert::error('Error', $message);
+        }
+
+        return redirect()->route(Str::replace('/', '.', menu_path()) . '.'.$route, $param);
+    }
+}
+
+function deleteDataHelper($function): RedirectResponse
+{
+    DB::beginTransaction();
+    try {
+        $function;
+
+        DB::commit();
+
+        $status = 'success';
+        $message = 'Data berhasil dihapus';
+    } catch (Exception $e) {
+        DB::rollBack();
+
+        $status = 'error';
+        $message = 'Error: ' . $e->getMessage();
+    }
+
+    if($status == 'success'){
+        Alert::success('Success', $message);
+    }else{
+        Alert::error('Error', $message);
+    }
+
+    return redirect()->back();
+}
+
+function importHelper($classImport, $request, $route = 'index')
+{
+    try {
+        if ($request->hasFile('filename')) {
+            Excel::import($classImport, $request->file('filename'));
+
+            return response()->json([
+                'success' => 'Data berhasil diimport',
+                'url' => route(Str::replace('/', '.', menu_path()) . '.'.$route),
+            ]);
+        }
+    } catch (Exception $e) {
+        return response()->json([
+            'success' => 'Gagal ' . $e->getMessage(),
+            'url' => route(Str::replace('/', '.', menu_path()) . '.'.$route),
+        ]);
+    }
+}
+
 ?>

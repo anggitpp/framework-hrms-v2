@@ -20,14 +20,21 @@ $(function (){
     });
 });
 
-function showGlobalModal(uri, width){
+function showGlobalModal(uri, width, filter){
     let currentURL = window.location.href;
     let splitURL = currentURL.split("?");
-    let url = uri;
+    let url = splitURL[1] === undefined ? uri
+        : uri + '?' + splitURL[1];
+    if(filter !== undefined && filter !== ''){
+        if(url.includes('?')){
+            url = url + '&'+filter+'=' + $('#'+filter).val();
+        }else{
+            url = url + '?'+filter+'=' + $('#'+filter).val();
+        }
+    }
     $.ajax({
-        url:
-            splitURL[1] === undefined ? url
-                : url + '?' + splitURL[1],
+        url: url
+            ,
         method: "GET",
         success: function (data){
             $('#modal-form').find('.modal-body').html(data);

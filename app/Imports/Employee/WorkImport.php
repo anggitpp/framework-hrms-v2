@@ -2,15 +2,10 @@
 
 namespace App\Imports\Employee;
 
-use App\Models\Attendance\AttendanceShift;
-use App\Models\Employee\Employee;
-use App\Models\Employee\EmployeeEducation;
-use App\Models\Employee\EmployeeFamily;
-use App\Models\Employee\EmployeePosition;
-use App\Models\Employee\EmployeeTraining;
-use App\Models\Employee\EmployeeWork;
-use App\Models\Setting\AppMasterData;
-use DB;
+use App\Http\Requests\Employee\EmployeeWorkRequest;
+use App\Services\Employee\EmployeeService;
+use App\Services\Employee\EmployeeWorkService;
+use App\Services\Setting\AppMasterDataService;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterImport;
@@ -23,11 +18,18 @@ class WorkImport implements ToModel, WithEvents
     public array $employees;
 
     public string $logname;
+    private EmployeeWorkService $employeeWorkService;
+    private EmployeeService $employeeService;
+    private AppMasterDataService $appMasterDataService;
     public function __construct()
     {
         $today = now()->format('Y-m-d');
         $this->logname = "work-import_$today.log";
-        $this->employees = Employee::pluck('id', 'employee_number')->toArray();
+        $this->employeeWorkService = new EmployeeWorkService();
+        $this->employeeService = new EmployeeService();
+        $this->appMasterDataService = new AppMasterDataService();
+
+        $this->employees = $this->employeeService->getEmployees()->pluck('employees.id', 'employee_number')->toArray();
     }
 
     public function registerEvents(): array
@@ -65,7 +67,7 @@ class WorkImport implements ToModel, WithEvents
 
         //IDENTITY
         $no = trim($row[0]);
-        $employee_id = trim($row[1]);
+        $employee_number = trim($row[1]);
         $name = trim($row[2]);
         $company = trim($row[3]);
         $position = trim($row[4]);
@@ -79,7 +81,7 @@ class WorkImport implements ToModel, WithEvents
         $errors = "";
         try {
             //EMPTY VALIDATION
-            if(empty($employee_id)) $errors.="\n\t-Kolom NIP tidak boleh kosong";
+            if(empty($employee_number)) $errors.="\n\t-Kolom NIP tidak boleh kosong";
             if(empty($company)) $errors.="\n\t-Kolom Perusahaan tidak boleh kosong";
             if(empty($position)) $errors.="\n\t-Kolom Posisi tidak boleh kosong";
             if(empty($start_date)) $errors.="\n\t-Kolom Tanggal Mulai tidak boleh kosong";
@@ -89,25 +91,32 @@ class WorkImport implements ToModel, WithEvents
             if(!empty($end_date) && $end_date_convert == '0000-00-00') $errors.="\n\t-Kolom tanggal selesai tidak sesuai format $end_date_convert";
 
             //MASTER VALIDATION
-            if(!empty($employee_id) && empty($this->employees[$employee_id])) $errors.="\n\t-Kolom pegawai tidak terdaftar";
+            if(!empty($employee_number) && empty($this->employees[$employee_number])) $errors.="\n\t-Kolom pegawai tidak terdaftar";
 
             $now = now()->format("[Y-m-d H:i:s]");
             if(!empty($errors)){
                 $storage->append($this->logname, "{$now} No. {$no} : GAGAL, {$name} TERKENA VALIDASI : ".$errors);
             } else {
-                $employee_id = $this->employees[$employee_id] ?? 0;
-
-                EmployeeWork::updateOrCreate([
-                    'employee_id' => $employee_id,
+                $arrData = [
+                    'employee_id' => $this->employees[$employee_number],
                     'company' => $company,
-                ],[
                     'position' => $position,
-                    'start_date' => $start_date_convert,
-                    'end_date' => $end_date_convert,
+                    'start_date' => $start_date,
+                    'end_date' => $end_date,
                     'city' => $city,
                     'description' => $description,
-                ]);
+                ];
 
+                $idExist = 0;
+                $checkExist = $this->employeeWorkService->getWorks()->select('employee_works.id')->where('employee_works.employee_id', $arrData['employee_id'])->where('employee_works.company', $arrData['company'])->first();
+                if ($checkExist) $idExist = $checkExist->id;
+
+                $request = new EmployeeWorkRequest();
+                $request->merge($arrData);
+
+                $this->employeeWorkService->saveWork($request, $idExist);
+
+                $now = now()->format("[Y-m-d H:i:s]");
                 $storage->append($this->logname, "{$now} No. {$no} : SUCCESS {$no} {$name}");
             }
 

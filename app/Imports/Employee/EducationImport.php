@@ -3,21 +3,13 @@
 namespace App\Imports\Employee;
 
 use App\Http\Requests\Employee\EmployeeEducationRequest;
-use App\Models\Attendance\AttendanceShift;
-use App\Models\Employee\Employee;
-use App\Models\Employee\EmployeeEducation;
-use App\Models\Employee\EmployeeFamily;
-use App\Models\Employee\EmployeePosition;
-use App\Models\Setting\AppMasterData;
 use App\Services\Employee\EmployeeEducationService;
 use App\Services\Employee\EmployeeService;
 use App\Services\Setting\AppMasterDataService;
-use DB;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterImport;
 use Maatwebsite\Excel\Events\BeforeImport;
-use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Storage;
 
 class EducationImport implements ToModel, WithEvents
@@ -28,6 +20,7 @@ class EducationImport implements ToModel, WithEvents
     private EmployeeEducationService $employeeEducationService;
     private EmployeeService $employeeService;
     private AppMasterDataService $appMasterDataService;
+
     public function __construct()
     {
         $today = now()->format('Y-m-d');
@@ -45,7 +38,7 @@ class EducationImport implements ToModel, WithEvents
         return [
             BeforeImport::class => function () {
                 $storage = Storage::disk('log');
-                if($storage->exists($this->logname)){
+                if ($storage->exists($this->logname)) {
                     $storage->delete($this->logname);
                 }
                 $storage->put($this->logname, '');
@@ -88,17 +81,17 @@ class EducationImport implements ToModel, WithEvents
         $errors = "";
         try {
             //EMPTY VALIDATION
-            if(empty($employee_number)) $errors.="\n\t-Kolom NIP tidak boleh kosong";
-            if(empty($name)) $errors.="\n\t-Kolom nama tidak boleh kosong";
-            if(empty($level_id)) $errors.="\n\t-Kolom hubungan keluarga tidak boleh kosong";
+            if (empty($employee_number)) $errors .= "\n\t-Kolom NIP tidak boleh kosong";
+            if (empty($name)) $errors .= "\n\t-Kolom nama tidak boleh kosong";
+            if (empty($level_id)) $errors .= "\n\t-Kolom hubungan keluarga tidak boleh kosong";
 
             //MASTER VALIDATION
             if (!array_key_exists($employee_number, $this->employees)) $errors .= "\n\t-Kolom pegawai tidak terdaftar";
             if (!array_key_exists(trim(strtolower($level_id)), $this->levels)) $errors .= "\n\t-Kolom tingkatan pendidikan tidak terdaftar";
 
             $now = now()->format("[Y-m-d H:i:s]");
-            if(!empty($errors)){
-                $storage->append($this->logname, "{$now} No. {$no} : GAGAL, {$name} TERKENA VALIDASI : ".$errors);
+            if (!empty($errors)) {
+                $storage->append($this->logname, "{$now} No. {$no} : GAGAL, {$name} TERKENA VALIDASI : " . $errors);
             } else {
                 $arrData = [
                     'employee_id' => $this->employees[$employee_number],
@@ -126,7 +119,7 @@ class EducationImport implements ToModel, WithEvents
 
         } catch (\Throwable $th) {
             $now = now()->format("[Y-m-d H:i:s]");
-            $storage->append($this->logname, "{$now} No. {$no} : ERROR {$no} {$name} ".$th->getMessage());
+            $storage->append($this->logname, "{$now} No. {$no} : ERROR {$no} {$name} " . $th->getMessage());
         }
     }
 }

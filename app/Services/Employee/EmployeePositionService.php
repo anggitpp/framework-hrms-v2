@@ -152,14 +152,14 @@ class EmployeePositionService extends Controller
                 $position->position->name,
                 $position->location->name,
                 $position->rank->name,
-                $position->grade->name,
+                $position->grade?->name,
                 $position->sk_number,
                 $position->sk_date ? setDate($position->sk_date) : '',
                 $position->start_date ? setDate($position->start_date) : '',
                 $position->end_date ? setDate($position->end_date) : '',
                 $position->unit->name,
-                $position->shift->name,
-                $position->leader->name,
+                $position->shift?->name,
+                $position->leader?->name,
                 $position->status == 't' ? 'Aktif' : 'Tidak Aktif',
             ];
         }

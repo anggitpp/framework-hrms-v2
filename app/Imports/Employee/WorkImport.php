@@ -69,9 +69,9 @@ class WorkImport implements ToModel, WithEvents
         $company = trim($row[3]);
         $position = trim($row[4]);
         $start_date = trim($row[5]);
-        $start_date_convert = !empty($start_date) ? substr($start_date, -5, 1) == '/' ? resetDate($start_date) : Date::excelToDateTimeObject($start_date)->format('Y-m-d') : '';
+        $start_date_convert = !empty($start_date) ? substr($start_date, -5, 1) == '/' ? $start_date : Date::excelToDateTimeObject($start_date)->format('d/m/Y') : '';
         $end_date = trim($row[6]);
-        $end_date_convert = !empty($end_date) ? substr($end_date, -5, 1) == '/' ? resetDate($end_date) : Date::excelToDateTimeObject($end_date)->format('Y-m-d') : '';
+        $end_date_convert = !empty($end_date) ? substr($end_date, -5, 1) == '/' ? $end_date : Date::excelToDateTimeObject($end_date)->format('d/m/Y') : '';
         $city = trim($row[7]);
         $description = trim($row[8]);
 
@@ -98,8 +98,8 @@ class WorkImport implements ToModel, WithEvents
                     'employee_id' => $this->employees[$employee_number],
                     'company' => $company,
                     'position' => $position,
-                    'start_date' => $start_date,
-                    'end_date' => $end_date,
+                    'start_date' => $start_date_convert,
+                    'end_date' => $end_date_convert,
                     'city' => $city,
                     'description' => $description,
                 ];

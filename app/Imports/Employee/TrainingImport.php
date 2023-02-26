@@ -80,9 +80,9 @@ class TrainingImport implements ToModel, WithEvents
         $category_id = trim($row[6]);
         $type_id = trim($row[7]);
         $start_date = trim($row[8]);
-        $start_date_convert = !empty($start_date) ? substr($start_date, -5, 1) == '/' ? resetDate($start_date) : Date::excelToDateTimeObject($start_date)->format('Y-m-d') : '';
+        $start_date_convert = !empty($start_date) ? substr($start_date, -5, 1) == '/' ? $start_date : Date::excelToDateTimeObject($start_date)->format('d/m/Y') : '';
         $end_date = trim($row[9]);
-        $end_date_convert = !empty($end_date) ? substr($end_date, -5, 1) == '/' ? resetDate($end_date) : Date::excelToDateTimeObject($end_date)->format('Y-m-d') : '';
+        $end_date_convert = !empty($end_date) ? substr($end_date, -5, 1) == '/' ? $end_date : Date::excelToDateTimeObject($end_date)->format('d/m/Y') : '';
         $description = trim($row[10]);
 
         $errors = "";
@@ -100,8 +100,8 @@ class TrainingImport implements ToModel, WithEvents
 
             //MASTER VALIDATION
             if (!array_key_exists($employee_number, $this->employees)) $errors .= "\n\t-Kolom pegawai tidak terdaftar";
-            if (!array_key_exists(trim(strtolower($category_id)), $this->categories)) $errors .= "\n\t-Kolom Kategori tidak terdaftar";
-            if (!array_key_exists(trim(strtolower($type_id)), $this->types)) $errors .= "\n\t-Kolom Tipe tidak terdaftar";
+            if (!empty($category_id) && !array_key_exists(trim(strtolower($category_id)), $this->categories)) $errors .= "\n\t-Kolom Kategori tidak terdaftar";
+            if (!empty($type_id) && !array_key_exists(trim(strtolower($type_id)), $this->types)) $errors .= "\n\t-Kolom Tipe tidak terdaftar";
 
             $now = now()->format("[Y-m-d H:i:s]");
             if (!empty($errors)) {
@@ -112,10 +112,10 @@ class TrainingImport implements ToModel, WithEvents
                     'subject' => $subject,
                     'institution' => $institution,
                     'certificate_number' => $certificate_number,
-                    'category_id' => $this->categories[trim(strtolower($category_id))],
-                    'type_id' => $this->types[trim(strtolower($type_id))],
-                    'start_date' => $start_date,
-                    'end_date' => $end_date,
+                    'category_id' => $this->categories[trim(strtolower($category_id))] ?? 0,
+                    'type_id' => $this->types[trim(strtolower($type_id))] ?? 0,
+                    'start_date' => $start_date_convert,
+                    'end_date' => $end_date_convert,
                     'description' => $description,
                 ];
 

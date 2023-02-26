@@ -9,7 +9,7 @@
         <div class="card-body pt-0">
             <div class="row">
                 <div class="col-md-6">
-                    <x-form.select label="Modul" name="app_modul_id" required :datas="$moduls" event="getSub(this.value, 'app_sub_modul_id', 'sub-moduls');" value="{{ $menu->app_modul_id ?? $filterModul }}" />
+                    <x-form.select label="Modul" name="app_modul_id" required :datas="$moduls" event="getSub(this.value, 'app_sub_modul_id', 'sub-moduls', false);" value="{{ $menu->app_modul_id ?? $filterModul }}" />
                 </div>
                 <div class="col-md-6">
                     <x-form.select label="Sub Modul" name="app_sub_modul_id" required :datas="$submoduls" value="{{ $menu->app_sub_modul_id ?? $filterSubModul }}" />

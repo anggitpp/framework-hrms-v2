@@ -16,9 +16,4 @@ class AppMasterDataRepository extends BaseRepository
     {
         return $this->query()->where('app_master_category_code', $code);
     }
-
-    public function getMasterById(int $id): AppMasterData
-    {
-        return $this->getById($id);
-    }
 }

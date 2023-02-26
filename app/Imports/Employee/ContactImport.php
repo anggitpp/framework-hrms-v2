@@ -80,6 +80,7 @@ class ContactImport implements ToModel, WithEvents
             if(empty($employee_number)) $errors.="\n\t-Kolom nomor pegawai tidak boleh kosong";
 
             //VALIDATION MASTER
+            if(!array_key_exists($employee_number, $this->employees)) $errors.="\n\t-Kolom pegawai tidak terdaftar";
             if(!array_key_exists(trim(strtolower($relationship)), $this->relationships)) $errors.="\n\t-Kolom hubungan tidak terdaftar";
 
             $now = now()->format("[Y-m-d H:i:s]");

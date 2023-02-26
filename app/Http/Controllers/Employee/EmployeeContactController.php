@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers\Employee;
 
-use App\Exports\GlobalExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Employee\EmployeeContactRequest;
 use App\Imports\Employee\ContactImport;
-use App\Models\Employee\Employee;
-use App\Models\Employee\EmployeeContact;
 use App\Models\Setting\AppMasterData;
 use App\Services\Employee\EmployeeContactService;
 use App\Services\Employee\EmployeeService;
@@ -18,12 +15,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Maatwebsite\Excel\Facades\Excel;
-use RealRashid\SweetAlert\Facades\Alert;
 use Str;
-use Yajra\DataTables\DataTables;
 
 class EmployeeContactController extends Controller
 {

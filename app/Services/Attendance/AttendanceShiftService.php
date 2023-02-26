@@ -3,10 +3,10 @@ namespace App\Services\Attendance;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Attendance\ShiftRequest;
-use App\Repositories\Attendance\AttendanceShiftRepository;
 use App\Models\Attendance\AttendanceShift;
-use Illuminate\Database\Eloquent\Builder;
+use App\Repositories\Attendance\AttendanceShiftRepository;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -34,6 +34,11 @@ class AttendanceShiftService extends Controller
     public function getShiftsWithSpecificColumn(array $columns) : Builder
     {
         return $this->getShifts()->select($columns);
+    }
+
+    public function getShiftsForArray() : array
+    {
+        return $this->getShifts()->pluck('name', 'id')->toArray();
     }
 
     /**

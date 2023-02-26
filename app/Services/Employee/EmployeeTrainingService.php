@@ -88,6 +88,7 @@ class EmployeeTrainingService extends Controller
                 ['name' => 'type_id', 'type' => 'master_relationship', 'masters' => 'type'],
                 ['name' => 'start_date', 'type' => 'date'],
                 ['name' => 'end_date', 'type' => 'date'],
+                ['name' => 'filename', 'type' => 'filename']
             ]);
         }
     }
@@ -153,8 +154,8 @@ class EmployeeTrainingService extends Controller
                 $training->subject,
                 $training->institution,
                 $training->certificate_number,
-                $training->category->name,
-                $training->type->name,
+                $training->category?->name,
+                $training->type?->name,
                 setDate($training->start_date),
                 setDate($training->end_date),
                 $training->description,

@@ -74,7 +74,7 @@ class FamilyImport implements ToModel, WithEvents
         $relationship_id = trim($row[4]);
         $identity_number = trim($row[5]);
         $birth_date = trim($row[6]);
-        $birth_date_convert = !empty($birth_date) ? substr($birth_date, -5, 1) == '/' ? resetDate($birth_date) : Date::excelToDateTimeObject($birth_date)->format('Y-m-d') : '';
+        $birth_date_convert = !empty($birth_date) ? substr($birth_date, -5, 1) == '/' ? $birth_date : Date::excelToDateTimeObject($birth_date)->format('d/m/Y') : '';
         $birth_place = trim($row[7]);
         $gender = trim($row[8]);
         $description = trim($row[9]);
@@ -102,7 +102,7 @@ class FamilyImport implements ToModel, WithEvents
                     'name' => $name,
                     'relationship_id' => $this->relationships[trim(strtolower($relationship_id))],
                     'identity_number' => $identity_number,
-                    'birth_date' => $birth_date,
+                    'birth_date' => $birth_date_convert,
                     'birth_place' => $birth_place,
                     'gender' => $gender,
                     'description' => $description,

@@ -6,7 +6,7 @@
                 <form method="GET" id="form-filter">
                     <div class="d-flex">
                         <x-views.search />
-                        <x-form.select name="combo_1" :datas="$moduls" event="getSub(this.value, 'combo_2', 'sub-moduls')" class="w-200px" />
+                        <x-form.select name="combo_1" :datas="$moduls" event="getSub(this.value, 'combo_2', 'sub-moduls', false)" class="w-200px" />
                         <x-form.select name="combo_2" :datas="$submoduls" class="w-200px" />
                     </div>
                 </form>

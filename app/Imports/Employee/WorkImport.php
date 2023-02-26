@@ -5,7 +5,6 @@ namespace App\Imports\Employee;
 use App\Http\Requests\Employee\EmployeeWorkRequest;
 use App\Services\Employee\EmployeeService;
 use App\Services\Employee\EmployeeWorkService;
-use App\Services\Setting\AppMasterDataService;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterImport;
@@ -20,14 +19,12 @@ class WorkImport implements ToModel, WithEvents
     public string $logname;
     private EmployeeWorkService $employeeWorkService;
     private EmployeeService $employeeService;
-    private AppMasterDataService $appMasterDataService;
     public function __construct()
     {
         $today = now()->format('Y-m-d');
         $this->logname = "work-import_$today.log";
         $this->employeeWorkService = new EmployeeWorkService();
         $this->employeeService = new EmployeeService();
-        $this->appMasterDataService = new AppMasterDataService();
 
         $this->employees = $this->employeeService->getEmployees()->pluck('employees.id', 'employee_number')->toArray();
     }

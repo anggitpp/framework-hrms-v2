@@ -1,10 +1,11 @@
-<?php //a4877ab610db0c7100035dc644f2c5c4
+<?php //227c5c5f13a882df2713084ce58f5c23
 /** @noinspection all */
 
 namespace App\Models\Attendance {
 
     use App\Models\Employee\Employee;
     use App\Models\Setting\AppMasterData;
+    use Database\Factories\Attendance\AttendanceFactory;
     use Illuminate\Database\Eloquent\Model;
     use Illuminate\Database\Eloquent\Relations\BelongsTo;
     use Illuminate\Support\Carbon;
@@ -70,6 +71,7 @@ namespace App\Models\Attendance {
      * @method static _IH_Attendance_C|Attendance[] all()
      * @ownLinks employee_id,\App\Models\Employee\Employee,id
      * @mixin _IH_Attendance_QB
+     * @method static AttendanceFactory factory(array|callable|int|null $count = null, array|callable $state = [])
      */
     class Attendance extends Model {}
     

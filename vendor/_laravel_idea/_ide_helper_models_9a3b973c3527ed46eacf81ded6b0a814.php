@@ -1,14 +1,16 @@
-<?php //e1e576490d0d3cecb10a115f04e44281
+<?php //330a163b9685944b541bfc4edda97ecc
 /** @noinspection all */
 
 namespace App\Models\Employee {
 
+    use App\Models\Attendance\AttendanceShift;
     use App\Models\Setting\AppMasterData;
     use Illuminate\Database\Eloquent\Model;
     use Illuminate\Database\Eloquent\Relations\BelongsTo;
     use Illuminate\Database\Eloquent\Relations\HasMany;
     use Illuminate\Database\Eloquent\Relations\HasOne;
     use Illuminate\Support\Carbon;
+    use LaravelIdea\Helper\App\Models\Attendance\_IH_AttendanceShift_QB;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeAsset_C;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeAsset_QB;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeContact_C;
@@ -264,8 +266,22 @@ namespace App\Models\Employee {
      * @property int|null $leader_id
      * @property Employee $employee
      * @method BelongsTo|_IH_Employee_QB employee()
+     * @property AppMasterData $employeeType
+     * @method BelongsTo|_IH_AppMasterData_QB employeeType()
+     * @property AppMasterData|null $grade
+     * @method BelongsTo|_IH_AppMasterData_QB grade()
+     * @property Employee|null $leader
+     * @method BelongsTo|_IH_Employee_QB leader()
+     * @property AppMasterData $location
+     * @method BelongsTo|_IH_AppMasterData_QB location()
      * @property AppMasterData $position
      * @method BelongsTo|_IH_AppMasterData_QB position()
+     * @property AppMasterData $rank
+     * @method BelongsTo|_IH_AppMasterData_QB rank()
+     * @property AttendanceShift|null $shift
+     * @method BelongsTo|_IH_AttendanceShift_QB shift()
+     * @property AppMasterData|null $unit
+     * @method BelongsTo|_IH_AppMasterData_QB unit()
      * @method static _IH_EmployeePosition_QB onWriteConnection()
      * @method _IH_EmployeePosition_QB newQuery()
      * @method static _IH_EmployeePosition_QB on(null|string $connection = null)

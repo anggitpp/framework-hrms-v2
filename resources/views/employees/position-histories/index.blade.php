@@ -7,10 +7,10 @@
                     <div class="d-flex">
                         <x-views.search />
                         <x-views.filter>
-                            <x-views.filter-select label="Posisi" name="combo_1" :datas="$masters['EMP']" />
-                            <x-views.filter-select label="Pangkat" name="combo_2" :datas="$masters['EP']" />
-                            <x-views.filter-select label="Grade" name="combo_3" :datas="$masters['EG']" />
-                            <x-views.filter-select label="Lokasi Kerja" name="combo_4" :datas="$masters['ELK']" />
+                            <x-views.filter-select label="Posisi" name="combo_1" :datas="$positions" />
+                            <x-views.filter-select label="Pangkat" name="combo_2" :datas="$ranks" />
+                            <x-views.filter-select label="Grade" name="combo_3" :datas="$grades" />
+                            <x-views.filter-select label="Lokasi Kerja" name="combo_4" :datas="$locations" />
                         </x-views.filter>
                     </div>
                 </div>
@@ -46,7 +46,7 @@
                     </tbody>
                 </table>
                 @php
-                    $route = route(str_replace('/', '.', $menu_path).'.index');
+                    $route = route(str_replace('/', '.', $menu_path).'.data');
                     $datas = array("employee_number", "name", "position_id", "rank_id", "grade_id", "status", "action\ttrue\tfalse");
                 @endphp
                 <x-views.datatables :datas="$datas" :route="$route" def-order="2"/>

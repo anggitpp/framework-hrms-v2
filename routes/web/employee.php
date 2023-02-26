@@ -19,6 +19,7 @@ Route::name('employees.')->group(function () {
     Route::get('/employees/employees/export', [EmployeeController::class, 'export'])->name('employees.export');
     Route::get('/employees/employees/import', [EmployeeController::class, 'import'])->name('employees.import');
     Route::patch('/employees/employees/process-import', [EmployeeController::class, 'processImport'])->name('employees.process-import');
+    Route::get('/employees/employees/data', [EmployeeController::class, 'data'])->name('employees.data');
     Route::resource('/employees/employees', EmployeeController::class);
     Route::get('/employees/employees/subMasters/{id}', [EmployeeController::class, 'subMasters'])->name('employees.subMasters');
 
@@ -174,11 +175,11 @@ Route::name('employees.')->group(function () {
     Route::patch('/employees/rehireds/{id}/updateApprove', [EmployeeRehiredController::class, 'updateApprove'])->name('rehireds.updateApprove');
     Route::resource('/employees/rehireds', EmployeeRehiredController::class);
 
+    Route::get('/employees/position-histories/data', [EmployeePositionHistoryController::class, 'data'])->name('position-histories.data');
     Route::get('/employees/position-histories/export', [EmployeePositionHistoryController::class, 'export'])->name('position-histories.export');
     Route::get('/employees/position-histories/import', [EmployeePositionHistoryController::class, 'import'])->name('position-histories.import');
     Route::patch('/employees/position-histories/process-import', [EmployeePositionHistoryController::class, 'processImport'])->name('position-histories.process-import');
     Route::resource('/employees/position-histories', EmployeePositionHistoryController::class);
-    Route::get('/employees/position-histories/subMasters/{id}', [EmployeePositionHistoryController::class, 'subMasters'])->name('position-histories.subMasters');
 
     Route::resource('/employees/setting-unit-structures', EmployeeUnitStructureController::class);
 

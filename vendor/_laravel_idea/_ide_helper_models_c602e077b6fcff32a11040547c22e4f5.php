@@ -1,9 +1,10 @@
-<?php //63dbdae69944f6c4fa8b5361305a1af5
+<?php //14309cf5767e0959eb02fd05f1646e47
 /** @noinspection all */
 
 namespace App\Models\Setting {
 
     use App\Models\Payroll\PayrollSetting;
+    use Database\Factories\Setting\AppParameterFactory;
     use Illuminate\Database\Eloquent\Model;
     use Illuminate\Database\Eloquent\Relations\BelongsTo;
     use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -212,6 +213,7 @@ namespace App\Models\Setting {
      * @method false|int decrement(string $column, float|int $amount = 1, array $extra = [])
      * @method static _IH_AppParameter_C|AppParameter[] all()
      * @mixin _IH_AppParameter_QB
+     * @method static AppParameterFactory factory(array|callable|int|null $count = null, array|callable $state = [])
      */
     class AppParameter extends Model {}
     

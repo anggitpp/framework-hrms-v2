@@ -2,6 +2,7 @@
 
 namespace App\Models\Employee;
 
+use App\Models\Attendance\AttendanceShift;
 use App\Models\Setting\AppMasterData;
 use App\Traits\Blameable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -29,7 +30,7 @@ class EmployeePosition extends Model
         'status',
     ];
 
-    public function employee()
+    public function employee(): BelongsTo
     {
         return $this->belongsTo(Employee::class);
     }
@@ -42,5 +43,40 @@ class EmployeePosition extends Model
     public function position(): BelongsTo
     {
         return $this->belongsTo(AppMasterData::class);
+    }
+
+    public function rank(): BelongsTo
+    {
+        return $this->belongsTo(AppMasterData::class);
+    }
+
+    public function grade(): BelongsTo
+    {
+        return $this->belongsTo(AppMasterData::class);
+    }
+
+    public function location(): BelongsTo
+    {
+        return $this->belongsTo(AppMasterData::class);
+    }
+
+    public function shift(): BelongsTo
+    {
+        return $this->belongsTo(AttendanceShift::class);
+    }
+
+    public function employeeType(): BelongsTo
+    {
+        return $this->belongsTo(AppMasterData::class);
+    }
+
+    public function unit(): BelongsTo
+    {
+        return $this->belongsTo(AppMasterData::class);
+    }
+
+    public function leader(): BelongsTo
+    {
+        return $this->belongsTo(Employee::class);
     }
 }

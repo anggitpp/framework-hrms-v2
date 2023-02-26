@@ -1,9 +1,10 @@
-<?php //bfc6ed111586070f1c4bccfb3ead11b5
+<?php //264eee1a30adc47e4666ba7e7dc95444
 /** @noinspection all */
 
 namespace App\Models\ESS {
 
     use App\Models\Employee\Employee;
+    use Database\Factories\ESS\EssTimesheetFactory;
     use Illuminate\Database\Eloquent\Model;
     use Illuminate\Database\Eloquent\Relations\BelongsTo;
     use Illuminate\Support\Carbon;
@@ -40,6 +41,7 @@ namespace App\Models\ESS {
      * @method static _IH_EssTimesheet_C|EssTimesheet[] all()
      * @ownLinks employee_id,\App\Models\Employee\Employee,id
      * @mixin _IH_EssTimesheet_QB
+     * @method static EssTimesheetFactory factory(array|callable|int|null $count = null, array|callable $state = [])
      */
     class EssTimesheet extends Model {}
 }

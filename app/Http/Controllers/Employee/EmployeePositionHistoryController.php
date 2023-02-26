@@ -10,6 +10,10 @@ use App\Models\Attendance\AttendanceShift;
 use App\Models\Employee\Employee;
 use App\Models\Employee\EmployeePosition;
 use App\Models\Setting\AppMasterData;
+use App\Services\Attendance\AttendanceShiftService;
+use App\Services\Employee\EmployeePositionService;
+use App\Services\Employee\EmployeeService;
+use App\Services\Setting\AppMasterDataService;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -26,86 +30,48 @@ use Yajra\DataTables\DataTables;
 
 class EmployeePositionHistoryController extends Controller
 {
-    public array $masters;
+    private EmployeePositionService $employeePositionService;
+    private AppMasterDataService $appMasterDataService;
+    private EmployeeService $employeeService;
+    private AttendanceShiftService $attendanceShiftService;
 
     public function __construct()
     {
         $this->middleware('auth');
-        $masters = AppMasterData::whereIn('app_master_category_code', ['ELK', 'EP', 'EG', 'ESPK', 'ESP', 'ETP', 'EMP', 'EMU'])
-            ->where('status', 't')
-            ->orderBy('app_master_category_code')
-            ->orderBy('order')
-            ->get();
-        foreach ($masters as $key => $value){
-            $this->masters[$value->app_master_category_code][$value->id] = $value->name;
-        }
+        $this->employeePositionService = new EmployeePositionService();
+        $this->appMasterDataService = new AppMasterDataService();
+        $this->employeeService = new EmployeeService();
+        $this->attendanceShiftService = new AttendanceShiftService();
 
-        \View::share('masters', $this->masters);
         \View::share('statusOption', defaultStatus());
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
      * @return Application|Factory|View|JsonResponse
+     */
+    public function index(): Factory|View|JsonResponse|Application
+    {
+        $positions = $this->appMasterDataService->getMasterForArray('EMP');
+        $ranks = $this->appMasterDataService->getMasterForArray('EP');
+        $grades = $this->appMasterDataService->getMasterForArray('EG');
+        $locations = $this->appMasterDataService->getMasterForArray('ELK');
+
+        return view(Str::replace('/', '.', $this->menu_path()) . '.index', [
+            'positions' => $positions,
+            'ranks' => $ranks,
+            'grades' => $grades,
+            'locations' => $locations,
+        ]);
+    }
+
+    /**
      * @throws Exception
      */
-    public function index(Request $request)
+    public function data(Request $request)
     {
-        $user = Auth::user();
-
-        if($request->ajax()){
-            $filterPosition = $request->get('combo_1');
-            $filterRank = $request->get('combo_2');
-            $filterGrade = $request->get('combo_3');
-            $filterLocation = $request->get('combo_4');
-            $filter = $request->get('search')['value'];
-
-            $table = DB::table('employee_positions as t1')
-                ->join('employees as t2', 't1.employee_id', 't2.id')
-                ->select(['t1.id', 't1.employee_id', 't1.position_id', 't1.rank_id', 't1.grade_id', 't1.status', 't2.name', 't2.employee_number']);
-
-            if(!$user->hasPermissionTo('lvl3 '.$this->menu_path()))
-                $table->where('t1.leader_id', $user->employee_id);
-
-            return DataTables::of($table)
-                ->filter(function ($query) use ($filter, $filterGrade, $filterPosition, $filterRank, $filterLocation) {
-                    if (isset($filter)) $query->where('name', 'like', "%{$filter}%")->orWhere('employee_number', 'like', "%{$filter}%");
-                    if (isset($filterPosition)) $query->where('position_id', $filterPosition);
-                    if (isset($filterRank)) $query->where('rank_id', $filterRank);
-                    if (isset($filterGrade)) $query->where('grade_id', $filterGrade);
-                    if (isset($filterLocation)) $query->where('location_id', $filterLocation);
-                })
-                ->editColumn('position_id', function ($model) {
-                    return $this->masters['EMP'][$model->position_id] ?? '';
-                })
-                ->editColumn('rank_id', function ($model) {
-                    return $this->masters['EP'][$model->rank_id] ?? '';
-                })
-                ->editColumn('grade_id', function ($model) {
-                    return $this->masters['EG'][$model->grade_id] ?? '';
-                })
-                ->addColumn('action', function ($model) {
-                    return view('components.views.action', [
-                        'menu_path' => $this->menu_path(),
-                        'url_edit' => route(str_replace('/', '.', $this->menu_path()).'.edit', $model->id),
-                        'url_destroy' => route(str_replace('/', '.', $this->menu_path()).'.destroy', $model->id),
-                        'isModal' => false,
-                    ]);
-                })
-                ->addColumn('status', function ($model) {
-                    return view('components.views.status', [
-                        'status' => $model->status,
-                    ]);
-                })
-                ->addIndexColumn()
-                ->make(true);
-        }
-
-        \Session::put('user', $user);
-
-        return view('employees.position-history.index');
+        return $this->employeePositionService->data($request);
     }
 
     /**
@@ -115,18 +81,16 @@ class EmployeePositionHistoryController extends Controller
      */
     public function create()
     {
-        $user = \Session::get('user');
-
-        $data['employees'] = Employee::select(['name', 'id', 'employee_number', DB::raw("CONCAT(employee_number, ' - ', name) as namaPegawai")])
-            ->whereHas('position', function ($query) use ($user) {
-                if(!$user->hasPermissionTo('lvl3 '.$this->menu_path())) $query->where('leader_id', $user->employee_id);
-            })
-            ->orderBy('name')
-            ->pluck("namaPegawai", 'id')
-            ->toArray();
-        $data['shifts'] = AttendanceShift::pluck('name', 'id')->toArray();
-
-        return view('employees.position-history.form', $data);
+        return view(Str::replace('/', '.', $this->menu_path()) . '.form', [
+            'employees' => $this->employeeService->getEmployeesForArray(),
+            'positions' => $this->appMasterDataService->getMasterForArray('EMP'),
+            'ranks' => $this->appMasterDataService->getMasterForArray('EP'),
+            'grades' => $this->appMasterDataService->getMasterForArray('EG'),
+            'locations' => $this->appMasterDataService->getMasterForArray('ELK'),
+            'units' => $this->appMasterDataService->getMasterForArray('EMU'),
+            'types' => $this->appMasterDataService->getMasterForArray('ETP'),
+            'shifts' => $this->attendanceShiftService->getShiftsForArray(),
+        ]);
     }
 
     /**
@@ -137,29 +101,7 @@ class EmployeePositionHistoryController extends Controller
      */
     public function store(EmployeePositionHistoryRequest $request)
     {
-        DB::beginTransaction();
-        try {
-            $request->input('sk_date') ? $request->merge(['sk_date' => resetDate($request->input('sk_date'))]) : null;
-            $request->input('start_date') ? $request->merge(['start_date' => resetDate($request->input('start_date'))]) : null;
-            $request->input('end_date') ? $request->merge(['end_date' => resetDate($request->input('end_date'))]) : null;
-
-            $position = EmployeePosition::create($request->all());
-
-            if($request->input('status') == 't') EmployeePosition::where('employee_id', $request->input('employee_id'))->where('id', '!=', $position->id)->update(['status' => 'f']);
-
-            DB::commit();
-
-            Alert::success('Success', 'Data berhasil disimpan');
-
-            return redirect()->route('employees.position-histories.index');
-        } catch (Exception $e) {
-
-            DB::rollBack();
-
-            Alert::error('Error', $e->getMessage());
-
-            return redirect()->route('employees.position-histories.index');
-        }
+        return submitDataHelper($this->employeePositionService->savePosition($request));
     }
 
     /**
@@ -170,19 +112,17 @@ class EmployeePositionHistoryController extends Controller
      */
     public function edit(int $id)
     {
-        $user = \Session::get('user');
-
-        $data['position'] = EmployeePosition::findOrFail($id);
-        $data['employees'] = Employee::select(['name', 'id', 'employee_number', DB::raw("CONCAT(employee_number, ' - ', name) as namaPegawai")])
-            ->whereHas('position', function ($query) use ($user) {
-                if(!$user->hasPermissionTo('lvl3 '.$this->menu_path())) $query->where('leader_id', $user->employee_id);
-            })
-            ->orderBy('name')
-            ->pluck("namaPegawai", 'id')
-            ->toArray();
-        $data['shifts'] = AttendanceShift::pluck('name', 'id')->toArray();
-
-        return view('employees.position-history.form', $data);
+        return view(Str::replace('/', '.', $this->menu_path()) . '.form', [
+            'position' => $this->employeePositionService->getPositionById($id),
+            'employees' => $this->employeeService->getEmployeesForArray(),
+            'positions' => $this->appMasterDataService->getMasterForArray('EMP'),
+            'ranks' => $this->appMasterDataService->getMasterForArray('EP'),
+            'grades' => $this->appMasterDataService->getMasterForArray('EG'),
+            'locations' => $this->appMasterDataService->getMasterForArray('ELK'),
+            'units' => $this->appMasterDataService->getMasterForArray('EMU'),
+            'types' => $this->appMasterDataService->getMasterForArray('ETP'),
+            'shifts' => $this->attendanceShiftService->getShiftsForArray(),
+        ]);
     }
 
     /**
@@ -194,30 +134,8 @@ class EmployeePositionHistoryController extends Controller
      */
     public function update(EmployeePositionHistoryRequest $request, int $id)
     {
-        DB::beginTransaction();
-        try {
-            $request->input('sk_date') ? $request->merge(['sk_date' => resetDate($request->input('sk_date'))]) : null;
-            $request->input('start_date') ? $request->merge(['start_date' => resetDate($request->input('start_date'))]) : null;
-            $request->input('end_date') ? $request->merge(['end_date' => resetDate($request->input('end_date'))]) : null;
+        return submitDataHelper($this->employeePositionService->savePosition($request, $id));
 
-            $position = EmployeePosition::findOrFail($id);
-            $position->update($request->all());
-
-            if($request->input('status') == 't') EmployeePosition::where('employee_id', $request->input('employee_id'))->where('id', '!=', $position->id)->update(['status' => 'f']);
-
-            DB::commit();
-
-            Alert::success('Success', 'Data berhasil disimpan');
-
-            return redirect()->route('employees.position-histories.index');
-        } catch (Exception $e) {
-
-            DB::rollBack();
-
-            Alert::error('Error', $e->getMessage());
-
-            return redirect()->route('employees.position-histories.index');
-        }
     }
 
     /**
@@ -228,150 +146,29 @@ class EmployeePositionHistoryController extends Controller
      */
     public function destroy(int $id)
     {
-    DB::beginTransaction();
-        try {
-            $position = EmployeePosition::findOrFail($id);
-            $position->delete();
-
-            DB::commit();
-
-            Alert::success('Success', 'Data berhasil dihapus');
-
-            return redirect()->route('employees.position-histories.index');
-        } catch (Exception $e) {
-
-            DB::rollBack();
-
-            Alert::error('Error', $e->getMessage());
-
-            return redirect()->route('employees.position-histories.index');
-        }
+        return deleteDataHelper($this->employeePositionService->deletePosition($id));
     }
 
     public function export(Request $request)
     {
-        $user = \Session::get('user');
-
-        $types = AppMasterData::whereAppMasterCategoryCode('ETP')
-            ->pluck('name', 'id')
-            ->toArray();
-        $masterPositions = AppMasterData::whereAppMasterCategoryCode('EMP')
-            ->pluck('name', 'id')
-            ->toArray();
-        $locations = AppMasterData::whereAppMasterCategoryCode('ELK')
-            ->pluck('name', 'id')
-            ->toArray();
-        $ranks = AppMasterData::whereAppMasterCategoryCode('EP')
-            ->pluck('name', 'id')
-            ->toArray();
-        $grades = AppMasterData::whereAppMasterCategoryCode('EG')
-            ->pluck('name', 'id')
-            ->toArray();
-        $units = AppMasterData::whereAppMasterCategoryCode('EMU')
-            ->pluck('name', 'id')
-            ->toArray();
-        $shifts = AttendanceShift::pluck('name', 'id')->toArray();
-        $leaders = Employee::pluck('name', 'id')->toArray();
-
-        $filterPosition = $request->get('combo_1');
-        $filterRank = $request->get('combo_2');
-        $filterGrade = $request->get('combo_3');
-        $filterLocation = $request->get('combo_4');
-        $filter = $request->get('filter');
-
-        $sql = DB::table('employee_positions as t1')
-            ->join('employees as t2', 't1.employee_id', 't2.id')
-            ->select([
-                't1.*',
-                't2.name as employee_name',
-                't2.employee_number',
-            ]);
-        if($filterPosition) $sql->where('t3.position_id', $filterPosition);
-        if($filterRank) $sql->where('t3.rank_id', $filterRank);
-        if($filterGrade) $sql->where('t3.grade_id', $filterGrade);
-        if($filterLocation) $sql->where('t3.location_id', $filterLocation);
-        if($filter) $sql->where(function ($query) use ($filter) {
-            $query->where('t1.name', 'like', '%'.$filter.'%')
-                ->orWhere('t2.name', 'like', '%'.$filter.'%')
-                ->orWhere('t2.employee_number', 'like', '%'.$filter.'%');
-        });
-
-        if(!$user->hasPermissionTo('lvl3 '.$this->menu_path()))
-            $sql->where('t3.leader_id', $user->employee_id);
-
-        $data = [];
-        $positions = $sql->get();
-        foreach ($positions as $k => $position){
-            $data[] = [
-                $k + 1,
-                $position->employee_number." ",
-                $position->employee_name,
-                $types[$position->employee_type_id] ?? '',
-                $masterPositions[$position->position_id] ?? '',
-                $locations[$position->location_id] ?? '',
-                $ranks[$position->rank_id] ?? '',
-                $grades[$position->grade_id] ?? '',
-                $position->sk_number,
-                $position->sk_date ? setDate($position->sk_date) : '',
-                $position->start_date ? setDate($position->start_date) : '',
-                $position->end_date ? setDate($position->end_date) : '',
-                $units[$position->unit_id] ?? '',
-                $shifts[$position->shift_id] ?? '',
-                $leaders[$position->leader_id] ?? '',
-                $position->status == 't' ? 'Aktif' : 'Tidak Aktif',
-            ];
-        }
-
-        $columns = ["no", "data pegawai" => ["nip", "nama"], "data posisi" => ["tipe pegawai", "jabatan", "lokasi kerja", "pangkat", "grade", "nomor sk", "tanggal sk", "tanggal mulai", "tanggal selesai", "unit", "shift", "atasan langsung", "status"]];
-
-        $widths = [10, 20, 30, 20, 30];
-
-        $aligns = ['center', 'center', 'left', 'left', 'left', 'left', 'left', 'left', 'center', 'center', 'center'];
-
-        return Excel::download(new GlobalExport(
-            [
-                'columns' => $columns,
-                'widths' => $widths,
-                'aligns' => $aligns,
-                'data' => $data,
-                'title' => 'Data Riwayat Jabatan',
-            ]
-        ), 'Data Riwayat Jabatan.xlsx');
-    }
-
-    public function subMasters(int $id)
-    {
-        return AppMasterData::where('app_master_category_code', 'EG')
-            ->where('parent_id', $id)
-            ->select(['id', 'name'])
-            ->orderBy('order')
-            ->get();
+        return $this->employeePositionService->exportPosition($request);
     }
 
     public function import()
     {
         return view('components.form.import-form', [
             'menu_path' => $this->menu_path(),
-            'title' => 'Import Data Jabatan',
+            'title' => 'Data Import Position',
         ]);
     }
 
     public function processImport(Request $request)
     {
-        try {
-            if($request->hasFile('filename')) {
-                Excel::import(new PositionImport, $request->file('filename'));
+        return importHelper(new PositionImport(), $request);
+    }
 
-                return response()->json([
-                    'success' => 'Data Riwayat Jabatan selesai diimport',
-                    'url' => route(Str::replace('/', '.', $this->menu_path()) . '.index'),
-                ]);
-            }
-        } catch (Exception $e) {
-            return response()->json([
-                'success' => 'Gagal ' . $e->getMessage(),
-                'url' => route(Str::replace('/', '.', $this->menu_path()) . '.index'),
-            ]);
-        }
+    public function subMasters(int $id)
+    {
+        return $this->appMasterDataService->getMasterByParentId($id);
     }
 }

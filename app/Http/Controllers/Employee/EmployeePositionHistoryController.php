@@ -101,7 +101,9 @@ class EmployeePositionHistoryController extends Controller
      */
     public function store(EmployeePositionHistoryRequest $request)
     {
-        return submitDataHelper($this->employeePositionService->savePosition($request));
+        return submitDataHelper(function () use ($request) {
+            $this->employeePositionService->savePosition($request);
+        });
     }
 
     /**
@@ -134,8 +136,9 @@ class EmployeePositionHistoryController extends Controller
      */
     public function update(EmployeePositionHistoryRequest $request, int $id)
     {
-        return submitDataHelper($this->employeePositionService->savePosition($request, $id));
-
+        return submitDataHelper(function () use ($request, $id) {
+            $this->employeePositionService->savePosition($request, $id);
+        });
     }
 
     /**
@@ -146,7 +149,9 @@ class EmployeePositionHistoryController extends Controller
      */
     public function destroy(int $id)
     {
-        return deleteDataHelper($this->employeePositionService->deletePosition($id));
+        return deleteDataHelper(function () use ($id) {
+            $this->employeePositionService->deletePosition($id);
+        });
     }
 
     public function export(Request $request)
@@ -165,10 +170,5 @@ class EmployeePositionHistoryController extends Controller
     public function processImport(Request $request)
     {
         return importHelper(new PositionImport(), $request);
-    }
-
-    public function subMasters(int $id)
-    {
-        return $this->appMasterDataService->getMasterByParentId($id);
     }
 }

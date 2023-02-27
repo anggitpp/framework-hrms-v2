@@ -8,6 +8,7 @@ use App\Repositories\Employee\EmployeePositionRepository;
 use App\Models\Employee\EmployeePosition;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -42,6 +43,11 @@ class EmployeePositionService extends Controller
     public function getPositionById(int $id): EmployeePosition
     {
         return $this->employeePositionRepository->getById($id);
+    }
+
+    public function getPositionByEmployeeId(int $id): Collection
+    {
+        return $this->employeePositionRepository->getPositionsByEmployeeId($id)->get();
     }
 
     public function getPositionWithSpecificColumn(array $columns): Builder

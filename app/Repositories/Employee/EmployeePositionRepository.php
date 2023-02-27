@@ -17,4 +17,9 @@ class EmployeePositionRepository extends BaseRepository
     {
         return EmployeePosition::query()->join('employees', 'employee_positions.employee_id', 'employees.id');
     }
+
+    public function getPositionsByEmployeeId(int $id): Builder
+    {
+        return $this->getPositions()->where('employee_positions.employee_id', $id);
+    }
 }

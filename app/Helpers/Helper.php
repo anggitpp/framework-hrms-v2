@@ -448,19 +448,15 @@ function generateDatatable($query, $filter , $customFields = [], $isModal = fals
     return $dataTables->addIndexColumn()->make();
 }
 
-
-
 function submitDataHelper($function, bool $isModal = false, string $route = 'index', array $param = []): JsonResponse|RedirectResponse
 {
-    DB::beginTransaction();
     try {
-        $function;
-
-        DB::commit();
+        DB::transaction(function () use ($function) {
+            $function();
+        });
         $status = 'success';
         $message = 'Data berhasil disimpan';
     } catch (Exception $e) {
-        DB::rollBack();
         $status = 'error';
         $message = 'Error: ' . $e->getMessage();
     }
@@ -483,16 +479,14 @@ function submitDataHelper($function, bool $isModal = false, string $route = 'ind
 
 function deleteDataHelper($function): RedirectResponse
 {
-    DB::beginTransaction();
     try {
-        $function;
-
-        DB::commit();
+        DB::transaction(function () use ($function) {
+            $function();
+        });
 
         $status = 'success';
         $message = 'Data berhasil dihapus';
     } catch (Exception $e) {
-        DB::rollBack();
 
         $status = 'error';
         $message = 'Error: ' . $e->getMessage();

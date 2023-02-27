@@ -60,7 +60,9 @@ class AppParameterController extends Controller
      */
     public function store(AppParameterRequest $request)
     {
-        return submitDataHelper($this->appParameterService->saveParameter($request), true);
+        return submitDataHelper(function () use ($request) {
+            $this->appParameterService->saveParameter($request);
+        });
     }
 
     /**
@@ -85,7 +87,9 @@ class AppParameterController extends Controller
      */
     public function update(AppParameterRequest $request, int $id): JsonResponse
     {
-        return submitDataHelper($this->appParameterService->saveParameter($request, $id), true);
+        return submitDataHelper(function () use ($request, $id) {
+            $this->appParameterService->saveParameter($request, $id);
+        });
     }
 
     /**
@@ -96,6 +100,8 @@ class AppParameterController extends Controller
      */
     public function destroy(int $id)
     {
-        return deleteDataHelper($this->appParameterService->deleteParameter($id));
+        return deleteDataHelper(function () use ($id) {
+            $this->appParameterService->deleteParameter($id);
+        });
     }
 }

@@ -86,7 +86,9 @@ class EmployeeContactController extends Controller
      */
     public function store(EmployeeContactRequest $request)
     {
-        return submitDataHelper($this->employeeContactService->saveContact($request));
+        return submitDataHelper(function () use ($request) {
+            $this->employeeContactService->saveContact($request);
+        });
     }
 
     /**
@@ -113,7 +115,9 @@ class EmployeeContactController extends Controller
      */
     public function update(EmployeeContactRequest $request, int $id)
     {
-        return submitDataHelper($this->employeeContactService->saveContact($request, $id));
+        return submitDataHelper(function () use ($request, $id) {
+            $this->employeeContactService->saveContact($request, $id);
+        });
     }
 
     /**
@@ -124,7 +128,9 @@ class EmployeeContactController extends Controller
      */
     public function destroy(int $id)
     {
-        return deleteDataHelper($this->employeeContactService->deleteContact($id));
+        return deleteDataHelper(function () use ($id) {
+            $this->employeeContactService->deleteContact($id);
+        });
     }
 
     public function export(Request $request)

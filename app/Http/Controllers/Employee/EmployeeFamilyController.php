@@ -83,7 +83,9 @@ class EmployeeFamilyController extends Controller
      */
     public function store(EmployeeFamilyRequest $request)
     {
-        return submitDataHelper($this->employeeFamilyService->saveFamily($request));
+        return submitDataHelper(function () use ($request) {
+            $this->employeeFamilyService->saveFamily($request);
+        });
     }
 
     /**
@@ -110,7 +112,9 @@ class EmployeeFamilyController extends Controller
      */
     public function update(EmployeeFamilyRequest $request, int $id)
     {
-        return submitDataHelper($this->employeeFamilyService->saveFamily($request, $id));
+        return submitDataHelper(function () use ($request, $id) {
+            $this->employeeFamilyService->saveFamily($request, $id);
+        });
     }
 
     /**
@@ -121,7 +125,9 @@ class EmployeeFamilyController extends Controller
      */
     public function destroy(int $id)
     {
-        return deleteDataHelper($this->employeeFamilyService->deleteFamily($id));
+        return deleteDataHelper(function () use ($id) {
+            $this->employeeFamilyService->deleteFamily($id);
+        });
     }
 
     public function export(Request $request)

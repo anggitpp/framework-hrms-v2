@@ -82,7 +82,9 @@ class EmployeeAssetController extends Controller
      */
     public function store(EmployeeAssetRequest $request)
     {
-        return submitDataHelper($this->employeeAssetService->saveAsset($request));
+        return submitDataHelper(function () use ($request) {
+            $this->employeeAssetService->saveAsset($request);
+        });
     }
 
     /**
@@ -110,8 +112,9 @@ class EmployeeAssetController extends Controller
      */
     public function update(EmployeeAssetRequest $request, int $id)
     {
-        return submitDataHelper($this->employeeAssetService->saveAsset($request, $id));
-
+        return submitDataHelper(function () use ($request, $id) {
+            $this->employeeAssetService->saveAsset($request, $id);
+        });
     }
 
     /**
@@ -122,7 +125,9 @@ class EmployeeAssetController extends Controller
      */
     public function destroy(int $id)
     {
-        return deleteDataHelper($this->employeeAssetService->deleteAsset($id));
+        return deleteDataHelper(function () use ($id) {
+            $this->employeeAssetService->deleteAsset($id);
+        });
     }
 
     public function export(Request $request)

@@ -79,7 +79,9 @@ class EmployeeEducationController extends Controller
      */
     public function store(EmployeeEducationRequest $request)
     {
-        return submitDataHelper($this->employeeEducationService->saveEducation($request));
+        return submitDataHelper(function () use ($request) {
+            $this->employeeEducationService->saveEducation($request);
+        });
     }
 
     /**
@@ -106,7 +108,9 @@ class EmployeeEducationController extends Controller
      */
     public function update(EmployeeEducationRequest $request, int $id)
     {
-        return submitDataHelper($this->employeeEducationService->saveEducation($request, $id));
+        return submitDataHelper(function () use ($request, $id) {
+            $this->employeeEducationService->saveEducation($request, $id);
+        });
     }
 
     /**
@@ -117,7 +121,9 @@ class EmployeeEducationController extends Controller
      */
     public function destroy(int $id)
     {
-        return deleteDataHelper($this->employeeEducationService->deleteEducation($id));
+        return deleteDataHelper(function () use ($id) {
+            $this->employeeEducationService->deleteEducation($id);
+        });
     }
 
     public function export(Request $request)

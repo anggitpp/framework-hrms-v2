@@ -88,7 +88,9 @@ class EmployeeFileController extends Controller
      */
     public function store(EmployeeFileRequest $request)
     {
-        return submitDataHelper($this->employeeFileService->saveFile($request), true);
+        return submitDataHelper(function () use ($request) {
+            $this->employeeFileService->saveFile($request);
+        }, true);
     }
 
     /**
@@ -114,8 +116,9 @@ class EmployeeFileController extends Controller
      */
     public function update(EmployeeFileRequest $request, int $id)
     {
-        return submitDataHelper($this->employeeFileService->saveFile($request, $id), true);
-
+        return submitDataHelper(function () use ($request, $id) {
+            $this->employeeFileService->saveFile($request, $id);
+        }, true);
     }
 
     /**
@@ -126,7 +129,9 @@ class EmployeeFileController extends Controller
      */
     public function destroy(int $id)
     {
-        return deleteDataHelper($this->employeeFileService->deleteFile($id));
+        return deleteDataHelper(function () use ($id) {
+            $this->employeeFileService->deleteFile($id);
+        });
     }
 
     public function export(Request $request)

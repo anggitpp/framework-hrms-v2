@@ -78,7 +78,9 @@ class EmployeeWorkController extends Controller
      */
     public function store(EmployeeWorkRequest $request)
     {
-        return submitDataHelper($this->employeeWorkService->saveWork($request));
+        return submitDataHelper(function () use ($request) {
+            $this->employeeWorkService->saveWork($request);
+        });
     }
 
     /**
@@ -104,8 +106,9 @@ class EmployeeWorkController extends Controller
      */
     public function update(EmployeeWorkRequest $request, int $id)
     {
-        return submitDataHelper($this->employeeWorkService->saveWork($request, $id));
-
+        return submitDataHelper(function () use ($request, $id) {
+            $this->employeeWorkService->saveWork($request, $id);
+        });
     }
 
     /**
@@ -116,7 +119,9 @@ class EmployeeWorkController extends Controller
      */
     public function destroy(int $id)
     {
-        return deleteDataHelper($this->employeeWorkService->deleteWork($id));
+        return deleteDataHelper(function () use ($id) {
+            $this->employeeWorkService->deleteWork($id);
+        });
     }
 
     public function export(Request $request)

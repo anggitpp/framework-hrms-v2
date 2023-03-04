@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Employee\EmployeeAssetController;
+use App\Http\Controllers\Employee\EmployeeBankController;
 use App\Http\Controllers\Employee\EmployeeContactController;
 use App\Http\Controllers\Employee\EmployeeController;
 use App\Http\Controllers\Employee\EmployeeEducationController;
@@ -180,6 +181,12 @@ Route::name('employees.')->group(function () {
     Route::get('/employees/position-histories/import', [EmployeePositionHistoryController::class, 'import'])->name('position-histories.import');
     Route::patch('/employees/position-histories/process-import', [EmployeePositionHistoryController::class, 'processImport'])->name('position-histories.process-import');
     Route::resource('/employees/position-histories', EmployeePositionHistoryController::class);
+
+    Route::get('/employees/banks/data', [EmployeeBankController::class, 'data'])->name('banks.data');
+    Route::get('/employees/banks/export', [EmployeeBankController::class, 'export'])->name('banks.export');
+    Route::get('/employees/banks/import', [EmployeeBankController::class, 'import'])->name('banks.import');
+    Route::patch('/employees/banks/process-import', [EmployeeBankController::class, 'processImport'])->name('banks.process-import');
+    Route::resource('/employees/banks', EmployeeBankController::class);
 
     Route::resource('/employees/setting-unit-structures', EmployeeUnitStructureController::class);
 

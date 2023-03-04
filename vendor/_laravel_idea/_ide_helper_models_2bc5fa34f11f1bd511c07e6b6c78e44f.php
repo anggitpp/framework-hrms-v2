@@ -1,4 +1,4 @@
-<?php //9daad373bc1810cd4a201bc1de247ed7
+<?php //a1eec3a04131b1afe05d479db1d5c45e
 /** @noinspection all */
 
 namespace App\Models\Payroll {
@@ -149,7 +149,7 @@ namespace App\Models\Payroll {
      * @method false|int increment(string $column, float|int $amount = 1, array $extra = [])
      * @method false|int decrement(string $column, float|int $amount = 1, array $extra = [])
      * @method static _IH_PayrollMaster_C|PayrollMaster[] all()
-     * @foreignLinks id,\App\Models\Payroll\PayrollComponentProcess,payroll_master_id
+     * @foreignLinks id,\App\Models\Employee\EmployeePosition,payroll_master_id|id,\App\Models\Payroll\PayrollComponentProcess,payroll_master_id
      * @mixin _IH_PayrollMaster_QB
      */
     class PayrollMaster extends Model {}

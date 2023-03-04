@@ -1,9 +1,10 @@
-<?php //330a163b9685944b541bfc4edda97ecc
+<?php //8b81a81fa7052fb7a5d98edcd2ad2a1f
 /** @noinspection all */
 
 namespace App\Models\Employee {
 
     use App\Models\Attendance\AttendanceShift;
+    use App\Models\Payroll\PayrollMaster;
     use App\Models\Setting\AppMasterData;
     use Illuminate\Database\Eloquent\Model;
     use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,6 +14,8 @@ namespace App\Models\Employee {
     use LaravelIdea\Helper\App\Models\Attendance\_IH_AttendanceShift_QB;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeAsset_C;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeAsset_QB;
+    use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeBank_C;
+    use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeBank_QB;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeContact_C;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeContact_QB;
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeEducation_C;
@@ -37,6 +40,7 @@ namespace App\Models\Employee {
     use LaravelIdea\Helper\App\Models\Employee\_IH_EmployeeWork_QB;
     use LaravelIdea\Helper\App\Models\Employee\_IH_Employee_C;
     use LaravelIdea\Helper\App\Models\Employee\_IH_Employee_QB;
+    use LaravelIdea\Helper\App\Models\Payroll\_IH_PayrollMaster_QB;
     use LaravelIdea\Helper\App\Models\Setting\_IH_AppMasterData_QB;
     
     /**
@@ -65,6 +69,13 @@ namespace App\Models\Employee {
      * @property string|null $gender
      * @property string|null $attendance_pin
      * @property int|null $religion_id
+     * @property string|null $npwp_number
+     * @property Carbon|null $npwp_date
+     * @property string|null $bpjs_number
+     * @property Carbon|null $bpjs_date
+     * @property string|null $bpjs_tk_number
+     * @property Carbon|null $bpjs_tk_date
+     * @property string|null $blood_type
      * @property EmployeePosition $position
      * @method HasOne|_IH_EmployeePosition_QB position()
      * @property _IH_EmployeePosition_C|EmployeePosition[] $positions
@@ -79,7 +90,7 @@ namespace App\Models\Employee {
      * @method false|int increment(string $column, float|int $amount = 1, array $extra = [])
      * @method false|int decrement(string $column, float|int $amount = 1, array $extra = [])
      * @method static _IH_Employee_C|Employee[] all()
-     * @foreignLinks id,\App\Models\Setting\User,employee_id|id,\App\Models\Employee\EmployeePosition,employee_id|id,\App\Models\Attendance\Attendance,employee_id|id,\App\Models\Attendance\AttendanceWorkSchedule,employee_id|id,\App\Models\ESS\EssTimesheet,employee_id|id,\App\Models\Attendance\AttendanceLeave,employee_id|id,\App\Models\Attendance\AttendancePermission,employee_id|id,\App\Models\Attendance\AttendanceOvertime,employee_id|id,\App\Models\Attendance\AttendanceCorrection,employee_id|id,\App\Models\Employee\EmployeeSignatureSetting,employee_id|id,\App\Models\Employee\EmployeeFamily,employee_id|id,\App\Models\Employee\EmployeeEducation,employee_id|id,\App\Models\Employee\EmployeeContact,employee_id|id,\App\Models\Employee\EmployeeTraining,employee_id|id,\App\Models\Employee\EmployeeWork,employee_id|id,\App\Models\Employee\EmployeeAsset,employee_id|id,\App\Models\Employee\EmployeeFile,employee_id|id,\App\Models\Employee\EmployeeTermination,employee_id|id,\App\Models\Employee\EmployeeRehired,employee_id|id,\App\Models\Payroll\PayrollUpload,employee_id|id,\App\Models\Payroll\PayrollComponentProcessDetail,employee_id
+     * @foreignLinks id,\App\Models\Setting\User,employee_id|id,\App\Models\Employee\EmployeePosition,employee_id|id,\App\Models\Attendance\Attendance,employee_id|id,\App\Models\Attendance\AttendanceWorkSchedule,employee_id|id,\App\Models\ESS\EssTimesheet,employee_id|id,\App\Models\Attendance\AttendanceLeave,employee_id|id,\App\Models\Attendance\AttendancePermission,employee_id|id,\App\Models\Attendance\AttendanceOvertime,employee_id|id,\App\Models\Attendance\AttendanceCorrection,employee_id|id,\App\Models\Employee\EmployeeSignatureSetting,employee_id|id,\App\Models\Employee\EmployeeFamily,employee_id|id,\App\Models\Employee\EmployeeEducation,employee_id|id,\App\Models\Employee\EmployeeContact,employee_id|id,\App\Models\Employee\EmployeeTraining,employee_id|id,\App\Models\Employee\EmployeeWork,employee_id|id,\App\Models\Employee\EmployeeAsset,employee_id|id,\App\Models\Employee\EmployeeFile,employee_id|id,\App\Models\Employee\EmployeeTermination,employee_id|id,\App\Models\Employee\EmployeeRehired,employee_id|id,\App\Models\Payroll\PayrollUpload,employee_id|id,\App\Models\Payroll\PayrollComponentProcessDetail,employee_id|id,\App\Models\Employee\EmployeeBank,employee_id
      * @mixin _IH_Employee_QB
      */
     class Employee extends Model {}
@@ -120,6 +131,33 @@ namespace App\Models\Employee {
      * @mixin _IH_EmployeeAsset_QB
      */
     class EmployeeAsset extends Model {}
+    
+    /**
+     * @property int $id
+     * @property int $employee_id
+     * @property int $bank_id
+     * @property string|null $branch
+     * @property string|null $account_number
+     * @property string|null $account_name
+     * @property string|null $description
+     * @property string $status
+     * @property string|null $created_by
+     * @property string|null $updated_by
+     * @property Carbon|null $created_at
+     * @property Carbon|null $updated_at
+     * @method static _IH_EmployeeBank_QB onWriteConnection()
+     * @method _IH_EmployeeBank_QB newQuery()
+     * @method static _IH_EmployeeBank_QB on(null|string $connection = null)
+     * @method static _IH_EmployeeBank_QB query()
+     * @method static _IH_EmployeeBank_QB with(array|string $relations)
+     * @method _IH_EmployeeBank_QB newModelQuery()
+     * @method false|int increment(string $column, float|int $amount = 1, array $extra = [])
+     * @method false|int decrement(string $column, float|int $amount = 1, array $extra = [])
+     * @method static _IH_EmployeeBank_C|EmployeeBank[] all()
+     * @ownLinks employee_id,\App\Models\Employee\Employee,id
+     * @mixin _IH_EmployeeBank_QB
+     */
+    class EmployeeBank extends Model {}
     
     /**
      * @property int $id
@@ -264,6 +302,7 @@ namespace App\Models\Employee {
      * @property Carbon|null $created_at
      * @property Carbon|null $updated_at
      * @property int|null $leader_id
+     * @property int $payroll_master_id
      * @property Employee $employee
      * @method BelongsTo|_IH_Employee_QB employee()
      * @property AppMasterData $employeeType
@@ -274,6 +313,8 @@ namespace App\Models\Employee {
      * @method BelongsTo|_IH_Employee_QB leader()
      * @property AppMasterData $location
      * @method BelongsTo|_IH_AppMasterData_QB location()
+     * @property PayrollMaster $payrollMaster
+     * @method BelongsTo|_IH_PayrollMaster_QB payrollMaster()
      * @property AppMasterData $position
      * @method BelongsTo|_IH_AppMasterData_QB position()
      * @property AppMasterData $rank
@@ -291,7 +332,7 @@ namespace App\Models\Employee {
      * @method false|int increment(string $column, float|int $amount = 1, array $extra = [])
      * @method false|int decrement(string $column, float|int $amount = 1, array $extra = [])
      * @method static _IH_EmployeePosition_C|EmployeePosition[] all()
-     * @ownLinks employee_id,\App\Models\Employee\Employee,id
+     * @ownLinks employee_id,\App\Models\Employee\Employee,id|payroll_master_id,\App\Models\Payroll\PayrollMaster,id
      * @mixin _IH_EmployeePosition_QB
      */
     class EmployeePosition extends Model {}

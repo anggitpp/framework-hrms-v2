@@ -1,10 +1,11 @@
-<?php //5e153e8712b913d78954f963332ce6be
+<?php //7d4951c3d25ddec8327b1fe9400981c6
 /** @noinspection all */
 
 namespace LaravelIdea\Helper\App\Models\Employee {
 
     use App\Models\Employee\Employee;
     use App\Models\Employee\EmployeeAsset;
+    use App\Models\Employee\EmployeeBank;
     use App\Models\Employee\EmployeeContact;
     use App\Models\Employee\EmployeeEducation;
     use App\Models\Employee\EmployeeFamily;
@@ -93,6 +94,74 @@ namespace LaravelIdea\Helper\App\Models\Employee {
      * @method EmployeeAsset updateOrCreate(array $attributes, array $values = [])
      */
     class _IH_EmployeeAsset_QB extends _BaseBuilder {}
+    
+    /**
+     * @method EmployeeBank|null getOrPut($key, $value)
+     * @method EmployeeBank|$this shift(int $count = 1)
+     * @method EmployeeBank|null firstOrFail(callable|string $key = null, $operator = null, $value = null)
+     * @method EmployeeBank|$this pop(int $count = 1)
+     * @method EmployeeBank|null pull($key, \Closure $default = null)
+     * @method EmployeeBank|null last(callable $callback = null, \Closure $default = null)
+     * @method EmployeeBank|$this random(callable|int|null $number = null)
+     * @method EmployeeBank|null sole(callable|string $key = null, $operator = null, $value = null)
+     * @method EmployeeBank|null get($key, \Closure $default = null)
+     * @method EmployeeBank|null first(callable $callback = null, \Closure $default = null)
+     * @method EmployeeBank|null firstWhere(callable|string $key, $operator = null, $value = null)
+     * @method EmployeeBank|null find($key, $default = null)
+     * @method EmployeeBank[] all()
+     */
+    class _IH_EmployeeBank_C extends _BaseCollection {
+        /**
+         * @param int $size
+         * @return EmployeeBank[][]
+         */
+        public function chunk($size)
+        {
+            return [];
+        }
+    }
+    
+    /**
+     * @method _IH_EmployeeBank_QB whereId($value)
+     * @method _IH_EmployeeBank_QB whereEmployeeId($value)
+     * @method _IH_EmployeeBank_QB whereBankId($value)
+     * @method _IH_EmployeeBank_QB whereBranch($value)
+     * @method _IH_EmployeeBank_QB whereAccountNumber($value)
+     * @method _IH_EmployeeBank_QB whereAccountName($value)
+     * @method _IH_EmployeeBank_QB whereDescription($value)
+     * @method _IH_EmployeeBank_QB whereStatus($value)
+     * @method _IH_EmployeeBank_QB whereCreatedBy($value)
+     * @method _IH_EmployeeBank_QB whereUpdatedBy($value)
+     * @method _IH_EmployeeBank_QB whereCreatedAt($value)
+     * @method _IH_EmployeeBank_QB whereUpdatedAt($value)
+     * @method EmployeeBank baseSole(array|string $columns = ['*'])
+     * @method EmployeeBank create(array $attributes = [])
+     * @method _IH_EmployeeBank_C|EmployeeBank[] cursor()
+     * @method EmployeeBank|null|_IH_EmployeeBank_C|EmployeeBank[] find($id, array|string $columns = ['*'])
+     * @method _IH_EmployeeBank_C|EmployeeBank[] findMany(array|Arrayable $ids, array|string $columns = ['*'])
+     * @method EmployeeBank|_IH_EmployeeBank_C|EmployeeBank[] findOr($id, array|\Closure|string $columns = ['*'], \Closure $callback = null)
+     * @method EmployeeBank|_IH_EmployeeBank_C|EmployeeBank[] findOrFail($id, array|string $columns = ['*'])
+     * @method EmployeeBank|_IH_EmployeeBank_C|EmployeeBank[] findOrNew($id, array|string $columns = ['*'])
+     * @method EmployeeBank first(array|string $columns = ['*'])
+     * @method EmployeeBank firstOr(array|\Closure|string $columns = ['*'], \Closure $callback = null)
+     * @method EmployeeBank firstOrCreate(array $attributes = [], array $values = [])
+     * @method EmployeeBank firstOrFail(array|string $columns = ['*'])
+     * @method EmployeeBank firstOrNew(array $attributes = [], array $values = [])
+     * @method EmployeeBank firstWhere(array|\Closure|Expression|string $column, $operator = null, $value = null, string $boolean = 'and')
+     * @method EmployeeBank forceCreate(array $attributes)
+     * @method _IH_EmployeeBank_C|EmployeeBank[] fromQuery(string $query, array $bindings = [])
+     * @method _IH_EmployeeBank_C|EmployeeBank[] get(array|string $columns = ['*'])
+     * @method EmployeeBank getModel()
+     * @method EmployeeBank[] getModels(array|string $columns = ['*'])
+     * @method _IH_EmployeeBank_C|EmployeeBank[] hydrate(array $items)
+     * @method EmployeeBank make(array $attributes = [])
+     * @method EmployeeBank newModelInstance(array $attributes = [])
+     * @method LengthAwarePaginator|EmployeeBank[]|_IH_EmployeeBank_C paginate(\Closure|int|null $perPage = null, array|string $columns = ['*'], string $pageName = 'page', int|null $page = null)
+     * @method Paginator|EmployeeBank[]|_IH_EmployeeBank_C simplePaginate(int|null $perPage = null, array|string $columns = ['*'], string $pageName = 'page', int|null $page = null)
+     * @method EmployeeBank sole(array|string $columns = ['*'])
+     * @method EmployeeBank updateOrCreate(array $attributes, array $values = [])
+     */
+    class _IH_EmployeeBank_QB extends _BaseBuilder {}
     
     /**
      * @method EmployeeContact|null getOrPut($key, $value)
@@ -413,6 +482,7 @@ namespace LaravelIdea\Helper\App\Models\Employee {
      * @method _IH_EmployeePosition_QB whereCreatedAt($value)
      * @method _IH_EmployeePosition_QB whereUpdatedAt($value)
      * @method _IH_EmployeePosition_QB whereLeaderId($value)
+     * @method _IH_EmployeePosition_QB wherePayrollMasterId($value)
      * @method EmployeePosition baseSole(array|string $columns = ['*'])
      * @method EmployeePosition create(array $attributes = [])
      * @method _IH_EmployeePosition_C|EmployeePosition[] cursor()
@@ -910,6 +980,13 @@ namespace LaravelIdea\Helper\App\Models\Employee {
      * @method _IH_Employee_QB whereGender($value)
      * @method _IH_Employee_QB whereAttendancePin($value)
      * @method _IH_Employee_QB whereReligionId($value)
+     * @method _IH_Employee_QB whereNpwpNumber($value)
+     * @method _IH_Employee_QB whereNpwpDate($value)
+     * @method _IH_Employee_QB whereBpjsNumber($value)
+     * @method _IH_Employee_QB whereBpjsDate($value)
+     * @method _IH_Employee_QB whereBpjsTkNumber($value)
+     * @method _IH_Employee_QB whereBpjsTkDate($value)
+     * @method _IH_Employee_QB whereBloodType($value)
      * @method Employee baseSole(array|string $columns = ['*'])
      * @method Employee create(array $attributes = [])
      * @method _IH_Employee_C|Employee[] cursor()

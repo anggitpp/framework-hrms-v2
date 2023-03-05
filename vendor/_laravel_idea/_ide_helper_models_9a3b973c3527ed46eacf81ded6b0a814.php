@@ -1,4 +1,4 @@
-<?php //8b81a81fa7052fb7a5d98edcd2ad2a1f
+<?php //fd42cf9e313158c6458c7547b14ad285
 /** @noinspection all */
 
 namespace App\Models\Employee {
@@ -145,6 +145,10 @@ namespace App\Models\Employee {
      * @property string|null $updated_by
      * @property Carbon|null $created_at
      * @property Carbon|null $updated_at
+     * @property AppMasterData $bank
+     * @method BelongsTo|_IH_AppMasterData_QB bank()
+     * @property Employee $employee
+     * @method BelongsTo|_IH_Employee_QB employee()
      * @method static _IH_EmployeeBank_QB onWriteConnection()
      * @method _IH_EmployeeBank_QB newQuery()
      * @method static _IH_EmployeeBank_QB on(null|string $connection = null)
@@ -303,6 +307,7 @@ namespace App\Models\Employee {
      * @property Carbon|null $updated_at
      * @property int|null $leader_id
      * @property int $payroll_master_id
+     * @property-read string $location_name attribute
      * @property Employee $employee
      * @method BelongsTo|_IH_Employee_QB employee()
      * @property AppMasterData $employeeType

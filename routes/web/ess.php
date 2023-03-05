@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ESS\ESSAssetController;
 use App\Http\Controllers\ESS\ESSAttendanceRecapController;
+use App\Http\Controllers\ESS\ESSBankController;
 use App\Http\Controllers\ESS\ESSContactController;
 use App\Http\Controllers\ESS\ESSCorrectionController;
 use App\Http\Controllers\ESS\ESSDashboardController;
@@ -68,6 +69,9 @@ Route::name('ess.')->group(function () {
 
     Route::get('/ess/files/data', [ESSFileController::class, 'data'])->name('files.data');
     Route::resource('/ess/files', ESSFileController::class);
+
+    Route::get('/ess/banks/data', [ESSBankController::class, 'data'])->name('banks.data');
+    Route::resource('/ess/banks', ESSBankController::class);
 });
 
 

@@ -104,9 +104,14 @@ class EmployeeBankService extends Controller
         ];
 
         if ($id == 0)
-            $this->employeeBankRepository->create($fields);
+            $bank = $this->employeeBankRepository->create($fields);
         else
-            $this->employeeBankRepository->update($fields, $id);
+            $bank = $this->employeeBankRepository->update($fields, $id);
+
+        if($request->input('status') == 't')
+            $this->getBanks()->where('employee_banks.employee_id', $request->input('employee_id'))
+                ->where('employee_banks.id', '!=', $bank->id)
+                ->update(['employee_banks.status' => 'f']);
     }
 
     public function deleteBank(int $id): void

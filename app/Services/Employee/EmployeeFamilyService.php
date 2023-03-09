@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services\Employee;
 
 use App\Exports\GlobalExport;
@@ -19,6 +20,7 @@ class EmployeeFamilyService extends Controller
 {
     private EmployeeFamilyRepository $employeeFamilyRepository;
     private string $filePath;
+
     public function __construct()
     {
         $this->employeeFamilyRepository = new EmployeeFamilyRepository(
@@ -33,10 +35,11 @@ class EmployeeFamilyService extends Controller
         $query = $this->employeeFamilyRepository->getFamilies();
         $user = Auth::user();
 
-        $permission = Permission::findByName('lvl3 ' . $this->menu_path());
-        if (!empty($permission))
+        $permission = Permission::where('name', 'lvl3 ' . $this->menu_path())->first();
+        if ($permission) {
             if (!$user->hasPermissionTo('lvl3 ' . $this->menu_path()))
                 $query->where('employee_positions.leader_id', $user->employee_id);
+        }
 
         return $query;
     }
@@ -46,18 +49,29 @@ class EmployeeFamilyService extends Controller
         return $this->employeeFamilyRepository->getById($id);
     }
 
-    public function getFamiliesWithSpecificColumn(array $columns): Builder
+    public function getFamiliesWithSpecificColumn(array $columns, int $employeeId = 0): Builder
     {
-        return $this->getFamilies()->select($columns);
+        $query = $this->getFamilies()->select($columns);
+        if ($employeeId != 0) $query->where('employee_families.employee_id', $employeeId);
+        return $query;
     }
 
     /**
      * @throws Exception
      */
-    public function data(Request $request): JsonResponse
+    public function data(Request $request, bool $isModal = false): JsonResponse
     {
         if ($request->ajax()) {
-            $query = $this->getFamiliesWithSpecificColumn(['employee_families.id', 'employee_families.name', 'employee_families.birth_date', 'employee_families.birth_place', 'employee_number', 'employees.name as employee_name', 'relationship_id']);
+            $query = $this->getFamiliesWithSpecificColumn([
+                'employee_families.id',
+                'employee_families.name',
+                'employee_families.birth_date',
+                'employee_families.birth_place',
+                'employee_families.filename',
+                'employee_number',
+                'employees.name as employee_name',
+                'relationship_id'
+            ]);
             $filter = $request->get('search')['value'];
             $filterPosition = $request->get('combo_1');
             $filterRank = $request->get('combo_2');
@@ -74,7 +88,29 @@ class EmployeeFamilyService extends Controller
             return generateDatatable($query, $queryFilter, [
                 ['name' => 'relationship_id', 'type' => 'master_relationship', 'masters' => 'relationship'],
                 ['name' => 'birth_date', 'type' => 'date'],
-            ]);
+                ['name' => 'filename', 'type' => 'filename'],
+            ], $isModal);
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function dataFamiliesEmployee(Request $request, int $employeeId): JsonResponse
+    {
+        if ($request->ajax()) {
+            $query = $this->getFamiliesWithSpecificColumn([
+                'employee_families.*'], $employeeId);
+            $filter = $request->get('search')['value'];
+            $queryFilter = function ($query) use ($filter) {
+                if (isset($filter)) $query->where('employee_assets.name', 'like', "%{$filter}%");
+            };
+
+            return generateDatatable($query, $queryFilter, [
+                ['name' => 'relationship_id', 'type' => 'master_relationship', 'masters' => 'relationship'],
+                ['name' => 'birth_date', 'type' => 'date'],
+                ['name' => 'filename', 'type' => 'filename']
+            ], true, false, 'families');
         }
     }
 
@@ -129,7 +165,7 @@ class EmployeeFamilyService extends Controller
         foreach ($families as $k => $family) {
             $data[] = [
                 $k + 1,
-                $family->employee_number." ",
+                $family->employee_number . " ",
                 $family->employee_name,
                 $family->name,
                 $family->relationship->name,

@@ -8,6 +8,9 @@ use App\Models\Employee\Employee;
 use App\Models\Employee\EmployeeFamily;
 use App\Models\ESS\EssTimesheet;
 use App\Models\Setting\AppMasterData;
+use App\Services\Employee\EmployeeFamilyService;
+use App\Services\Employee\EmployeeService;
+use App\Services\Setting\AppMasterDataService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
@@ -26,9 +29,15 @@ class ESSFamilyController extends Controller
 {
     public string $familyPath;
     public array $genderOption;
+    private EmployeeService $employeeService;
+    private EmployeeFamilyService $employeeFamilyService;
+    private AppMasterDataService $appMasterDataService;
     public function __construct()
     {
         $this->middleware('auth');
+        $this->employeeService = new EmployeeService();
+        $this->employeeFamilyService = new EmployeeFamilyService();
+        $this->appMasterDataService = new AppMasterDataService();
         $this->genderOption = ['m' => "Laki-Laki", "f" => "Perempuan"];
         $this->familyPath = '/uploads/employee/family/';
 
@@ -42,104 +51,50 @@ class ESSFamilyController extends Controller
      */
     public function index()
     {
-        $employee = Employee::find(Auth::user()->employee_id);
-        $employee->position->location_id = AppMasterData::find($employee->position->location_id)->name ?? '';
-        $employee->position->position_id = AppMasterData::find($employee->position->position_id)->name ?? '';
-        $employee->position->grade_id = AppMasterData::find($employee->position->grade_id)->name ?? '';
-        $employee->position->unit_id = AppMasterData::find($employee->position->unit_id)->name ?? '';
+        $employee = $this->employeeService->getEmployeeById(Auth::user()->employee_id);
 
-        return view('ess.family.index', compact('employee'));
-    }
-
-    public function data(Request $request)
-    {
-        $relationships = AppMasterData::whereAppMasterCategoryCode('EHK')->pluck('name', 'id')->toArray();
-        if($request->ajax()){
-            $filter = $request->get('search')['value'];
-            return DataTables::of(EmployeeFamily::select(['id', 'relationship_id', 'name', 'birth_date', 'birth_place', 'description', 'filename'])
-                ->where('employee_id', Auth::user()->employee_id))
-                ->filter(function ($query) use ($filter) {
-                    $query->where(function ($query) use ($filter) {
-                        $query->where('name', 'like', "%$filter%");
-                    });
-                })
-                ->editColumn('relationship_id', function ($data) use ( $relationships) {
-                    return $relationships[$data->relationship_id];
-                })
-                ->editColumn('birth_date', function ($data) {
-                    return $data->birth_date != '0000-00-00' ? setDate($data->birth_date) : '';
-                })
-                ->editColumn('filename', function ($model) {
-                    return $model->filename ? view('components.datatables.download', [
-                        'url' => $model->filename
-                    ]) : '';
-                })
-                ->addColumn('action', function ($model) {
-                    return view('components.views.action', [
-                        'menu_path' => $this->menu_path(),
-                        'url_edit' => route(Str::replace('/', '.', $this->menu_path()).'.edit', $model->id),
-                        'url_destroy' => route(Str::replace('/', '.', $this->menu_path()).'.destroy', $model->id),
-                    ]);
-                })
-                ->addIndexColumn()
-                ->make();
-        }
+        return view(Str::replace('/', '.', $this->menu_path()) . '.index', compact('employee'));
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return Application|Factory|View
+     * @throws Exception
      */
+    public function data(Request $request)
+    {
+        return $this->employeeFamilyService->data($request, true);
+    }
+
     public function create()
     {
-        $relationships = AppMasterData::whereAppMasterCategoryCode('EHK')->pluck('name', 'id')->toArray();
-
-        return view('ess.family.form', compact('relationships'));
+        return view(Str::replace('/', '.', $this->menu_path()) . '.form', [
+            'relationships' => $this->appMasterDataService->getMasterForArray('EHK'),
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param EmployeeFamilyRequest $request
-     * @return JsonResponse
+     * @return RedirectResponse
      */
     public function store(EmployeeFamilyRequest $request)
     {
-        try {
-
-            $request->merge(['birth_date' => $request->input('birth_date') ? resetDate($request->input('birth_date')) : '']);
-
-            $family = EmployeeFamily::create($request->except('filename'));
-
-            defaultUploadFile($family, $request, $this->familyPath, 'employee-family_' . Str::slug($request->input('name')) . '_' . time());
-
-            return response()->json([
-                'success'=>'Data Keluarga berhasil disimpan',
-                'url'=> route(Str::replace('/', '.', $this->menu_path()).'.index')
-            ]);
-        } catch (Exception $e) {
-            return response()->json([
-                'success'=>'Gagal, '.$e->getMessage(),
-                'url'=> route(Str::replace('/', '.', $this->menu_path()).'.index')
-            ]);
-        }
+        return submitDataHelper(function () use ($request) {
+            $this->employeeFamilyService->saveFamily($request);
+        }, true);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return Application|Factory|View
      */
     public function edit(int $id)
     {
-        $family = EmployeeFamily::findOrFail($id);
-        $relationships = AppMasterData::whereAppMasterCategoryCode('EHK')->pluck('name', 'id')->toArray();
-
-        return view('ess.family.form', [
-            'family' => $family,
-            'relationships' => $relationships
+        return view(Str::replace('/', '.', $this->menu_path()) . '.form', [
+            'family' => $this->employeeFamilyService->getFamilyById($id),
+            'relationships' => $this->appMasterDataService->getMasterForArray('EHK'),
         ]);
     }
 
@@ -148,53 +103,25 @@ class ESSFamilyController extends Controller
      *
      * @param EmployeeFamilyRequest $request
      * @param int $id
-     * @return JsonResponse
+     * @return RedirectResponse
      */
     public function update(EmployeeFamilyRequest $request, int $id)
     {
-        try {
-            $family = EmployeeFamily::findOrFail($id);
-
-            defaultUploadFile($family, $request, $this->familyPath, 'employee-family_' . Str::slug($request->input('name')) . '_' . time());
-
-            $request->merge(['birth_date' => $request->input('birth_date') ? resetDate($request->input('birth_date')) : '']);
-
-            $family->update($request->except('filename'));
-
-            return response()->json([
-                'success'=>'Data Keluarga berhasil disimpan',
-                'url'=> route(Str::replace('/', '.', $this->menu_path()).'.index')
-            ]);
-        } catch (Exception $e) {
-            return response()->json([
-                'success'=>'Gagal, '.$e->getMessage(),
-                'url'=> route(Str::replace('/', '.', $this->menu_path()).'.index')
-            ]);
-        }
-
+        return submitDataHelper(function () use ($request, $id) {
+            $this->employeeFamilyService->saveFamily($request, $id);
+        }, true);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return RedirectResponse
      */
     public function destroy(int $id)
     {
-        try {
-            $family = EmployeeFamily::findOrFail($id);
-            if(Storage::exists($this->familyPath.$family->filename)) Storage::delete($this->familyPath.$family->filename);
-            $family->delete();
-
-            Alert::success('Success', 'Data berhasil dihapus');
-
-            return redirect()->back();
-        } catch (Exception $e) {
-
-            Alert::error('Error', $e->getMessage());
-
-            return redirect()->back();
-        }
+        return deleteDataHelper(function () use ($id) {
+            $this->employeeFamilyService->deleteFamily($id);
+        });
     }
 }

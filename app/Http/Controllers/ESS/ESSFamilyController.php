@@ -27,7 +27,6 @@ use Yajra\DataTables\DataTables;
 
 class ESSFamilyController extends Controller
 {
-    public string $familyPath;
     public array $genderOption;
     private EmployeeService $employeeService;
     private EmployeeFamilyService $employeeFamilyService;
@@ -39,7 +38,6 @@ class ESSFamilyController extends Controller
         $this->employeeFamilyService = new EmployeeFamilyService();
         $this->appMasterDataService = new AppMasterDataService();
         $this->genderOption = ['m' => "Laki-Laki", "f" => "Perempuan"];
-        $this->familyPath = '/uploads/employee/family/';
 
         \View::share('genderOption', $this->genderOption);
     }

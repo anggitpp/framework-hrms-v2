@@ -8,7 +8,7 @@
                     <thead>
                         <tr class="text-start text-muted bg-gray-100 fw-bold fs-7 text-uppercase gs-0 border-bottom border-gray-200">
                             <th width="10">No</th>
-                            <th width="100">Nomor SK</th>
+                            <th width="200">Nomor SK</th>
                             <th width="*">Jabatan</th>
                             <th width="150">Pangkat</th>
                             <th width="150">Grade</th>

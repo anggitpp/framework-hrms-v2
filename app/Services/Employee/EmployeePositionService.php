@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Employee\EmployeePositionHistoryRequest;
 use App\Repositories\Employee\EmployeePositionRepository;
 use App\Models\Employee\EmployeePosition;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -32,10 +33,11 @@ class EmployeePositionService extends Controller
         $query = $this->employeePositionRepository->getPositions();
         $user = Auth::user();
 
-        $permission = Permission::findByName('lvl3 ' . $this->menu_path());
-        if (!empty($permission))
+        $permission = Permission::where('name', 'lvl3 ' . $this->menu_path())->first();
+        if ($permission) {
             if (!$user->hasPermissionTo('lvl3 ' . $this->menu_path()))
                 $query->where('employee_positions.leader_id', $user->employee_id);
+        }
 
         return $query;
     }
@@ -50,9 +52,11 @@ class EmployeePositionService extends Controller
         return $this->employeePositionRepository->getPositionsByEmployeeId($id)->get();
     }
 
-    public function getPositionWithSpecificColumn(array $columns): Builder
+    public function getPositionWithSpecificColumn(array $columns, int $employeeId = 0): Builder
     {
-        return $this->getPositions()->select($columns);
+        $query = $this->getPositions()->select($columns);
+        if ($employeeId != 0) $query->where('employee_positions.employee_id', $employeeId);
+        return $query;
     }
 
     /**
@@ -67,6 +71,9 @@ class EmployeePositionService extends Controller
                 'employee_positions.rank_id',
                 'employee_positions.grade_id',
                 'employee_positions.status',
+                'employee_positions.sk_number',
+                'employee_positions.start_date',
+                'employee_positions.end_date',
                 'name',
                 'employee_number',
                 ]);
@@ -87,8 +94,12 @@ class EmployeePositionService extends Controller
                 ['name' => 'position_id', 'type' => 'master_relationship', 'masters' => 'position'],
                 ['name' => 'rank_id', 'type' => 'master_relationship', 'masters' => 'rank'],
                 ['name' => 'grade_id', 'type' => 'master_relationship', 'masters' => 'grade'],
-                ['name' => 'status', 'type' => 'status']
-            ]);
+                ['name' => 'status', 'type' => 'status'],
+                ['name' => 'period', 'type' => 'custom', 'value' => function ($data) {
+                    $endPeriod = $data->end_date ? Carbon::create($data->end_date)->format('M Y') : 'current';
+                    return Carbon::create($data->start_date)->format('M Y')." - ".$endPeriod;
+                }],
+            ], false, false, '', [], '', false, false);
         }
     }
 
@@ -108,6 +119,7 @@ class EmployeePositionService extends Controller
             'unit_id' => $request->input('unit_id'),
             'shift_id' => $request->input('shift_id'),
             'leader_id' => $request->input('leader_id'),
+            'payroll_master_id' => $request->input('payroll_master_id'),
             'status' => $request->input('status'),
         ];
 

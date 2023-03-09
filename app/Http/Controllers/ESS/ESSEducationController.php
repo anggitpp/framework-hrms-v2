@@ -4,9 +4,6 @@ namespace App\Http\Controllers\ESS;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Employee\EmployeeEducationRequest;
-use App\Models\Employee\Employee;
-use App\Models\Employee\EmployeeEducation;
-use App\Models\Setting\AppMasterData;
 use App\Services\Employee\EmployeeEducationService;
 use App\Services\Employee\EmployeeService;
 use App\Services\Setting\AppMasterDataService;
@@ -14,20 +11,17 @@ use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use RealRashid\SweetAlert\Facades\Alert;
-use Storage;
 use Str;
-use Yajra\DataTables\DataTables;
 
 class ESSEducationController extends Controller
 {
     private EmployeeService $employeeService;
     private EmployeeEducationService $employeeEducationService;
     private AppMasterDataService $appMasterDataService;
+
     public function __construct()
     {
         $this->middleware('auth');

@@ -22,7 +22,7 @@
                     <x-views.span-inline text="Gender" :value="$employee->gender == 'm' ? 'Laki-Laki' : 'Perempuan'" />
                     <x-views.span-inline text="Alamat KTP" :value="$employee->identity_address" />
                     <x-views.span-inline text="Nomor Handphone" :value="$employee->mobile_phone_number" />
-                    <x-views.span-inline text="Status" :value="$employee->status_id ? $masters[$employee->status_id] : ''" />
+                    <x-views.span-inline text="Status" :value="$employee->status->name ?? ''" />
                     <x-views.span-inline text="Tanggal Masuk" :value="$employee->join_date ? setDate($employee->join_date, 't') : ''" />
                     <x-views.span-inline text="PIN Mesin Absen" :value="$employee->attendance_pin" />
                 </div>
@@ -33,9 +33,9 @@
                     <x-views.span-inline text="Email" :value="$employee->email" />
                     <x-views.span-inline text="Alamat Domisili" :value="$employee->address" />
                     <x-views.span-inline text="Nomor Telepon" :value="$employee->phone_number" />
-                    <x-views.span-inline text="Status Perkawinan" :value="$employee->marital_status_id" />
+                    <x-views.span-inline text="Status Perkawinan" :value="$employee->maritalStatus->name ?? ''" />
                     <x-views.span-inline text="Tanggal Keluar" :value="$employee->leave_date ? setDate($employee->leave_date) : ''" />
-                    <x-views.span-inline text="Agama" :value="$masters[$employee->religion_id] ?? ''" />
+                    <x-views.span-inline text="Agama" :value="$employee->religion->name ?? ''" />
                 </div>
             </div>
         </div>

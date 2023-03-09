@@ -36,10 +36,11 @@ class EmployeeEducationService extends Controller
         $query = $this->employeeEducationRepository->getEducation();
         $user = Auth::user();
 
-        $permission = Permission::findByName('lvl3 ' . $this->menu_path());
-        if (!empty($permission))
+        $permission = Permission::where('name', 'lvl3 ' . $this->menu_path())->first();
+        if ($permission) {
             if (!$user->hasPermissionTo('lvl3 ' . $this->menu_path()))
                 $query->where('employee_positions.leader_id', $user->employee_id);
+        }
 
         return $query;
     }
@@ -57,7 +58,7 @@ class EmployeeEducationService extends Controller
     /**
      * @throws Exception
      */
-    public function data(Request $request): JsonResponse
+    public function data(Request $request, bool $isModal = false): JsonResponse
     {
         if ($request->ajax()) {
             $query = $this->getEducationWithSpecificColumn([
@@ -67,6 +68,7 @@ class EmployeeEducationService extends Controller
                 'employee_education.major',
                 'employee_education.start_year',
                 'employee_education.end_year',
+                'employee_education.filename',
                 'employee_number',
                 'employees.name as employee_name']);
             $filter = $request->get('search')['value'];
@@ -84,7 +86,7 @@ class EmployeeEducationService extends Controller
 
             return generateDatatable($query, $queryFilter, [
                 ['name' => 'level_id', 'type' => 'master_relationship', 'masters' => 'level'],
-            ]);
+            ], $isModal);
         }
     }
 

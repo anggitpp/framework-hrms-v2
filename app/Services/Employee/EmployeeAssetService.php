@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services\Employee;
 
 use App\Exports\GlobalExport;
@@ -20,6 +21,7 @@ class EmployeeAssetService extends Controller
 {
     private EmployeeAssetRepository $employeeAssetRepository;
     private string $filePath;
+
     public function __construct()
     {
         $this->employeeAssetRepository = new EmployeeAssetRepository(
@@ -34,10 +36,11 @@ class EmployeeAssetService extends Controller
         $query = $this->employeeAssetRepository->getAssets();
         $user = Auth::user();
 
-        $permission = Permission::findByName('lvl3 ' . $this->menu_path());
-        if (!empty($permission))
+        $permission = Permission::where('name', 'lvl3 ' . $this->menu_path())->first();
+        if ($permission) {
             if (!$user->hasPermissionTo('lvl3 ' . $this->menu_path()))
                 $query->where('employee_positions.leader_id', $user->employee_id);
+        }
 
         return $query;
     }
@@ -55,7 +58,7 @@ class EmployeeAssetService extends Controller
     /**
      * @throws Exception
      */
-    public function data(Request $request): JsonResponse
+    public function data(Request $request, bool $isModal = false): JsonResponse
     {
         if ($request->ajax()) {
             $query = $this->getAssetWithSpecificColumn([
@@ -88,7 +91,7 @@ class EmployeeAssetService extends Controller
                 ['name' => 'end_date', 'type' => 'date'],
                 ['name' => 'filename', 'type' => 'filename'],
                 ['name' => 'status', 'type' => 'status'],
-            ]);
+            ], $isModal);
         }
     }
 
@@ -102,8 +105,8 @@ class EmployeeAssetService extends Controller
             'category_id' => $request->input('category_id'),
             'type_id' => $request->input('type_id'),
             'date' => resetDate($request->input('date')),
-            'start_date' => $request->input('start_date') ?  resetDate($request->input('start_date')) : null,
-            'end_date' => $request->input('end_date') ?  resetDate($request->input('end_date')) : null,
+            'start_date' => $request->input('start_date') ? resetDate($request->input('start_date')) : null,
+            'end_date' => $request->input('end_date') ? resetDate($request->input('end_date')) : null,
             'description' => $request->input('description'),
         ];
 
@@ -119,7 +122,7 @@ class EmployeeAssetService extends Controller
     {
         $asset = $this->employeeAssetRepository->getById($id);
 
-        if($asset->filename != null) deleteFile($asset->filename);
+        if ($asset->filename != null) deleteFile($asset->filename);
 
         $asset->delete();
     }
@@ -145,10 +148,10 @@ class EmployeeAssetService extends Controller
 
         $data = [];
         $assets = $sql->get();
-        foreach ($assets as $k => $asset){
+        foreach ($assets as $k => $asset) {
             $data[] = [
                 $k + 1,
-                $asset->employee_number." ",
+                $asset->employee_number . " ",
                 $asset->employee_name,
                 $asset->name,
                 $asset->number,

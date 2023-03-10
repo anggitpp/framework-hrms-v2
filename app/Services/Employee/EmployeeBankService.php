@@ -52,7 +52,7 @@ class EmployeeBankService extends Controller
     /**
      * @throws Exception
      */
-    public function data(Request $request): JsonResponse
+    public function data(Request $request, bool $isModal): JsonResponse
     {
         if ($request->ajax()) {
             $query = $this->getBanksWithSpecificColumn([
@@ -86,7 +86,7 @@ class EmployeeBankService extends Controller
             return generateDatatable($query, $queryFilter, [
                 ['name' => 'bank_id', 'type' => 'master_relationship', 'masters' => 'bank'],
                 ['name' => 'status', 'type' => 'status'],
-            ]);
+            ], $isModal);
         }
     }
 

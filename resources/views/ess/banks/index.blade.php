@@ -12,7 +12,7 @@
                 <div class="card-toolbar">
                     <div class="d-flex justify-content-end">
                         @can('add '.$menu_path)
-                            <x-views.add-button route="{{ route(str_replace('/', '.', $menu_path).'.create') }}"
+                            <x-views.add-button-modal route="{{ route(str_replace('/', '.', $menu_path).'.create') }}"
                                                 text="Tambah Data"/>
                         @endcan
                     </div>

@@ -56,7 +56,7 @@ class EmployeeWorkService extends Controller
     /**
      * @throws Exception
      */
-    public function data(Request $request): JsonResponse
+    public function data(Request $request, bool $isModal = false): JsonResponse
     {
         if ($request->ajax()) {
             $query = $this->getWorkWithSpecificColumn([
@@ -85,7 +85,7 @@ class EmployeeWorkService extends Controller
                 ['name' => 'start_date', 'type' => 'date'],
                 ['name' => 'end_date', 'type' => 'date'],
                 ['name' => 'filename', 'type' => 'filename' ]
-            ]);
+            ], $isModal);
         }
     }
 

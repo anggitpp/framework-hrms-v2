@@ -48,7 +48,7 @@ class ESSBankController extends Controller
      */
     public function data(Request $request)
     {
-        return $this->employeeBankService->data($request);
+        return $this->employeeBankService->data($request, true);
     }
 
     /**
@@ -73,7 +73,7 @@ class ESSBankController extends Controller
     {
         return submitDataHelper(function () use ($request) {
             $this->employeeBankService->saveBank($request);
-        });
+        }, true);
     }
 
     /**
@@ -101,7 +101,7 @@ class ESSBankController extends Controller
     {
         return submitDataHelper(function () use ($request, $id) {
             $this->employeeBankService->saveBank($request, $id);
-        });
+        }, true);
     }
 
     /**

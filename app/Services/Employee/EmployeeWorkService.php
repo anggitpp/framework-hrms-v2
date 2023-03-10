@@ -34,10 +34,11 @@ class EmployeeWorkService extends Controller
         $query = $this->employeeWorkRepository->getWorks();
         $user = Auth::user();
 
-        $permission = Permission::findByName('lvl3 ' . $this->menu_path());
-        if (!empty($permission))
+        $permission = Permission::where('name', 'lvl3 ' . $this->menu_path())->first();
+        if ($permission) {
             if (!$user->hasPermissionTo('lvl3 ' . $this->menu_path()))
                 $query->where('employee_positions.leader_id', $user->employee_id);
+        }
 
         return $query;
     }

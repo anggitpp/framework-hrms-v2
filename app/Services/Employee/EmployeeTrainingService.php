@@ -36,10 +36,11 @@ class EmployeeTrainingService extends Controller
         $query = $this->employeeTrainingRepository->getTrainings();
         $user = Auth::user();
 
-        $permission = Permission::findByName('lvl3 ' . $this->menu_path());
-        if (!empty($permission))
+        $permission = Permission::where('name', 'lvl3 ' . $this->menu_path())->first();
+        if ($permission) {
             if (!$user->hasPermissionTo('lvl3 ' . $this->menu_path()))
                 $query->where('employee_positions.leader_id', $user->employee_id);
+        }
 
         return $query;
     }
@@ -57,7 +58,7 @@ class EmployeeTrainingService extends Controller
     /**
      * @throws Exception
      */
-    public function data(Request $request): JsonResponse
+    public function data(Request $request, bool $isModal = false): JsonResponse
     {
         if ($request->ajax()) {
             $query = $this->getTrainingWithSpecificColumn([
@@ -89,7 +90,7 @@ class EmployeeTrainingService extends Controller
                 ['name' => 'start_date', 'type' => 'date'],
                 ['name' => 'end_date', 'type' => 'date'],
                 ['name' => 'filename', 'type' => 'filename']
-            ]);
+            ], $isModal);
         }
     }
 
